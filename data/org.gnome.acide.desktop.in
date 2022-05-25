@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=acide
+Exec=acide
+Icon=org.gnome.acide
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

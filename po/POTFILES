@@ -1,0 +1,7 @@
+data/org.gnome.acide.desktop.in
+data/org.gnome.acide.appdata.xml.in
+data/org.gnome.acide.gschema.xml
+src/window.ui
+src/main.py
+src/window.py
+
