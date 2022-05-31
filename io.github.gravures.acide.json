@@ -1,5 +1,5 @@
 {
-    "app-id" : "com.github.gravures.acide",
+    "app-id" : "io.github.gravures.acide",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "42",
     "sdk" : "org.gnome.Sdk",
@@ -12,7 +12,6 @@
         "--socket=wayland",
         "--socket=fallback-x11",
         "--filesystem=xdg-documents",
-        "--talk-name=org.freedesktop.Notifications"
     ],
     "cleanup" : [
         "/include",
