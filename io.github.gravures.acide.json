@@ -3,7 +3,6 @@
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "42",
     "sdk" : "org.gnome.Sdk",
-    "_sdk-extensions" : [ "org.freedesktop.Sdk.Extension.llvm13" ],
     "command" : "acide",
     "finish-args" : [
         "--share=network",
@@ -33,7 +32,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/gilles/DEVELOPPEMENT/REPOS/acide"
+                    "url" : "."
                 }
             ]
         }
