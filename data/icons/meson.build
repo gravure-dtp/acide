@@ -1,4 +1,4 @@
-application_id = 'org.gnome.acide'
+application_id = 'io.github.gravures.acide'
 
 scalable_dir = join_paths('hicolor', 'scalable', 'apps')
 install_data(

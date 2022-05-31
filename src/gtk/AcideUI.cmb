@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
+<cambalache-project version="0.8.2" target_tk="gtk-4.0">
+  <ui>
+	(2,1,"window.ui","AcideWindow.ui",None,None,None,None,None,None)
+  </ui>
+  <ui_library>
+	(2,"gtk","4.0",None)
+  </ui_library>
+  <object>
+	(2,1,"GtkApplicationWindow","AcideWindow",None,None,None,None,None),
+	(2,2,"GtkHeaderBar","header_bar",1,None,"titlebar",None,None),
+	(2,3,"GtkMenuButton",None,2,None,"end",None,None),
+	(2,4,"GtkScrolledWindow","scrolled_window",1,None,None,None,None)
+  </object>
+  <object_property>
+	(2,1,"GtkWindow","default-height","300",None,None,None,None),
+	(2,1,"GtkWindow","default-width","600",None,None,None,None),
+	(2,3,"GtkMenuButton","icon-name","open-menu-symbolic",None,None,None,None)
+  </object_property>
+</cambalache-project>

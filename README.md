@@ -14,7 +14,7 @@ This project uses the [meson build system](http://mesonbuild.com/).
 Run the following commands to clone this project and initialize the build:
 
 ```bash
-$ git clone https://github.com/gravure-dtp/acide.git
+$ git clone https://github.com/gravures/acide.git
 $ cd acide
 $ meson build --prefix=~/.local
 ```

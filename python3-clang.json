@@ -1,0 +1,14 @@
+{
+    "name": "python3-clang",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"clang\" --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/08/ae/4c5e775b3bafc86fde8db6e4f3fed014651312f33b5fd0468e4bf6848187/clang-14.0-py3-none-any.whl",
+            "sha256": "049c7f7740f46f733fc96b5395910ffc57f56d4d61bca65b5556e9772d146deb"
+        }
+    ]
+}

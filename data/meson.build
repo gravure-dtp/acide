@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-  input: 'org.gnome.acide.desktop.in',
-  output: 'org.gnome.acide.desktop',
+  input: 'io.github.gravures.acide.desktop.in',
+  output: 'io.github.gravures.acide.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -15,8 +15,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'org.gnome.acide.appdata.xml.in',
-  output: 'org.gnome.acide.appdata.xml',
+  input: 'io.github.gravures.acide.appdata.xml.in',
+  output: 'io.github.gravures.acide.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -29,7 +29,7 @@ if appstream_util.found()
   )
 endif
 
-install_data('org.gnome.acide.gschema.xml',
+install_data('io.github.gravures.acide.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

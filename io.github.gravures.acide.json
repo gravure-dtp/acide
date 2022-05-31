@@ -1,15 +1,18 @@
 {
-    "app-id" : "org.gnome.acide",
+    "app-id" : "com.github.gravures.acide",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "42",
     "sdk" : "org.gnome.Sdk",
+    "_sdk-extensions" : [ "org.freedesktop.Sdk.Extension.llvm13" ],
     "command" : "acide",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
-        "--socket=fallback-x11",
         "--device=dri",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--socket=fallback-x11",
+        "--filesystem=xdg-documents",
+        "--talk-name=org.freedesktop.Notifications"
     ],
     "cleanup" : [
         "/include",
@@ -23,6 +26,7 @@
         "*.a"
     ],
     "modules" : [
+        "python3-pymupdf.json",
         {
             "name" : "acide",
             "builddir" : true,

@@ -1,0 +1,26 @@
+{
+    "name": "mupdf",
+    "buildsystem": "simple",
+    "build-options": {
+    	"append-path": "/usr/lib/sdk/llvm13/bin",
+    	"prepend-ld-library-path": "/usr/lib/sdk/llvm13/lib",
+    	"env": {
+			"PYTHONPATH":"/usr/lib/sdk/llvm13/tools/clang/bindings/python/",
+    		"CLANG_LIBRARY_PATH": "/usr/lib/sdk/llvm13/lib/"
+    	}
+    },
+    "build-commands": [
+		"cp /usr/lib/sdk/llvm13/lib/libclang.so /app/lib/",
+		"source /usr/lib/sdk/llvm13/enable.sh",
+		"python3 setup.py bdist_wheel"
+    ],
+    "cleanup" : [
+    ],
+    "sources": [
+		{
+			"type": "archive",
+			"url": "https://mupdf.com/downloads/archive/mupdf-1.19.1-source.tar.gz",
+			"sha1": "6ebb3ee273433f095d5c9d45d74b58e26d4659b4"
+		}
+    ]
+}

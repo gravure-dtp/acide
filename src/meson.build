@@ -32,7 +32,7 @@ acide_sources = [
 
 install_data(
 	acide_sources,
-	install_dir: moduledir,
+	install_dir: moduledir
 )
 
 install_subdir(

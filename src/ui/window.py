@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # window.py
 #
 # Copyright 2022 Gilles Coissac
@@ -20,18 +18,14 @@
 from gi.repository import Gtk
 
 
-@Gtk.Template(resource_path='/org/gnome/acide/gtk/acide-window.ui')
+@Gtk.Template(resource_path='/io/github/gravures/acide/gtk/AcideWindow.ui')
 class AcideWindow(Gtk.ApplicationWindow):
     __gtype_name__ = 'AcideWindow'
 
-    header_bar = Gtk.Template.Child()
-    menu_button = Gtk.Template.Child()
+    scrolled_window = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.init_template()
-        self.application = kwargs.get("application")
-
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -42,6 +36,6 @@ class AboutDialog(Gtk.AboutDialog):
         self.props.version = "0.1.0"
         self.props.authors = ['Gilles Coissac']
         self.props.copyright = '2022 Gilles Coissac'
-        self.props.logo_icon_name = 'org.gnome.acide'
+        self.props.logo_icon_name = 'io.github.gravures.acide'
         self.props.modal = True
         self.set_transient_for(parent)

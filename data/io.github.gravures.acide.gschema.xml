@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="acide">
-	<schema id="org.gnome.acide" path="/org/gnome/acide/">
+	<schema id="io.github.gravures.acide" path="/io/github/gravures/acide/">
 	</schema>
 </schemalist>
