@@ -2,7 +2,8 @@ pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.proje
 moduledir = join_paths(pkgdatadir, 'acide')
 gnome = import('gnome')
 
-gnome.compile_resources('acide',
+gnome.compile_resources(
+  'acide',
   'acide.gresource.xml',
   gresource_bundle: true,
   install: true,
@@ -25,18 +26,11 @@ configure_file(
   install_dir: get_option('bindir')
 )
 
-acide_sources = [
-  '__init__.py',
-  'main.py',
-]
-
-install_data(
-	acide_sources,
-	install_dir: moduledir
-)
-
 install_subdir(
-	'ui',
+	'acide',
+	exclude_directories: [],
+	exclude_files: ['ui/duplex.pyx'],
 	install_dir: moduledir,
-	strip_directory: false
+	strip_directory: true
 )
+

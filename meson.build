@@ -12,6 +12,7 @@ gnome = import('gnome')
 subdir('data')
 subdir('src')
 subdir('po')
+subdir('docs')
 
 gnome.post_install(
   glib_compile_schemas: true,

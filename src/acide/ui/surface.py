@@ -321,7 +321,10 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
             ctx.line_to(w, sy)
         ctx.stroke()
 
-    def draw_rulers(self, snap: Gtk.Snapshot, clip: Graphene.Rect, xo: float, yo: float) -> None:
+    def draw_rulers(
+        self, snap: Gtk.Snapshot, clip: Graphene.Rect, xo: float, yo: float
+    ) -> None:
+        #TODO: marker on ruler for current mouse pointer position
         # rulers background
         snap.append_color(
             self.get_rgba(0, 0, 0),
@@ -332,6 +335,7 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
             self.get_rect(0, 0, self.rulers_size.left, clip.get_height()),
         )
 
+        #TODO: drawing could be pre-cached for speed-up
         # draw with physical pixel coordinate
         ctx = snap.append_cairo(clip)
         ctx.set_matrix(self.device_matrix)
@@ -342,15 +346,17 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
         ctx.set_antialias(cairo.ANTIALIAS_NONE)
 
         # rulers ticks
-        tick = self.monitor_dpi / 25.4  # mm ticks
-        tick_len = 8
+        #TODO: render measurement unit following unit-measure property
+        tick = self.monitor_dpi / 25.4  # mm ticks gap in physical px
+        tick_len = 8  # ticks lenght in physical px
         ctx.set_source_rgb(1, 1, 1)
 
         # ticks font
         ctx.select_font_face("sans")
-        ctx.set_font_size(20.0)
+        ctx.set_font_size(10.0 * self.unit_scale)
 
         # Horinzontal ruler
+        #FIXME: imprecision in drawing (space transform)
         xt = xo - xo.__floor__() + rw
         index = int(-xo / self.ps2lpx_transform * self.ps2mm_transform)
         while xt < w:
@@ -367,6 +373,7 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
             index += 1
 
         # vertcal ruler
+        #FIXME: vertical text position (use of pango to draw text)
         yt = yo - yo.__floor__() + rh
         index = int(-yo / self.ps2lpx_transform  * self.ps2mm_transform)
         while yt < h:
@@ -385,9 +392,7 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
             ctx.line_to(rh - tick_len * lw, yt)
             yt += tick
             index += 1
-
         ctx.stroke()
-
 
     def do_snapshot(self, snap: Gtk.Snapshot) -> None:
         w = self.get_allocated_width()
