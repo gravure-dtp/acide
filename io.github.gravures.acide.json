@@ -24,6 +24,10 @@
         "*.a"
     ],
     "modules" : [
+    	"python3-sphinx.json",
+    	"python3-sphinxcontrib.apidoc.json",
+    	"python3-myst_parser.json",
+    	"python3-furo.json",
         "python3-pymupdf.json",
         {
             "name" : "acide",

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="150mm"
+   height="150mm"
+   viewBox="0 0 150 150"
+   version="1.1"
+   id="svg550"
+   inkscape:version="1.2 (dc2aeda, 2022-05-15)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview552"
+     pagecolor="#989898"
+     bordercolor="#e7e7e7"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#686868"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.42516731"
+     inkscape:cx="274.00978"
+     inkscape:cy="212.85738"
+     inkscape:window-width="1920"
+     inkscape:window-height="1047"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3"
+     showguides="true"
+     inkscape:lockguides="false" />
+  <defs
+     id="defs547">
+    <rect
+       x="146.99391"
+       y="612.06079"
+       width="97.294518"
+       height="95.813332"
+       id="rect481-8" />
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <rect
+       style="fill:#050505;fill-opacity:1;stroke-width:0.799999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="rect943"
+       width="164.02354"
+       height="166.1548"
+       x="-5.1663008"
+       y="-7.4209719"
+       rx="13.599999"
+       ry="14.2" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Calque 2"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <path
+       id="rect844"
+       style="fill:#fcfcfc;fill-opacity:1;stroke-width:0.8;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 91.324757,49.895327 2.480431,7.18638 22.819752,66.114063 c 2.56669,7.4363 0.4617,14.2 -13.60001,14.2 H 51.722674 c -14.019162,0 -16.014713,-6.71297 -13.6,-14.2 l 23.616565,-66.171557 2.544292,-7.128886 c 1.058333,-4.499876 1.058333,-11.344749 1.058333,-11.344749 V 16.84539 h 24.92456 v 21.462541 c 0,0 -0.222646,6.806719 1.058333,11.587396 z"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <path
+       id="rect1627"
+       style="display:inline;fill:#fcfcfc;stroke-width:0.547885;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 69.231589,11.356541 h 17.145106 c 3.761265,0 6.789286,2.403901 6.789286,5.389912 v 1.227251 c 0,2.986011 -1.969688,4.860745 -5.730953,4.860745 H 68.173256 c -3.761265,0 -5.730953,-1.874734 -5.730953,-4.860745 v -1.227251 c 0,-2.986011 3.028021,-5.389912 6.789286,-5.389912 z"
+       sodipodi:nodetypes="sssssssss" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="type">
+    <text
+       xml:space="preserve"
+       style="font-style:oblique;font-variant:normal;font-weight:600;font-stretch:normal;font-size:104.541px;line-height:125%;font-family:'Latin Modern Roman Demi';-inkscape-font-specification:'Latin Modern Roman Demi, Semi-Bold Oblique';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.0706px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="48.95322"
+       y="127.0442"
+       id="text1793"><tspan
+         sodipodi:role="line"
+         id="tspan1791"
+         style="font-style:oblique;font-variant:normal;font-weight:600;font-stretch:normal;font-size:104.541px;font-family:'Latin Modern Roman Demi';-inkscape-font-specification:'Latin Modern Roman Demi, Semi-Bold Oblique';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.0706px"
+         x="48.95322"
+         y="127.0442">a</tspan></text>
+  </g>
+</svg>
