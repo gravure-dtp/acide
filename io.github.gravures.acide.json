@@ -29,6 +29,8 @@
     	"python3-myst_parser.json",
     	"python3-furo.json",
         "python3-pymupdf.json",
+        "python3-scikit-build.json",
+        "python3-blosc.json",
         {
             "name" : "acide",
             "builddir" : true,

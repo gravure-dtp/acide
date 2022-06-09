@@ -99,11 +99,9 @@ class Document():
     close or change the document, then this cannot and does not change variable
     toc in any way. It is your responsibility to refresh such variables as required.
     """
-
     def __init__(self, file: Path = None) -> Document:
         self._pdf: fitz.Document = None
         self.pages: List[fitz.Page] = []
-
 
 
 class Page(GObject.GObject):

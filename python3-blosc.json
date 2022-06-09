@@ -1,0 +1,14 @@
+{
+    "name": "python3-blosc",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"blosc\" --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/84/57/c1f93e05a21a9f234fbba963d25337fc86d1e096544825603d10d22946ac/blosc-1.10.6.tar.gz",
+            "sha256": "55d9d57b85d6eeec010c6c399f2820f96f566dccbc6ddfeefb60501f8e10b548"
+        }
+    ]
+}

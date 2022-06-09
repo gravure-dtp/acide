@@ -45,13 +45,7 @@ from typing import Any, Union, Optional, Tuple
 from gi.repository import Gdk, GdkPixbuf, GObject, Graphene, Gsk, Gtk, Pango
 import cairo
 
-
-@unique
-class UNIT(IntEnum):
-    MILLIMETER = auto()
-    INCH = auto()
-    PS_POINT = auto()
-
+from acide.graphic import UNIT
 
 class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
     """A scrollable widget that render a Graphic Object."""

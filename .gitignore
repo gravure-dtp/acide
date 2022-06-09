@@ -60,6 +60,8 @@ pytestdebug.log
 # Sphinx documentation
 docs/_build/
 doc/_build/
+docs/build/
+doc/build/
 
 # PyBuilder
 target/
@@ -75,7 +77,6 @@ venv.bak/
 
 # IDE
 .ropeproject/
-.atom-build.yml
 tox.ini
 .old
 

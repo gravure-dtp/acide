@@ -139,6 +139,7 @@ class AcideApplication(Adw.Application):
 
 def main(version):
     """The application's entry point."""
+    print(format_size(3840 * 2160 * 24 * 9 / 20))
     app = AcideApplication()
     return app.run(sys.argv)
 

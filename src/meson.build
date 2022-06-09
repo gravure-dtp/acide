@@ -26,10 +26,44 @@ configure_file(
   install_dir: get_option('bindir')
 )
 
+cythonize = find_program('cythonize', required: true)
+if not cythonize.found()
+	error('Error: cythonize command not found, cannot build python extensions')
+endif
+
+message('Building python extensions...')
+returned = run_command(
+	cythonize,
+	'-3',
+	'--build',
+	'--inplace',
+  '-s', 'annotate=False',
+	'-X', 'language_level=3',
+  '-X', 'binding=False',
+  '-X', 'boundscheck=True',
+  '-X', 'wraparound=True',
+  '-X', 'overflowcheck=True',
+  '-X', 'initializedcheck=True',
+  '-X', 'nonecheck=False',
+  '-X', 'embedsignature=True',
+  '-X', 'optimize.use_switch=False',
+  '-X', 'optimize.unpack_method_calls=True',
+  '-X', 'warn.undeclared=False',
+  '-X', 'warn.unreachable=True',
+  '-X', 'warn.maybe_uninitialized=True',
+  '-X', 'warn.unused=True',
+  '-X', 'warn.unused_arg=True',
+  '-X', 'warn.unused_result=True',
+  '-X', 'warn.multiple_declarators=True',
+	'acide/graphic.pyx'
+)
+message(returned.stdout())
+message(returned.stderr())
+
 install_subdir(
 	'acide',
-	exclude_directories: [],
-	exclude_files: ['ui/duplex.pyx'],
+	exclude_directories: ['__pycache__', 'ui/__pycache__'],
+	exclude_files: ['graphic.pyx', 'graphic.c'],
 	install_dir: moduledir,
 	strip_directory: true
 )
