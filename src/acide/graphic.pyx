@@ -1,4 +1,4 @@
-# graphic.py
+# graphic.pyx
 #
 # Copyright 2022 Gilles Coissac
 #
@@ -30,39 +30,33 @@ Coordinate Systems:
 """
 import cython
 
-from abc import ABC, abstractmethod
 from enum import IntEnum, unique, auto
-from typing import Any, Union, Optional, Tuple
+from fractions import Fraction
+from typing import Any, Union, Optional, NoReturn, Sequence, Tuple
+
+import gi
+gi.require_version('Graphene', '1.0')
+gi.require_version("Gdk", "4.0")
 
 from gi.repository import Gdk, GLib, Graphene
-
 import blosc
 
-from cython.view cimport array as carray
+from cython.view cimport array as Carray
 
-BufferProtocol = Any
-
-@unique
-class UNIT(IntEnum):
-    MILLIMETER = auto()
-    INCH = auto()
-    PS_POINT = auto()
-
-
-ps2inch_transform: float = 1.0 / 72.0
-inch2ps_transform: float = 72.0
-ps2mm_transform: float = 25.4 / 72.0
-mm2ps_transform: float = 72.0 / 25.4
+from acide.types import TypedGrid
+from acide.types cimport TypedGrid, test_sequence
 
 
 cdef extern from "Python.h":
     ctypedef struct PyObject
     ctypedef Py_ssize_t Py_intptr_t
     ctypedef struct __pyx_buffer "Py_buffer":
-        PyObject *obj
+        PyObject* obj
         void* buf
         Py_ssize_t len
         Py_ssize_t itemsize
+        int ndim
+        Py_ssize_t* shape
 
     int PyObject_GetBuffer(object obj, Py_buffer *view, int flags) except -1
     void PyBuffer_Release(Py_buffer *view)
@@ -77,31 +71,125 @@ cdef extern from "Python.h":
         PyBUF_ANY_CONTIGUOUS
 
 
-cdef class Tile():
-    cdef readonly int u
-    cdef readonly int z
-    cdef readonly float r
-    cdef public object point
-    cdef public object size
-    cdef object buffer
+# Type hints Alias
+BufferProtocol = Any
 
-    def __cinit__(self):
-        self.u = 0
-        self.z = 0
-        self.r = 0
+
+cdef object gdk_memory_format_mapping():
+    mapping = dict()
+    cdef int size
+    for _enum in Gdk.MemoryFormat.__enum_values__.values():
+        size = 0
+        size = _enum.value_nick.count("8")
+        size += _enum.value_nick.count("16") * 2
+        size += _enum.value_nick.count("32") * 4
+        mapping[_enum] = size
+    return mapping
+gdk_memory_format_sizes = gdk_memory_format_mapping()
+
+
+@cython.freelist(16)
+cdef class Tile():
+    """Tile is a part of a larger graphic object.
+
+    :class:`Tile` could be find in Class implementing the :class:`GraphicInterface`.
+    They are smaller parts of a graphic object too large to be keep in a monolithic
+    uncompressed form in memory. Original graphic surface should be cut down
+    in equally sized Tiles and corresponding pixels buffer area should be passed
+    to the :meth:`compress` method. The idea is that graphic object providing
+    this buffer area should render each part once at a time.
+
+    Tiles will keep buffer only in a compressed form.
+
+    Tiles are rectangular and are defined by the 'rect' argument, which could
+    be in whatever unit choosen by the implementation, and defined the position
+    and size relative to the original graphic surface.
+
+    Compressions are done by the Blosc c Library.
+
+    Args:
+        rect: A :class:`Graphene.Rect` defining the origin and size of the Tile.
+    """
+    cdef Py_ssize_t _u
+    cdef Py_ssize_t _z
+    cdef float _r
+    cdef object _rect
+    cdef tuple _size
+    cdef object _format
+    cdef object buffer
+    cdef Carray u_shape
+    cdef Py_ssize_t u_itemsize
+    cdef bytes u_format
+
+    @property
+    def u(self) -> int:
+        """An :class:`int`, size in bytes of the origin uncompressed
+        buffer (read only)."""
+        return self._u
+
+    @property
+    def z(self) -> int:
+        """An :class:`int`, size in bytes of the Tile's compressed
+        buffer (read only)."""
+        return self._z
+
+    @property
+    def r(self) -> float:
+        """A :class:`float`, the ratio of compression of
+        the Tile's buffer (read only)."""
+        return self._r
+
+    @property
+    def rect(self) -> Graphene.Rect:
+        """A :class:`Graphene.Rect` defining the origin and size
+        of the Tile  (read only)."""
+        return self._rect
+
+    def __cinit__(self, rect: Graphene.Rect):
+        self._u = 0
+        self._z = 0
+        self._r = 0
+        self.buffer = None
+        self._rect = rect
+        self._size = (0, 0)
+
+    def __init__(self, rect: Graphene.Rect, *arg, **kwargs):
+        pass
 
     def __dealloc__(self):
         self.buffer = None
 
-    def __init__(self, point: Graphene.Point, size: Graphene.Size):
-        self.buffer = None
-        self.point = point
-        self.size = size
+    cpdef compress(
+        self,
+        buffer: Union[memoryview, BufferProtocol],
+        size: Sequence[int, int],
+        format: Gdk.MemoryFormat,
+    ):
+        """Compress buffer.
 
-    def compress(self, buffer: Union[memoryview, BufferProtocol]):
+        The given buffer is compressed in the Tile's own buffer.
+        blosc has a maximum blocksize of 2**31 bytes = 2 GB.
+        Larger arrays must be chunked by slicing.
+
+        Args:
+            buffer: A one dmensional c-contigous buffer to compress.
+            size: A two lenght :class:`Sequence` of :class:`int` (width, height)
+                  describing the pixmap size in pixel behind the buffer.
+            format: a member of enumeration :class:`Gdk.MemoryFormat`
+                    describing formats that pixmap data have in memory.
+
+        Raises:
+            TypeError: if buffer doesn't implement the buffer protocol,
+                       are not c-contigous or have more than one dimension.
+        """
         cdef Py_buffer view
         cdef Py_buffer* p_view = &view
         cdef char* ptr
+
+        if not test_sequence(size, (int, int)):
+            raise TypeError(
+                f"size should be a 2 length sequence of int not {size}"
+            )
 
         if isinstance(buffer, memoryview):
             p_view = PyMemoryView_GET_BUFFER(buffer)
@@ -110,14 +198,32 @@ cdef class Tile():
         else:
             raise TypeError(
                 "Argument buffer should be either a memoryview"
-                "or an object implenting the buffer protocol"
+                "or an object implementing the buffer protocol"
                 "data should be contigous in memory"
             )
 
         if not PyBuffer_IsContiguous(p_view, b'c'):
-            raise TypeError("data should be contigous in memory")
+            raise TypeError("buffer should be c-contigous in memory")
 
-        self.u = p_view.len
+        if p_view.ndim <> 1:
+            raise TypeError("buffer should have only one dimension")
+
+        # Sanity check between size and buffer size
+        if size[0] * size[1] * gdk_memory_format_sizes.get(format, 0) <> \
+            p_view.len:
+            raise ValueError(
+                "Missmatch between buffer's lenght and pixmap"
+                f" size for {format}"
+            )
+
+        self._size = tuple(size)
+        self._format = format
+        self._u = p_view.len
+        self.u_shape = <Py_ssize_t[:view.ndim]> view.shape
+        self.u_itemsize = p_view.itemsize
+        self.u_format = <bytes> p_view.format
+
+        # TODO: blosc size limit
         ptr = <char*> p_view.buf
         self.buffer = blosc.compress_ptr(
             adress=<Py_ssize_t> &ptr[0],
@@ -127,38 +233,153 @@ cdef class Tile():
             shuffle=blosc.BITSHUFFLE,
             cname='lz4',
         )
-        self.z = len(self.buffer)
-        self.r = self.u / float(self.z)
+        self._z = len(self.buffer)
+        self._r = self._u / float(self._z)
         PyBuffer_Release(p_view)
 
 
-class SuperTile(Tile):
-    __slots__ = (
-        'tile_0',
-        'tile_1',
-        'tile_2',
-        'tile_3',
-    )
+cdef class TilesGrid(TypedGrid):
+    cdef Py_ssize_t _u
+    cdef Py_ssize_t _z
+    cdef float _r
 
-    def __init__(self, tile_0, tile_1, tile_2, tile_3, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.tile_0 = tile_0
-        self.tile_1 = tile_1
-        self.tile_2 = tile_2
-        self.tile_3 = tile_3
-        self.c_buffer = None
+    @property
+    def u(self) -> int:
+        """An :class:`int`, size in bytes of the origin uncompressed
+        buffer (read only)."""
+        return self._u
 
-    def texture(self):
-        buf_0 = blosc.decompress(self.tile_0.buffer)
-        buf_1 = blosc.decompress(self.tile_1.buffer)
-        buf_2 = blosc.decompress(self.tile_2.buffer)
-        buf_3 = blosc.decompress(self.tile_3.buffer)
+    @property
+    def z(self) -> int:
+        """An :class:`int`, size in bytes of the Tile's compressed
+        buffer (read only)."""
+        return self._z
 
+    @property
+    def r(self) -> float:
+        """A :class:`float`, the ratio of compression of
+        the Tile's buffer (read only)."""
+        return self._r
+
+    def __cinit__(self, shape=None):
+        #TODO: all tiles should have same properties, shape, pixel format,...
+        self._u = 0
+        self._z = 0
+        self._r = 0
+
+    def __init__(self, *args, shape=None, **kwargs):
+        super().__init__(Tile, shape, *args, **kwargs)
+
+    cdef stats(self):
+        cdef Py_ssize_t x, y
+        for x in range(self.view.shape[0]):
+            for y in range(self.view.shape[1]):
+                tile = self.getitem_at(x, y)
+                if tile is not None:
+                    self._u += (<Tile>tile)._u
+                    self._z += (<Tile>tile)._z
+        if self._z <> 0:
+            self._r = self._u / float(self._z)
+
+
+cdef class SuperTile(TilesGrid):
+    """A two by two :class:`TilesGrid`.
+
+    """
+    cdef object _texture
+
+    def __cinit__(self):
+        self._texture = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, shape=(2,2), **kwargs)
+
+    cdef int allocate_buffer(self):
+        """Allocate self.buffer to host offscreen image
+        of the resulting union of compressed subtiles."""
+        if all(
+            self.tile_0.buffer, self.tile_1.buffer,
+            self.tile_2.buffer, self.tile_3.buffer,
+            ):
+            self.buffer = Carray.__new__(
+                Carray,
+                shape=(self.tile_0.u_shape[0] * 4,),
+                itemsize=self.tile_0.u_itemsize,
+                format=self.tile_0.u_format,
+                mode='c',
+                allocate_buffer=True,
+            )
+            self._shape = (
+                self.tile_0._shape[0] + self.tile_1._shape[0],
+                self.tile_0._shape[1] + self.tile_2._shape[1],
+            )
+            self._z = self.tile_0._z + self.tile_1._z + \
+                      self.tile_2._z + self.tile_3._z
+            self._u = self.tile_0._u * 4
+            self._r = self._u / float(self._z)
+            return 0
+        else:
+            return -1
+
+    cdef int fill_buffer(self):
+        """Actually decompress the subtiles buffers in the SuperTile.buffer."""
+        cdef Carray buffer_west
+        cdef Carray buffer_east
+        cdef int x, y, start, width, height
+
+        if self.buffer:
+            buffer_west = Carray.__new__(
+                Carray,
+                shape=(self.tile_0.u_shape[0] + self.tile_2.u_shape[0],),
+                itemsize=self.tile_0.u_itemsize,
+                format=self.tile_0.u_format,
+                mode='c',
+                allocate_buffer=True,
+            )
+            buffer_east = Carray.__new__(
+                Carray,
+                shape=(self.tile_1.u_shape[0] + self.tile_3.u_shape[0],),
+                itemsize=self.tile_1.u_itemsize,
+                format=self.tile_1.u_format,
+                mode='c',
+                allocate_buffer=True,
+            )
+
+            # decompress tiles in two temporary buffers
+            blosc.decompress_ptr(
+                self.tile_0.buffer,
+                address=<Py_ssize_t> &buffer_west.data[0],
+            )
+            blosc.decompress_ptr(
+                self.tile_2.buffer,
+                address=<Py_ssize_t> &buffer_west.data[self.tile_0.u_shape[0]],
+            )
+            blosc.decompress_ptr(
+                self.tile_1.buffer,
+                address=<Py_ssize_t> &buffer_east.data[0],
+            )
+            blosc.decompress_ptr(
+                self.tile_3.buffer,
+                address=<Py_ssize_t> &buffer_east.data[self.tile_1.u_shape[0]],
+            )
+
+            # fusion of the 2 temporary buffers
+            width = self.tile_0.shape[0]
+            height = self.tile_0.shape[1]
+            for y in range(height):
+                start = y * width
+                x = start * 2
+                self.buffer[x:x + width] = buffer_west[start:start + width]
+                x += width
+                self.buffer[x:x + width] = buffer_east[start:start + width]
+
+            return 0
+        else:
+            return -1
+
+    cdef make_texture(self):
         # here data is copied
-        self._gbytes = GLib.Bytes.new(
-            self._pixmap.samples_mv
-        )
-
+        self._gbytes = GLib.Bytes.new(self.buffer)
         self._texture = Gdk.MemoryTexture.new(
             self._pixmap.width,
             self._pixmap.height,
@@ -167,36 +388,38 @@ class SuperTile(Tile):
             3 * self._pixmap.width,
         )
 
+    @property
+    def texture(self) -> Gdk.Texture:
+        """A :class:`Gdk.Texture` filled with the uncompressed data buffer
+        of the subtiles (read only)."""
+        self.make_texture()
+        return self._texture
 
-class GraphicInterface(ABC):
-    __slots__ = (
-        'tile',
-        'point',
-        'size',
-        '_dpi',
-        '_zoom',
-        '_viewport_size',
-        '_sub_tiles',
-    )
 
-    def __init__(self, monitor_dpi, viewport_size):
-        self._dpi = monitor_dpi
-        self._viewport_size = viewport_size
-        self._zoom = 1.0
-        self._subtiles = []
+@cython.final
+cdef class TilesPool():
+    """TilesPool."""
+    cdef unsigned int width
+    cdef unsigned int height
+    cdef list tiles_grids_stack
+    cdef unsigned int depth
+    cdef unsigned int current
+    cdef SuperTile render_tile
 
-    @abstractmethod
-    def zoom_in(self):
+    def __cinit__(self, width, height):
+        self.depth = 1
+        self.current = 0
+        self.tiles_grids_stack = []
+        self.tiles_grids_stack.append(TilesGrid(shape=(width, height)))
+        self.render_tile = SuperTile()
+
+    def __init__(self, width, height):
         pass
 
-    @abstractmethod
-    def zoom_out(self):
-        pass
+
+include "measure.pxi"
+include "graphic.pxi"
 
 
-# cdef class Duplex():
-#     cdef float ps_x = 0
-#     cdef float ps_y = 0
-#     cdef int ds_x = 0
-#     cdef int ds_y = 0
+
 

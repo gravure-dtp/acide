@@ -55,6 +55,7 @@ returned = run_command(
   '-X', 'warn.unused_arg=True',
   '-X', 'warn.unused_result=True',
   '-X', 'warn.multiple_declarators=True',
+  'acide/types.pyx',
 	'acide/graphic.pyx'
 )
 message(returned.stdout())

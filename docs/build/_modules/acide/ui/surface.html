@@ -161,13 +161,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../story/intro.html">Acide - Accurate Pdf Viewer</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/acide.html">acide package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/acide.ui.html">acide.ui package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.ui.duplex.html">acide.ui.duplex module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/acide.ui.surface.html">acide.ui.surface module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.ui.window.html">acide.ui.window module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/acide.doc.html">acide.doc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.main.html">acide.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.graphic.html">acide.graphic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.types.html">acide.types module</a></li>
 </ul>
 </li>
 </ul>
@@ -248,18 +247,26 @@
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">unique</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="kn">import</span> <span class="nn">gi</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gtk&#39;</span><span class="p">,</span> <span class="s1">&#39;4.0&#39;</span><span class="p">)</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s2">&quot;Gdk&quot;</span><span class="p">,</span> <span class="s2">&quot;4.0&quot;</span><span class="p">)</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gsk&#39;</span><span class="p">,</span> <span class="s1">&#39;4.0&#39;</span><span class="p">)</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Graphene&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Graphene</span><span class="p">,</span> <span class="n">Gsk</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span>
 <span class="kn">import</span> <span class="nn">cairo</span>
 
-
-<div class="viewcode-block" id="UNIT"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.UNIT">[docs]</a><span class="nd">@unique</span>
-<span class="k">class</span> <span class="nc">UNIT</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="n">MILLIMETER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">INCH</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">PS_POINT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+<span class="kn">from</span> <span class="nn">acide.graphic</span> <span class="kn">import</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">UNIT</span><span class="p">,</span> <span class="n">_MeasurableMeta</span>
 
 
-<div class="viewcode-block" id="GraphicSurface"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface">[docs]</a><span class="k">class</span> <span class="nc">GraphicSurface</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Scrollable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_GtkMeasurableMeta</span><span class="p">(</span><span class="n">gi</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">GObjectMeta</span><span class="p">,</span> <span class="n">_MeasurableMeta</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GraphicSurface"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface">[docs]</a><span class="k">class</span> <span class="nc">GraphicSurface</span><span class="p">(</span>
+    <span class="n">Gtk</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Scrollable</span><span class="p">,</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_GtkMeasurableMeta</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A scrollable widget that render a Graphic Object.&quot;&quot;&quot;</span>
 
     <span class="n">__gtype_name__</span> <span class="o">=</span> <span class="s2">&quot;GraphicSurface&quot;</span>
@@ -420,6 +427,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">Measurable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># Mandatory</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">72.0</span>  <span class="c1"># in physical pixel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span><span class="p">()</span>  <span class="c1"># in physical pixel</span>

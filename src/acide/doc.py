@@ -51,6 +51,10 @@ encounter a situation like this one:
 from pathlib import Path
 from typing import List
 
+import gi
+gi.require_version('Graphene', '1.0')
+gi.require_version("Gdk", "4.0")
+
 from gi.repository import Gdk, GLib, GObject, Graphene
 
 import fitz
@@ -99,9 +103,12 @@ class Document():
     close or change the document, then this cannot and does not change variable
     toc in any way. It is your responsibility to refresh such variables as required.
     """
-    def __init__(self, file: Path = None) -> Document:
+    def __init__(self, file: Path = None) -> 'Document':
         self._pdf: fitz.Document = None
         self.pages: List[fitz.Page] = []
+
+    def test(self):
+        pass
 
 
 class Page(GObject.GObject):
@@ -162,7 +169,7 @@ class Page(GObject.GObject):
         else:
             raise AttributeError(f'unknown property {prop.name}')
 
-    def __init__(self, page: fitz.Page) -> Page:
+    def __init__(self, page: fitz.Page) -> 'Page':
         super().__init__(self)
         self._display_list: fitz.DisplayList = page.get_displaylist()
         self.cropbox: Graphene.Rect = None
@@ -174,7 +181,7 @@ class Page(GObject.GObject):
         self._render_texture()
         return self._texture
 
-    def _render_texture(self, clip: Fitz.IRect = None) -> None:
+    def _render_texture(self, clip: fitz.IRect = None) -> None:
         self._pixmap = self._display_list.get_pixmap(
             matrix=None,
             dpi=96,

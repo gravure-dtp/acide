@@ -42,12 +42,26 @@ but take care that some methods like Texture.get_width() returns physical units.
 from enum import IntEnum, unique, auto
 from typing import Any, Union, Optional, Tuple
 
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version("Gdk", "4.0")
+gi.require_version('Gsk', '4.0')
+gi.require_version('Graphene', '1.0')
+
 from gi.repository import Gdk, GdkPixbuf, GObject, Graphene, Gsk, Gtk, Pango
 import cairo
 
-from acide.graphic import UNIT
+from acide.graphic import Measurable, UNIT, _MeasurableMeta
 
-class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
+
+class _GtkMeasurableMeta(gi.types.GObjectMeta, _MeasurableMeta):
+    def __new__(cls, name, bases, dict):
+        return super().__new__(cls, name, bases, dict)
+
+
+class GraphicSurface(
+    Gtk.Widget, Gtk.Scrollable, Measurable, metaclass=_GtkMeasurableMeta
+):
     """A scrollable widget that render a Graphic Object."""
 
     __gtype_name__ = "GraphicSurface"
@@ -208,6 +222,8 @@ class GraphicSurface(Gtk.Widget, Gtk.Scrollable):
 
     def __init__(self):
         super().__init__()
+        Measurable.__init__(self)  # Mandatory
+
         self.unit_scale: int = 1
         self.monitor_dpi: float = 72.0  # in physical pixel
         self.monitor_res: Graphene.Size = Graphene.Size()  # in physical pixel

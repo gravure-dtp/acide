@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="acide.ui.window module" href="acide.ui.window.html" /><link rel="prev" title="acide.ui.duplex module" href="acide.ui.duplex.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="acide.doc module" href="acide.doc.html" /><link rel="prev" title="acide.ui package" href="acide.ui.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
         <title>acide.ui.surface module - acide 0.1.0 documentation</title>
@@ -162,13 +162,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../story/intro.html">Acide - Accurate Pdf Viewer</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="acide.html">acide package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="acide.ui.html">acide.ui package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="acide.ui.duplex.html">acide.ui.duplex module</a></li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">acide.ui.surface module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="acide.ui.window.html">acide.ui.window module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="acide.doc.html">acide.doc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acide.main.html">acide.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acide.graphic.html">acide.graphic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acide.types.html">acide.types module</a></li>
 </ul>
 </li>
 </ul>
@@ -217,7 +216,7 @@ but take care that some methods like Texture.get_width() returns physical units.
 <dl class="py class">
 <dt class="sig sig-object py" id="acide.ui.surface.GraphicSurface">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.ui.surface.</span></span><span class="sig-name descname"><span class="pre">GraphicSurface</span></span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicSurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicSurface" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Widget</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Scrollable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Widget</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Scrollable</span></code>, <a class="reference internal" href="acide.graphic.html#acide.graphic.Measurable" title="acide.graphic.Measurable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Measurable</span></code></a></p>
 <p>A scrollable widget that render a Graphic Object.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="acide.ui.surface.GraphicSurface.device_matrix">
@@ -366,28 +365,6 @@ only create display specific resources when a widget has been realized.</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="acide.ui.surface.UNIT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.ui.surface.</span></span><span class="sig-name descname"><span class="pre">UNIT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#UNIT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.UNIT" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="acide.ui.surface.UNIT.INCH">
-<span class="sig-name descname"><span class="pre">INCH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#acide.ui.surface.UNIT.INCH" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="acide.ui.surface.UNIT.MILLIMETER">
-<span class="sig-name descname"><span class="pre">MILLIMETER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#acide.ui.surface.UNIT.MILLIMETER" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="acide.ui.surface.UNIT.PS_POINT">
-<span class="sig-name descname"><span class="pre">PS_POINT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#acide.ui.surface.UNIT.PS_POINT" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 
         </article>
@@ -395,23 +372,23 @@ only create display specific resources when a widget has been realized.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="acide.ui.window.html">
+          <a class="next-page" href="acide.doc.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">acide.ui.window module</div>
+                <div class="title">acide.doc module</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="acide.ui.duplex.html">
+          <a class="prev-page" href="acide.ui.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">acide.ui.duplex module</div>
+                <div class="title">acide.ui package</div>
                 
               </div>
             </a>

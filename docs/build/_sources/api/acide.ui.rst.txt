@@ -12,6 +12,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   acide.ui.duplex
    acide.ui.surface
-   acide.ui.window

@@ -34,8 +34,11 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sphinx.ext.autosummary',
+    # 'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
     'sphinxcontrib.apidoc',
+    'sphinx.ext.intersphinx',
+    #'sphinxcontrib.prettyspecialmethods',
     'myst_parser',
 ]
 
@@ -56,7 +59,7 @@ apidoc_output_dir = 'api'
 
 # An optional list of modules to exclude. These should be paths relative
 # to apidoc_module_dir. fnmatch-style wildcarding is supported.
-apidoc_excluded_paths = []
+apidoc_excluded_paths = ['main*', 'ui/window*']
 
 # Put documentation for each module on its own page.
 # Otherwise there will be one page per (sub)package.
@@ -71,7 +74,7 @@ apidoc_module_first = True
 
 # Extra arguments which will be passed to sphinx-apidoc.
 # These are placed after flags and before the module name.
-apidoc_extra_args = []
+apidoc_extra_args = ['-f', '--implicit-namespaces']
 
 # Functions imported from C modules cannot be introspected, and therefore
 # the signature for such functions cannot be automatically determined.
@@ -81,7 +84,23 @@ apidoc_extra_args = []
 # autodoc will look at the first line of the docstring for functions and methods,
 # and if it looks like a signature, use the line as the signature and remove
 # it from the docstring content.
+autodoc_default_options = {
+    'members': True,
+    #'ignore-module-all': False,
+    #'member-order': 'groupwise',
+    'special-members': False,
+    'undoc-members': True,
+    'exclude-members': (
+        '__weakref__,__new__,__init__,__reduce__,__setstate__,__pyx_vtable__,'
+        '__module__,__dict__,__getitem__,__setitem__,__delitem__'
+    ),
+    'show-inheritance': True,
+    'inherited-members': False
+}
 autodoc_docstring_signature = True
+#autodoc_typehints = 'description'
+#autodoc_class_signature = 'separated'
+
 
 # Boolean indicating whether to scan all found documents
 # for autosummary directives, and to generate stub pages for each.
@@ -89,6 +108,22 @@ autodoc_docstring_signature = True
 # The new files will be placed in the directories specified in the :toctree:
 # options of the directive
 autosummary_generate = [f'{project}']
+
+# Napoleon settings
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_preprocess_types = True
+napoleon_type_aliases = None
+napoleon_attr_annotations = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -108,7 +143,7 @@ modindex_common_prefix = [f'{project}.']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+#exclude_patterns = ['acide.main', 'acide.ui.window']
 
 # -- Options for HTML output -------------------------------------------------
 

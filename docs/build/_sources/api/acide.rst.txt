@@ -21,4 +21,5 @@ Submodules
    :maxdepth: 4
 
    acide.doc
-   acide.main
+   acide.graphic
+   acide.types
