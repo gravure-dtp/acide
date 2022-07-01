@@ -18,25 +18,29 @@
 """Acide doc module.
 
 NOTES ON PYMUDF COORDINATES:
-  Methods require coordinates (points, rectangles) to put content
+Methods require coordinates (points, rectangles) to put content
 in desired places. Please be aware that since MuPdf v1.17.0 these coordinates
 must always be provided relative to the unrotated page.
-  The reverse is also true: except Page.rect, resp. Page.bound()
+
+The reverse is also true: except Page.rect, resp. Page.bound()
 (both reflect when the page is rotated), all coordinates returned by methods
 and attributes pertain to the unrotated page.
-  So the returned value of e.g. Page.get_image_bbox() will not change if you
+
+So the returned value of e.g. Page.get_image_bbox() will not change if you
 do a Page.set_rotation(). The same is true for coordinates returned
 by Page.get_text(), annotation rectangles, and so on.
-  If you want to find out, where an object is located in rotated coordinates,
+
+If you want to find out, where an object is located in rotated coordinates,
 multiply the coordinates with Page.rotation_matrix. There also is its inverse,
 Page.derotation_matrix, which you can use when interfacing with other readers,
 which may behave differently in this respect.
 
 MEDIABOX: A PDF array of 4 floats specifying a physical page size.
-  This rectangle should contain all other PDF – optional – page rectangles,
+This rectangle should contain all other PDF – optional – page rectangles,
 which may be specified in addition: CropBox, TrimBox, ArtBox and BleedBox.
 Please consult Adobe PDF References for details.
-  The MediaBox is the only rectangle, for which there is no difference between
+
+The MediaBox is the only rectangle, for which there is no difference between
 MuPDF and PDF coordinate systems: Page.mediabox will always show the same
 coordinates as the /MediaBox key in a page’s object definition. For all
 other rectangles, MuPDF transforms coordinates such that the top-left corner
@@ -49,7 +53,7 @@ encounter a situation like this one:
     have been transformed (45 subtracted from both of them).
 """
 from pathlib import Path
-from typing import List
+from typing import List, Union, Optional, Any, Sequence
 
 import gi
 gi.require_version('Graphene', '1.0')
@@ -59,7 +63,10 @@ from gi.repository import Gdk, GLib, GObject, Graphene
 
 import fitz
 
-#TODO: Duplex Class
+from acide.graphic import Graphic
+from acide.measure import Unit, Measurable
+from acide.types import BufferProtocol
+
 
 class Document():
     """Acide Document.
@@ -111,7 +118,7 @@ class Document():
         pass
 
 
-class Page(GObject.GObject):
+class Page(Graphic):
     """Page Document.
     """
 
@@ -149,18 +156,10 @@ class Page(GObject.GObject):
     		"a Graphene Rect representing the Page.trimbox",
             GObject.ParamFlags.READABLE,
         ),
-        "texture": (
-			object,
-    		"texture",
-    		"a Gdk.Texture for Gsk Rendering",
-            GObject.ParamFlags.READABLE,
-        ),
     }
 
-    def do_get_property(self, prop):
-        if prop.name == 'texture':
-            return self._get_texture()
-        elif prop.name == 'cropbox':
+    def do_get_property(self, prop: str) -> any:
+        if prop.name == 'cropbox':
             return self.cropbox
         elif prop.name == 'artbox':
             return self.artbox
@@ -170,34 +169,47 @@ class Page(GObject.GObject):
             raise AttributeError(f'unknown property {prop.name}')
 
     def __init__(self, page: fitz.Page) -> 'Page':
-        super().__init__(self)
+        if not isinstance(page, fitz.Page):
+            raise TypeError(
+                f"page should be a fitz.Page not {page.__class__.__name__}"
+            )
+        super().__init__(
+            rect=(page.rect.x0, page.rect.y0, page.rect.width, page.rect.height),
+            mem_format=Gdk.MemoryFormat.R8G8B8,
+            unit=Unit.PS_POINT,
+        )
+        self._page = page
         self._display_list: fitz.DisplayList = page.get_displaylist()
-        self.cropbox: Graphene.Rect = None
-        self._pixmap: fitz.Pixmap = None
-        self._gbytes: GLib.Bytes = None
-        self._texture: Gdk.Texture = None
+        self._clip: fitz.Rect = fitz.Rect(page.rect)
+        self._pm = None
 
-    def _get_texture(self) -> Gdk.Texture:
-        self._render_texture()
-        return self._texture
+    def on_added(self, viewport: Measurable) -> None:
+        super().on_added(viewport)
+        self.dpi = self.viewport.dpi
 
-    def _render_texture(self, clip: fitz.IRect = None) -> None:
-        self._pixmap = self._display_list.get_pixmap(
+    def on_updated(self) -> None:
+        self.dpi = self.viewport.dpi
+        super().on_updated()
+
+    def get_pixbuf(self, rect: Graphene.Rect) -> BufferProtocol:
+        # FIXME: return type
+        _tl = rect.get_top_left()
+        _br = rect.get_bottom_right()
+        self._clip.x0 = _tl.x
+        self._clip.y0 = _tl.y
+        self._clip.x1 = _br.x
+        self._clip.y1 = _br.y
+
+        # FIXME: display_list.get_pixmap() dont take dpi as arg
+        # FIXME: should release self._pm
+        self._pm = self._page.get_pixmap(
             matrix=None,
-            dpi=96,
+            dpi=self.virtual_dpi,
             colorspace="rgb",
             alpha=False,
-            clip=clip,
+            clip=self._clip,
             annots=False,
         )
-        self._gbytes = GLib.Bytes.new(
-            self._pixmap.samples_mv
-        )
-        self._texture = Gdk.MemoryTexture.new(
-            self._pixmap.width,
-            self._pixmap.height,
-            Gdk.MemoryFormat.R8G8B8,
-            self.gbytes,
-            3 * self._pixmap.width,
-        )
+        return (self._pm.samples_mv, (self._pm.width, self._pm.height))
+
 

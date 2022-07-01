@@ -160,13 +160,19 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../story/intro.html">Acide - Accurate Pdf Viewer</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="acide.html">acide package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="acide.ui.html">acide.ui package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="acide.ui.surface.html">acide.ui.surface module</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">acide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="acide.html">acide package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="acide.ui.html">acide.ui package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="acide.ui.surface.html">acide.ui.surface module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">acide.doc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="acide.graphic.html">acide.graphic module</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">acide.doc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="acide.graphic.html">acide.graphic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="acide.measure.html">acide.measure module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="acide.tiles.html">acide.tiles module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="acide.types.html">acide.types module</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -205,38 +211,26 @@
           <section id="module-acide.doc">
 <span id="acide-doc-module"></span><h1>acide.doc module<a class="headerlink" href="#module-acide.doc" title="Permalink to this heading">#</a></h1>
 <p>Acide doc module.</p>
-<dl class="simple">
-<dt>NOTES ON PYMUDF COORDINATES:</dt><dd><p>Methods require coordinates (points, rectangles) to put content</p>
-</dd>
-</dl>
-<p>in desired places. Please be aware that since MuPdf v1.17.0 these coordinates
+<p>NOTES ON PYMUDF COORDINATES:
+Methods require coordinates (points, rectangles) to put content
+in desired places. Please be aware that since MuPdf v1.17.0 these coordinates
 must always be provided relative to the unrotated page.</p>
-<blockquote>
-<div><p>The reverse is also true: except Page.rect, resp. Page.bound()</p>
-</div></blockquote>
-<p>(both reflect when the page is rotated), all coordinates returned by methods
+<p>The reverse is also true: except Page.rect, resp. Page.bound()
+(both reflect when the page is rotated), all coordinates returned by methods
 and attributes pertain to the unrotated page.</p>
-<blockquote>
-<div><p>So the returned value of e.g. Page.get_image_bbox() will not change if you</p>
-</div></blockquote>
-<p>do a Page.set_rotation(). The same is true for coordinates returned
+<p>So the returned value of e.g. Page.get_image_bbox() will not change if you
+do a Page.set_rotation(). The same is true for coordinates returned
 by Page.get_text(), annotation rectangles, and so on.</p>
-<blockquote>
-<div><p>If you want to find out, where an object is located in rotated coordinates,</p>
-</div></blockquote>
-<p>multiply the coordinates with Page.rotation_matrix. There also is its inverse,
+<p>If you want to find out, where an object is located in rotated coordinates,
+multiply the coordinates with Page.rotation_matrix. There also is its inverse,
 Page.derotation_matrix, which you can use when interfacing with other readers,
 which may behave differently in this respect.</p>
-<dl class="simple">
-<dt>MEDIABOX: A PDF array of 4 floats specifying a physical page size.</dt><dd><p>This rectangle should contain all other PDF – optional – page rectangles,</p>
-</dd>
-</dl>
-<p>which may be specified in addition: CropBox, TrimBox, ArtBox and BleedBox.
+<p>MEDIABOX: A PDF array of 4 floats specifying a physical page size.
+This rectangle should contain all other PDF – optional – page rectangles,
+which may be specified in addition: CropBox, TrimBox, ArtBox and BleedBox.
 Please consult Adobe PDF References for details.</p>
-<blockquote>
-<div><p>The MediaBox is the only rectangle, for which there is no difference between</p>
-</div></blockquote>
-<p>MuPDF and PDF coordinate systems: Page.mediabox will always show the same
+<p>The MediaBox is the only rectangle, for which there is no difference between
+MuPDF and PDF coordinate systems: Page.mediabox will always show the same
 coordinates as the /MediaBox key in a page’s object definition. For all
 other rectangles, MuPDF transforms coordinates such that the top-left corner
 is the point of reference. This can sometimes be confusing – you may for example
@@ -252,7 +246,7 @@ have been transformed (45 subtracted from both of them).</p></li>
 </div></blockquote>
 <dl class="py class">
 <dt class="sig sig-object py" id="acide.doc.Document">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.doc.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.doc.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Acide Document.</p>
 <p>NOTE ON PYMUPDF USAGE:
@@ -292,6 +286,14 @@ a RuntimeError informing about this “orphaned” state.</p>
 If you e.g. created a table of contents by toc = doc.get_toc(), and later
 close or change the document, then this cannot and does not change variable
 toc in any way. It is your responsibility to refresh such variables as required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>Path</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#acide.doc.Document" title="acide.doc.Document">Document</a></p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="acide.doc.Document.test">
 <span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.test" title="Permalink to this definition">#</a></dt>
@@ -301,13 +303,83 @@ toc in any way. It is your responsibility to refresh such variables as required.
 
 <dl class="py class">
 <dt class="sig sig-object py" id="acide.doc.Page">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.doc.</span></span><span class="sig-name descname"><span class="pre">Page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Object</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.doc.</span></span><span class="sig-name descname"><span class="pre">Page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="acide.graphic.html#acide.graphic.Graphic" title="acide.graphic.Graphic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code></a></p>
 <p>Page Document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>page</strong> (<em>Page</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#acide.doc.Page" title="acide.doc.Page">Page</a></p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="acide.doc.Page.do_get_property">
 <span class="sig-name descname"><span class="pre">do_get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.do_get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.do_get_property" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>prop</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Page.on_added">
+<span class="sig-name descname"><span class="pre">on_added</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">viewport</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.on_added"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.on_added" title="Permalink to this definition">#</a></dt>
+<dd><p>Callback method for widget supporting this interface.</p>
+<p>This method is called when this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code> is added to a widget.
+If you need to override this method don’t forget a call to
+super().on_added().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>viewport</strong> (<a class="reference internal" href="acide.measure.html#acide.measure.Measurable" title="acide.measure.Measurable"><em>Measurable</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Page.on_updated">
+<span class="sig-name descname"><span class="pre">on_updated</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.on_updated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.on_updated" title="Permalink to this definition">#</a></dt>
+<dd><p>Callback method for widget supporting this interface.</p>
+<p>This method is called when some of the viewport Widget’s properties
+has changed. If you need to override this method don’t forget a call to
+super().on_updated().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Page.get_pixbuf">
+<span class="sig-name descname"><span class="pre">get_pixbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.get_pixbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.get_pixbuf" title="Permalink to this definition">#</a></dt>
+<dd><p>Get pixbuf at clip rect.</p>
+<p>Implementation should return a pixmap buffer clipped to the region
+described by the parameter <em>rect</em> (defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">Measurable.unit</span></code>
+measure of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>).
+The returned object should implements the buffer protocol and should
+hold a c-contigous buffer with only one dimension for all its data.
+The pixel data should conform to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Graphic.format</span></code> property.
+When rendering the pixmap, subclass could consider using the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">scale</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">virtual_dpi</span></code> properties to achieve expected
+result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rect</strong> (<em>Rect</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

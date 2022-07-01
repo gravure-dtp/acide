@@ -16,8 +16,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from typing import Any, Union, Optional, NoReturn, Sequence, Tuple
+from decimal import Decimal
+
+import gi
+gi.require_version('Graphene', '1.0')
+from gi.repository import Graphene
 
 import cython
+
+# Type hints Alias
+BufferProtocol = Any
+Number = Union[int, float, Decimal]
+Rectangle = Union[Graphene.Rect, Sequence[Number]]
 
 
 cdef bint test_sequence(object seq, tuple _types):
@@ -36,7 +46,7 @@ cdef bint test_sequence(object seq, tuple _types):
 cdef class TypedGrid():
     """A two dimensional typed array of :class:`object`.
 
-    Attributes:
+    Args:
         pytype: The python Type (or class) holded by this :class:`TypedGrid`.
 
         shape: A two lenght sequence of int describing the grid dimension,
@@ -99,7 +109,7 @@ cdef class TypedGrid():
         slicing another :class:`TypedGrid`, read only."""
         return self._ref
 
-    def __cinit__(self, pytype, shape=None):
+    def __cinit__(self, pytype=object, shape=None, *args, **kwargs):
         cdef int x, y
 
         self.pytype = pytype if isinstance(pytype, type) else type(pytype)
@@ -114,19 +124,23 @@ cdef class TypedGrid():
                     "shape should be None are a 2 length sequence of int"
                 )
 
-        self.rows = []
+        self.items = []
         if shape[0] and shape[1]:
             self.indices = Carray(shape, 2, b'H', 'c', True)
             for y in range(shape[1]):
                 for x in range(shape[0]):
-                    self.rows.append(None)
+                    self.items.append(None)
                     self.indices[x, y] = (y * shape[0]) + x
             self.view = self.indices[:,:]
         else:
             self.indices = None
             self.view = None
 
-    def __init__(self, pytype: Any, *args, shape: Sequence =None, **kwargs):
+    def __init__(
+        self,
+        pytype: Optional[Any],
+        shape: Optional[Sequence[int]],
+    ):
         pass
 
     def __len__(self):
@@ -149,7 +163,7 @@ cdef class TypedGrid():
             f"\ntype: {self.pytype.__name__}"
             f"\nshape{shape}"
             f"\nlen: {self.__len__()}"
-            f"\nbase: {self.__class__.__name__}@({id(self._ref)})"
+            f"\nbase: {self._ref.__class__.__name__}@({id(self._ref)})"
         )
 
     def __getitem__(self, index):
@@ -188,7 +202,7 @@ cdef class TypedGrid():
     cdef object getitem_at(self, x, y):
         cdef int index = self.getindex_at(x, y)
         if index > -1:
-            return self._ref.rows[index]
+            return self._ref.items[index]
         else:
             raise IndexError(f"Grid index ({x}, {y}) out of range")
 
@@ -204,11 +218,15 @@ cdef class TypedGrid():
         cdef TypedGrid _tg
         _tg = TypedGrid.__new__(TypedGrid, self.pytype)
         _tg._ref = self._ref
-
         slx = slx if slx else slice(None, None, None)
         sly = sly if sly else slice(None, None, None)
         _tg.view = self.view[slx, sly]
         return _tg
+
+    cdef slice_inplace(self, object slx, object sly):
+        slx = slx if slx else slice(None, None, None)
+        sly = sly if sly else slice(None, None, None)
+        self.view = self.view[slx, sly]
 
     def __setitem__(self, index, item):
         cdef int indice
@@ -219,7 +237,7 @@ cdef class TypedGrid():
             if isinstance(item, self._ref.pytype) or item is None:
                 indice = self.getindex_at(index[0], index[1])
                 if indice > -1:
-                    self._ref.rows[indice] = item
+                    self._ref.items[indice] = item
                 else:
                     raise IndexError(
                         f"Grid index ({index[0]}, {index[1]}) out of range"
@@ -240,7 +258,7 @@ cdef class TypedGrid():
         if test_sequence(index, (int, int)):
             indice = self.getindex_at(index[0], index[1])
             if indice > -1:
-                self._ref.rows[indice] = None
+                self._ref.items[indice] = None
             else:
                 raise IndexError(
                     f"Grid index ({index[0]}, {index[1]}) out of range"
@@ -279,7 +297,7 @@ cdef class __TypedGridIterator():
         if self.index == self._len:
             self.index = 0
             raise StopIteration
-        item = self.grid._ref.rows[
+        item = self.grid._ref.items[
             self.grid.view[
                 self.index % self.grid.view.shape[0],
                 self.index // self.grid.view.shape[0]

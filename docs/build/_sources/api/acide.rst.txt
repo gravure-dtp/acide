@@ -22,4 +22,6 @@ Submodules
 
    acide.doc
    acide.graphic
+   acide.measure
+   acide.tiles
    acide.types

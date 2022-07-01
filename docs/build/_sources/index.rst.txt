@@ -11,7 +11,7 @@ Welcome to Acide's documentation!
    :caption: Contents:
 
    story/intro
-   api/acide
+   api/modules
 
 
 Indices and tables

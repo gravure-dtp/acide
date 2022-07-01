@@ -159,14 +159,19 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../story/intro.html">Acide - Accurate Pdf Viewer</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/acide.html">acide package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/acide.ui.html">acide.ui package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.ui.surface.html">acide.ui.surface module</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">acide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/acide.html">acide package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/acide.ui.html">acide.ui package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/acide.ui.surface.html">acide.ui.surface module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.doc.html">acide.doc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.graphic.html">acide.graphic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/acide.types.html">acide.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.doc.html">acide.doc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.graphic.html">acide.graphic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.measure.html">acide.measure module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.tiles.html">acide.tiles module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.types.html">acide.types module</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -244,7 +249,6 @@
 <span class="sd">typically by a factor of 2. In most places we&#39;re dealing with logical units methods,</span>
 <span class="sd">but take care that some methods like Texture.get_width() returns physical units.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">unique</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">gi</span>
@@ -256,20 +260,16 @@
 <span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Graphene</span><span class="p">,</span> <span class="n">Gsk</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span>
 <span class="kn">import</span> <span class="nn">cairo</span>
 
-<span class="kn">from</span> <span class="nn">acide.graphic</span> <span class="kn">import</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">UNIT</span><span class="p">,</span> <span class="n">_MeasurableMeta</span>
+<span class="kn">from</span> <span class="nn">acide.measure</span> <span class="kn">import</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">GObjectMeasurableMeta</span><span class="p">,</span> <span class="n">Unit</span>
+<span class="kn">from</span> <span class="nn">acide.graphic</span> <span class="kn">import</span> <span class="n">Graphic</span>
 
 
-<span class="k">class</span> <span class="nc">_GtkMeasurableMeta</span><span class="p">(</span><span class="n">gi</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">GObjectMeta</span><span class="p">,</span> <span class="n">_MeasurableMeta</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="GraphicSurface"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface">[docs]</a><span class="k">class</span> <span class="nc">GraphicSurface</span><span class="p">(</span>
-    <span class="n">Gtk</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Scrollable</span><span class="p">,</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_GtkMeasurableMeta</span>
+<div class="viewcode-block" id="GraphicViewport"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport">[docs]</a><span class="k">class</span> <span class="nc">GraphicViewport</span><span class="p">(</span>
+    <span class="n">Gtk</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Scrollable</span><span class="p">,</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">GObjectMeasurableMeta</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A scrollable widget that render a Graphic Object.&quot;&quot;&quot;</span>
 
-    <span class="n">__gtype_name__</span> <span class="o">=</span> <span class="s2">&quot;GraphicSurface&quot;</span>
+    <span class="n">__gtype_name__</span> <span class="o">=</span> <span class="s2">&quot;GraphicViewport&quot;</span>
     <span class="n">_hscroll_policy</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ScrollablePolicy</span><span class="o">.</span><span class="n">NATURAL</span>
     <span class="n">_vscroll_policy</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ScrollablePolicy</span><span class="o">.</span><span class="n">NATURAL</span>
     <span class="n">__gproperties__</span> <span class="o">=</span> <span class="p">{</span>
@@ -298,23 +298,16 @@
             <span class="kc">True</span><span class="p">,</span>
             <span class="n">GObject</span><span class="o">.</span><span class="n">ParamFlags</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;unit-measure&quot;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;rulers-unit&quot;</span><span class="p">:</span> <span class="p">(</span>
             <span class="nb">object</span><span class="p">,</span>
-            <span class="s2">&quot;unit of measurement&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;surface.UNIT enumeration&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;unit of measure for rulers&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;surface.Unit enumeration&quot;</span><span class="p">,</span>
             <span class="n">GObject</span><span class="o">.</span><span class="n">ParamFlags</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;show-cropbox&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="nb">bool</span><span class="p">,</span>
-            <span class="s2">&quot;whetever to show cropbox&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;a boolean value&quot;</span><span class="p">,</span>
-            <span class="kc">False</span><span class="p">,</span>
-            <span class="n">GObject</span><span class="o">.</span><span class="n">ParamFlags</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;graphic&quot;</span><span class="p">:</span> <span class="p">(</span>
 			<span class="nb">object</span><span class="p">,</span>
-    		<span class="s2">&quot;data to show&quot;</span><span class="p">,</span>
-    		<span class="s2">&quot;a python object implementing buffer protocol&quot;</span><span class="p">,</span>
+    		<span class="s2">&quot;the Graphic to show&quot;</span><span class="p">,</span>
+    		<span class="s2">&quot;a python object implementing acide.graphic.Graphic interface&quot;</span><span class="p">,</span>
             <span class="n">GObject</span><span class="o">.</span><span class="n">ParamFlags</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="s2">&quot;hadjustment&quot;</span><span class="p">:</span> <span class="p">(</span>
@@ -347,19 +340,17 @@
         <span class="p">)</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="GraphicSurface.do_get_property"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_get_property">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
+<div class="viewcode-block" id="GraphicViewport.do_get_property"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_get_property">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;zoom-level&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom_level</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;workspace-margins&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;show-rulers&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_rulers</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;unit-measure&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_measure</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;show-cropbox&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_cropbox</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rulers-unit&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_unit</span>
+        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;graphic&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;hscroll-policy&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hscroll_policy</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;vscroll-policy&quot;</span><span class="p">:</span>
@@ -371,7 +362,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown property </span><span class="si">{</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.do_set_property"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_set_property">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="GraphicViewport.do_set_property"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_set_property">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;zoom-level&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zoom_level</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
@@ -381,23 +372,36 @@
                     <span class="sa">f</span><span class="s2">&quot;workspace-margins should be a Gtk.Border not </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">__class</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;show-rulers&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rulers</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;unit-measure&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">UNIT</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rulers-unit&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Unit</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;unit-measure should be a UNIT enum member not </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">__class</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;rulers-unit should be a Unit enum member not </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">__class</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unit_measure</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rulers_unit</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;show-cropbox&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">show_cropbox</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;graphic&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Graphic</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_removed</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_added</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_metrics</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_removed</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;graphic should implement the acide.graphic.Graphic interface&quot;</span>
+                <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;hscroll-policy&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_hscroll_policy</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;vscroll-policy&quot;</span><span class="p">:</span>
@@ -414,14 +418,13 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown property </span><span class="si">{</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;unit_scale&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;monitor_dpi&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;monitor_res&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pixel_scale&quot;</span><span class="p">,</span>
         <span class="s2">&quot;workspace_size&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;graphic_clip&quot;</span><span class="p">,</span>
         <span class="s2">&quot;rulers_size&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ps2ppx_transform&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ps2lpx_transform&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ps2mm_transform&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;viewport2lpx_transform&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lpx2viewport_transform&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lpx2graphic_transform&quot;</span><span class="p">,</span>
         <span class="s2">&quot;device_matrix&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -429,33 +432,39 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">Measurable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># Mandatory</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">72.0</span>  <span class="c1"># in physical pixel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span><span class="p">()</span>  <span class="c1"># in physical pixel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span><span class="p">()</span>  <span class="c1"># in PostScript point</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="mf">612.0</span><span class="p">,</span> <span class="mf">792.0</span><span class="p">)</span>  <span class="c1"># US Letter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Size</span><span class="p">()</span>  <span class="c1"># in logical pixel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span><span class="p">()</span>  <span class="c1"># in logical pixel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="mi">20</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps2ppx_transform</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps2mm_transform</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">25.4</span> <span class="o">/</span> <span class="mf">72.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="p">:</span> <span class="n">cairo</span><span class="o">.</span><span class="n">Matrix</span> <span class="o">=</span> <span class="n">cairo</span><span class="o">.</span><span class="n">Matrix</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;realize&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_monitor_infos</span><span class="p">)</span><span class="c1"># in physical pixel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span><span class="p">()</span>
 
-        <span class="c1"># GObject Properties default values</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span><span class="p">()</span>  <span class="c1"># in PostScript point</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="mf">100.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="mf">100.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="mf">100.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="mf">100.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">show_rulers</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_measure</span> <span class="o">=</span> <span class="n">UNIT</span><span class="o">.</span><span class="n">MILLIMETER</span>
-
-        <span class="c1"># Inherited properties</span>
+        <span class="c1"># Inherited Gtk.Widget properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_vexpand</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_hexpand</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GraphicSurface.update_monitor_infos"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.update_monitor_infos">[docs]</a>    <span class="k">def</span> <span class="nf">update_monitor_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">GObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Inherited Measurable properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">MILLIMETER</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="mf">72.0</span>  <span class="c1"># in physical pixel</span>
+
+        <span class="c1"># GObject Properties default values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span><span class="p">()</span>  <span class="c1"># in logical pixel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="mf">150.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="mf">150.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="mf">150.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="mf">150.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rulers_unit</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">MILLIMETER</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_rulers</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_metrics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
+
+        <span class="c1"># Signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;realize&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_monitor_infos</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GraphicViewport.update_monitor_infos"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.update_monitor_infos">[docs]</a>    <span class="k">def</span> <span class="nf">update_monitor_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update infos for monitor displaying self.</span>
 
 <span class="sd">        This function can only be called after the widget has been added</span>
@@ -466,31 +475,80 @@
         <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_display</span><span class="p">()</span>
         <span class="n">surface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_native</span><span class="p">()</span><span class="o">.</span><span class="n">get_surface</span><span class="p">()</span>
         <span class="n">monitor</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">get_monitor_at_surface</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span> <span class="o">=</span> <span class="n">monitor</span><span class="o">.</span><span class="n">get_scale_factor</span><span class="p">()</span>
         <span class="n">geometry</span> <span class="o">=</span> <span class="n">monitor</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">get_width_mm</span><span class="p">()</span> <span class="o">/</span> <span class="mf">25.4</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span> <span class="o">=</span> <span class="n">monitor</span><span class="o">.</span><span class="n">get_scale_factor</span><span class="p">()</span>
+        <span class="c1"># Measurable properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span> <span class="o">/</span> \
+                   <span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">get_width_mm</span><span class="p">()</span> <span class="o">/</span> <span class="mf">25.4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">get_width_mm</span><span class="p">(),</span> <span class="n">monitor</span><span class="o">.</span><span class="n">get_height_mm</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">Unit</span><span class="o">.</span><span class="n">MILLIMETER</span>
         <span class="c1"># Transformation Matrix</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps2ppx_transform</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">72.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2ppx_transform</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="o">.</span><span class="n">xx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="o">.</span><span class="n">yy</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_metrics</span><span class="p">()</span>
         <span class="c1"># signals</span>
         <span class="n">monitor</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;notify::scale-factor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_monitor_infos</span><span class="p">)</span>
+        <span class="c1"># Proprties that should consequently be updates</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_updated</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicViewport.update_metrics"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.update_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">update_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update internal matrix.</span>
+
+<span class="sd">        Update all internel matrix and transformation coefficients used</span>
+<span class="sd">        for rendering. This is usually called when properties like :attr:`dpi` or</span>
+<span class="sd">        :attr:`size` for this viewport changed or when a :class:`Graphic` is added.</span>
+<span class="sd">        It is safe to called update_metrics() at any time when needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport2lpx_transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transform</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PIXEL</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lpx2viewport_transform</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport2lpx_transform</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">get_transform</span><span class="p">(</span><span class="n">Unit</span><span class="o">.</span><span class="n">PIXEL</span><span class="p">)</span> \
+                <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span> \
+                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="o">.</span><span class="n">xx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="o">.</span><span class="n">yy</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span></div>
+
+<div class="viewcode-block" id="GraphicViewport.update_workspace_size"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.update_workspace_size">[docs]</a>    <span class="k">def</span> <span class="nf">update_workspace_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update workspace size.</span>
+
+<span class="sd">        Compute workspace_size attrbute accordingly to displayed :class:`Graphic`</span>
+<span class="sd">        and workspace margins settings measured in logical pixel unit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+            <span class="n">w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
+            <span class="n">h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span>
+        <span class="p">)</span> <span class="c1"># in logical pixel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span><span class="p">,</span>
+            <span class="n">w</span><span class="p">,</span>
+            <span class="n">h</span><span class="p">,</span>
+        <span class="p">)</span> <span class="c1"># in logical pixel</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;screen: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_res</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Scale factor: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;dpi: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;workspace margins: top=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;bottom=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;left=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;right=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;screen: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">abbr</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">abbr</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Scale factor: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;dpi: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;workspace margins: top=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="s2">px, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;bottom=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span><span class="si">}</span><span class="s2">px, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;left=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s2">px, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;right=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="s2">px&quot;</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="GraphicSurface.get_rgba"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.get_rgba">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="GraphicViewport.get_rgba"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.get_rgba">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_rgba</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">Gdk</span><span class="o">.</span><span class="n">RGBA</span><span class="p">()</span>
         <span class="n">color</span><span class="o">.</span><span class="n">red</span> <span class="o">=</span> <span class="n">r</span>
@@ -499,13 +557,13 @@
         <span class="n">color</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">a</span>
         <span class="k">return</span> <span class="n">color</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.get_rect"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.get_rect">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="GraphicViewport.get_rect"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.get_rect">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
         <span class="n">rect</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span><span class="p">()</span>
         <span class="n">rect</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rect</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.draw_text"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.draw_text">[docs]</a>    <span class="k">def</span> <span class="nf">draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<div class="viewcode-block" id="GraphicViewport.draw_text"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.draw_text">[docs]</a>    <span class="k">def</span> <span class="nf">draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
         <span class="n">font</span> <span class="o">=</span> <span class="n">Pango</span><span class="o">.</span><span class="n">FontDescription</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
         <span class="n">font</span><span class="o">.</span><span class="n">set_family</span><span class="p">(</span><span class="s2">&quot;Sans&quot;</span><span class="p">)</span>
         <span class="n">font</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="n">Pango</span><span class="o">.</span><span class="n">SCALE</span><span class="p">)</span>
@@ -521,7 +579,7 @@
         <span class="n">snap</span><span class="o">.</span><span class="n">append_layout</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
         <span class="n">snap</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.draw_grid"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.draw_grid">[docs]</a>    <span class="k">def</span> <span class="nf">draw_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">,</span> <span class="n">clip</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="GraphicViewport.draw_grid"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.draw_grid">[docs]</a>    <span class="k">def</span> <span class="nf">draw_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">,</span> <span class="n">clip</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">append_cairo</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_matrix</span><span class="p">(</span><span class="n">cairo</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_source_rgb</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
@@ -536,7 +594,7 @@
             <span class="n">ctx</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">stroke</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.draw_rulers"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.draw_rulers">[docs]</a>    <span class="k">def</span> <span class="nf">draw_rulers</span><span class="p">(</span>
+<div class="viewcode-block" id="GraphicViewport.draw_rulers"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.draw_rulers">[docs]</a>    <span class="k">def</span> <span class="nf">draw_rulers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Snapshot</span><span class="p">,</span> <span class="n">clip</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span><span class="p">,</span> <span class="n">xo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yo</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1">#TODO: marker on ruler for current mouse pointer position</span>
@@ -554,26 +612,29 @@
         <span class="c1"># draw with physical pixel coordinate</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">append_cairo</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="n">rw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
-        <span class="n">rh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+        <span class="n">rw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+        <span class="n">rh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+        <span class="c1"># xo *= self.pixel_scale</span>
+        <span class="c1"># yo *= self.pixel_scale</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="n">cairo</span><span class="o">.</span><span class="n">ANTIALIAS_NONE</span><span class="p">)</span>
 
         <span class="c1"># rulers ticks</span>
         <span class="c1">#TODO: render measurement unit following unit-measure property</span>
-        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_dpi</span> <span class="o">/</span> <span class="mf">25.4</span>  <span class="c1"># mm ticks gap in physical px</span>
+        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="mf">25.4</span>  <span class="c1"># mm ticks gap in physical px</span>
         <span class="n">tick_len</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># ticks lenght in physical px</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_source_rgb</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># ticks font</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">select_font_face</span><span class="p">(</span><span class="s2">&quot;sans&quot;</span><span class="p">)</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="mf">10.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="mf">10.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span>
 
         <span class="c1"># Horinzontal ruler</span>
         <span class="c1">#FIXME: imprecision in drawing (space transform)</span>
         <span class="n">xt</span> <span class="o">=</span> <span class="n">xo</span> <span class="o">-</span> <span class="n">xo</span><span class="o">.</span><span class="n">__floor__</span><span class="p">()</span> <span class="o">+</span> <span class="n">rw</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">xo</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2mm_transform</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">xo</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport2lpx_transform</span><span class="p">)</span>
+        <span class="c1"># index = int(-xo / self.viewport2lpx_transform * self.ps2mm_transform)</span>
         <span class="k">while</span> <span class="n">xt</span> <span class="o">&lt;</span> <span class="n">w</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="n">lw</span> <span class="o">=</span> <span class="mf">2.0</span>
@@ -590,7 +651,8 @@
         <span class="c1"># vertcal ruler</span>
         <span class="c1">#FIXME: vertical text position (use of pango to draw text)</span>
         <span class="n">yt</span> <span class="o">=</span> <span class="n">yo</span> <span class="o">-</span> <span class="n">yo</span><span class="o">.</span><span class="n">__floor__</span><span class="p">()</span> <span class="o">+</span> <span class="n">rh</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">yo</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span>  <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2mm_transform</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">yo</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport2lpx_transform</span><span class="p">)</span>
+        <span class="c1"># index = int(-yo / self.viewport2lpx_transform  * self.ps2mm_transform)</span>
         <span class="k">while</span> <span class="n">yt</span> <span class="o">&lt;</span> <span class="n">h</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="n">lw</span> <span class="o">=</span> <span class="mf">2.0</span>
@@ -609,35 +671,43 @@
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">stroke</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.do_snapshot"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">do_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GraphicViewport.do_snapshot"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">do_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_width</span><span class="p">()</span>
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_height</span><span class="p">()</span>
         <span class="n">xo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
         <span class="n">yo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+        <span class="n">vxo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span> <span class="o">-</span> <span class="n">xo</span>
+        <span class="n">vyo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span> <span class="o">-</span> <span class="n">yo</span>
 
-        <span class="n">bg_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.4</span><span class="p">,</span> <span class="mf">.4</span><span class="p">)</span>
+        <span class="n">bg_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.4</span><span class="p">,</span> <span class="mf">.2</span><span class="p">)</span>
         <span class="n">fg_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mf">.2</span><span class="p">,</span> <span class="mf">.2</span><span class="p">,</span> <span class="mf">.2</span><span class="p">)</span>
         <span class="n">gr_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">fgbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-        <span class="n">graphic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span><span class="p">)</span> <span class="o">-</span> <span class="n">xo</span><span class="p">,</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span><span class="p">)</span> <span class="o">-</span> <span class="n">yo</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span><span class="p">,</span>
-        <span class="p">)</span>
         <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">bg_color</span><span class="p">,</span> <span class="n">fgbox</span><span class="p">)</span>
-        <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">gr_color</span><span class="p">,</span> <span class="n">graphic</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">show_rulers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">draw_rulers</span><span class="p">(</span>
-                <span class="n">snap</span><span class="p">,</span>
-                <span class="n">fgbox</span><span class="p">,</span>
-                <span class="n">graphic</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
-                <span class="n">graphic</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span><span class="p">,</span>
-            <span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#clip = self.graphic_clip.offset_r(-xo, -yo)</span>
+            <span class="n">render</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">get_render</span><span class="p">(</span>
+                <span class="o">-</span> <span class="n">vxo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
+                <span class="o">-</span> <span class="n">vyo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">render</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">x</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span> <span class="o">-</span> <span class="n">xo</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">y</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span> <span class="o">-</span> <span class="n">yo</span><span class="p">,</span>
+                    <span class="n">render</span><span class="o">.</span><span class="n">w</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span>
+                    <span class="n">render</span><span class="o">.</span><span class="n">h</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">render</span><span class="o">.</span><span class="n">texture</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">snap</span><span class="o">.</span><span class="n">append_texture</span><span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">texture</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">gr_color</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GraphicSurface.do_get_request_mode"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_get_request_mode">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_request_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">SizeRequestMode</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">show_rulers</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">draw_rulers</span><span class="p">(</span><span class="n">snap</span><span class="p">,</span> <span class="n">fgbox</span><span class="p">,</span> <span class="n">vxo</span><span class="p">,</span> <span class="n">vyo</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicViewport.do_get_request_mode"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_get_request_mode">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_request_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">SizeRequestMode</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets whether the widget prefers a height-for-width layout</span>
 <span class="sd">        or a width-for-height layout.</span>
 
@@ -647,14 +717,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">SizeRequestMode</span><span class="o">.</span><span class="n">CONSTANT_SIZE</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.do_get_border"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_get_border">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_border</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span><span class="p">]:</span>
+<div class="viewcode-block" id="GraphicViewport.do_get_border"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_get_border">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_border</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Border</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns the size of a non-scrolling border around</span>
 <span class="sd">        the outside of the scrollable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">show_rulers</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.do_size_allocate"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_size_allocate">[docs]</a>    <span class="k">def</span> <span class="nf">do_size_allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">baseline</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GraphicViewport.do_size_allocate"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_size_allocate">[docs]</a>    <span class="k">def</span> <span class="nf">do_size_allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">baseline</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;This function is used to assign a size, position and (optionally)</span>
 <span class="sd">        baseline to child widgets.</span>
 
@@ -664,21 +734,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_adjustement</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GraphicSurface.get_workspace_width"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.get_workspace_width">[docs]</a>    <span class="k">def</span> <span class="nf">get_workspace_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return workspace width measured in logical pixel unit.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">right</span> <span class="o">+</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">left</span>
-        <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span></div>
-
-<div class="viewcode-block" id="GraphicSurface.get_workspace_height"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.get_workspace_height">[docs]</a>    <span class="k">def</span> <span class="nf">get_workspace_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return workspace height measured in logical pixel unit.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">top</span> <span class="o">+</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">workspace_margins</span><span class="o">.</span><span class="n">bottom</span>
-        <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps2lpx_transform</span></div>
-
-<div class="viewcode-block" id="GraphicSurface.do_measure"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicSurface.do_measure">[docs]</a>    <span class="k">def</span> <span class="nf">do_measure</span><span class="p">(</span>
+<div class="viewcode-block" id="GraphicViewport.do_measure"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_measure">[docs]</a>    <span class="k">def</span> <span class="nf">do_measure</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="p">,</span> <span class="n">for_size</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Measures widget for the orientation and for the given for_size.</span>
@@ -690,10 +746,10 @@
 <span class="sd">        (int minimum, int natural, int minimum_baseline, int natural_baseline).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
-            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workspace_width</span><span class="p">()</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">width</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_workspace_height</span><span class="p">()</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">height</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_update_adjustement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -708,7 +764,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">(),</span>  <span class="c1"># value</span>
             <span class="mi">0</span><span class="p">,</span>  <span class="c1"># lower</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_workspace_width</span><span class="p">(),</span>  <span class="c1"># upper</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>  <span class="c1"># upper</span>
             <span class="mi">1</span><span class="p">,</span>  <span class="c1"># step increment</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_width</span><span class="p">()</span> <span class="o">//</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># page increment</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_width</span><span class="p">(),</span>  <span class="c1"># page size</span>
@@ -719,7 +775,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">(),</span>  <span class="c1"># value</span>
             <span class="mi">0</span><span class="p">,</span>  <span class="c1"># lower</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_workspace_height</span><span class="p">(),</span>  <span class="c1"># upper</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_size</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>  <span class="c1"># upper</span>
             <span class="mi">1</span><span class="p">,</span>  <span class="c1"># step increment</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_height</span><span class="p">()</span> <span class="o">//</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># page increment</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_height</span><span class="p">(),</span>  <span class="c1"># page size</span>

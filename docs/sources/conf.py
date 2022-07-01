@@ -38,7 +38,6 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinxcontrib.apidoc',
     'sphinx.ext.intersphinx',
-    #'sphinxcontrib.prettyspecialmethods',
     'myst_parser',
 ]
 
@@ -74,7 +73,7 @@ apidoc_module_first = True
 
 # Extra arguments which will be passed to sphinx-apidoc.
 # These are placed after flags and before the module name.
-apidoc_extra_args = ['-f', '--implicit-namespaces']
+apidoc_extra_args = ['--implicit-namespaces']
 
 # Functions imported from C modules cannot be introspected, and therefore
 # the signature for such functions cannot be automatically determined.
@@ -87,19 +86,16 @@ apidoc_extra_args = ['-f', '--implicit-namespaces']
 autodoc_default_options = {
     'members': True,
     #'ignore-module-all': False,
-    #'member-order': 'groupwise',
-    'special-members': False,
+    'member-order': 'bysource',
+    #'special-members': '__fake__',
     'undoc-members': True,
-    'exclude-members': (
-        '__weakref__,__new__,__init__,__reduce__,__setstate__,__pyx_vtable__,'
-        '__module__,__dict__,__getitem__,__setitem__,__delitem__'
-    ),
+    'exclude-members': '__init__',
     'show-inheritance': True,
     'inherited-members': False
 }
 autodoc_docstring_signature = True
-#autodoc_typehints = 'description'
-#autodoc_class_signature = 'separated'
+autodoc_typehints = 'description'
+autodoc_class_signature = 'mixed'
 
 
 # Boolean indicating whether to scan all found documents

@@ -18,13 +18,29 @@
 from cython.view cimport array as Carray
 from cython.view cimport memoryview as Mview
 
+
+cdef inline double cmax(double a, double b):
+    if b > a: return b
+    else: return a
+
+
+cdef inline double cmin(double a, double b):
+    if b < a: return b
+    else: return a
+
+
+cdef inline int cround(double number):
+    if number >= 0: return <int> (number + 0.5)
+    else: return <int>(number - 0.5)
+
+
 cdef bint test_sequence(object seq, tuple _types)
 
 
 cdef class TypedGrid:
     # MEMBERS
     cdef object pytype
-    cdef list rows
+    cdef list items
     cdef TypedGrid _ref
     cdef Mview view
     cdef Carray indices
@@ -34,3 +50,4 @@ cdef class TypedGrid:
     cdef object getitem_at(TypedGrid self, x, y)
     cdef int getindex_at(self, int x, int y)
     cdef TypedGrid get_slice(TypedGrid self, object slice_x, object slice_y)
+    cdef slice_inplace(TypedGrid self, object slx, object sly)

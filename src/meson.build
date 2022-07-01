@@ -56,7 +56,8 @@ returned = run_command(
   '-X', 'warn.unused_result=True',
   '-X', 'warn.multiple_declarators=True',
   'acide/types.pyx',
-	'acide/graphic.pyx'
+  'acide/measure.pyx',
+  'acide/tiles.pyx'
 )
 message(returned.stdout())
 message(returned.stderr())
@@ -64,7 +65,10 @@ message(returned.stderr())
 install_subdir(
 	'acide',
 	exclude_directories: ['__pycache__', 'ui/__pycache__'],
-	exclude_files: ['graphic.pyx', 'graphic.c'],
+	exclude_files: ['measure.pyx', 'measure.c',
+									'tiles.pyx', 'tiles.c',
+									'types.pyx', 'types.c'
+								 ],
 	install_dir: moduledir,
 	strip_directory: true
 )

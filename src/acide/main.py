@@ -26,9 +26,10 @@ gi.require_version('Adw', '1')
 from gi.repository import Adw, Gio, GLib, Gtk, Gdk
 
 import fitz
-from acide.ui.surface import GraphicSurface
+from acide.ui.surface import GraphicViewport
 from acide.ui.window import AboutDialog, AcideWindow
 from acide import format_size
+from acide.doc import Page
 
 #TODO: * Look at GtkUIManager
 #      * Logging
@@ -42,14 +43,14 @@ class AcideApplication(Adw.Application):
     def __init__(self):
         super().__init__(application_id='io.github.gravures.acide',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self._surface = None
+        self.viewport = None
         self.document = None
-        self.texture = None
 
     def load_pdf(self):
         self.document = fitz.open("/home/gilles/PDF/FLIGHT_TEST5.pdf")
         self.page = self.document.load_page(0)
-        self.texture = self.get_page_texture(self.page)
+        self.graphic_page = Page(self.page)
+        self.viewport.props.graphic = self.graphic_page
         print(fitz.TOOLS.mupdf_warnings())
 
     def do_startup(self):
@@ -80,16 +81,16 @@ class AcideApplication(Adw.Application):
             win = AcideWindow(application=self)
 
         self._setup_theme(win)
-        # self.load_pdf()
-        self._setup_surface()
-        self.pdf_surface.queue_draw()
+        self._setup_viewport()
+        self.load_pdf()
+        self.viewport.queue_draw()
         win.set_default_size(1100, 700)
         win.present_with_time(Gdk.CURRENT_TIME)
 
-    def _setup_surface(self):
+    def _setup_viewport(self):
         win = self.props.active_window
-        self.pdf_surface = GraphicSurface()
-        win.scrolled_window.set_child(self.pdf_surface)
+        self.viewport = GraphicViewport()
+        win.scrolled_window.set_child(self.viewport)
 
     def _setup_theme(self, window):
         sc = window.get_style_context()

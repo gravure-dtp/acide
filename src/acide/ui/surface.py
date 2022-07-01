@@ -39,7 +39,6 @@ So on a HiDPI display the logical and physical measurements may differ in scale,
 typically by a factor of 2. In most places we're dealing with logical units methods,
 but take care that some methods like Texture.get_width() returns physical units.
 """
-from enum import IntEnum, unique, auto
 from typing import Any, Union, Optional, Tuple
 
 import gi
@@ -51,20 +50,16 @@ gi.require_version('Graphene', '1.0')
 from gi.repository import Gdk, GdkPixbuf, GObject, Graphene, Gsk, Gtk, Pango
 import cairo
 
-from acide.graphic import Measurable, UNIT, _MeasurableMeta
+from acide.measure import Measurable, GObjectMeasurableMeta, Unit
+from acide.graphic import Graphic
 
 
-class _GtkMeasurableMeta(gi.types.GObjectMeta, _MeasurableMeta):
-    def __new__(cls, name, bases, dict):
-        return super().__new__(cls, name, bases, dict)
-
-
-class GraphicSurface(
-    Gtk.Widget, Gtk.Scrollable, Measurable, metaclass=_GtkMeasurableMeta
+class GraphicViewport(
+    Gtk.Widget, Gtk.Scrollable, Measurable, metaclass=GObjectMeasurableMeta
 ):
     """A scrollable widget that render a Graphic Object."""
 
-    __gtype_name__ = "GraphicSurface"
+    __gtype_name__ = "GraphicViewport"
     _hscroll_policy = Gtk.ScrollablePolicy.NATURAL
     _vscroll_policy = Gtk.ScrollablePolicy.NATURAL
     __gproperties__ = {
@@ -93,23 +88,16 @@ class GraphicSurface(
             True,
             GObject.ParamFlags.READWRITE,
         ),
-        "unit-measure": (
+        "rulers-unit": (
             object,
-            "unit of measurement",
-            "surface.UNIT enumeration",
+            "unit of measure for rulers",
+            "surface.Unit enumeration",
             GObject.ParamFlags.READWRITE,
         ),
-        "show-cropbox": (
-            bool,
-            "whetever to show cropbox",
-            "a boolean value",
-            False,
-            GObject.ParamFlags.READWRITE,
-        ),
-        "data": (
+        "graphic": (
 			object,
-    		"data to show",
-    		"a python object implementing buffer protocol",
+    		"the Graphic to show",
+    		"a python object implementing acide.graphic.Graphic interface",
             GObject.ParamFlags.READWRITE,
         ),
         "hadjustment": (
@@ -149,12 +137,10 @@ class GraphicSurface(
             return self.workspace_margins
         elif prop.name == "show-rulers":
             return self.show_rulers
-        elif prop.name == "unit-measure":
-            return self.unit_measure
-        elif prop.name == "show-cropbox":
-            return self.show_cropbox
-        elif prop.name == "data":
-            return self.data
+        elif prop.name == "rulers-unit":
+            return self.rulers_unit
+        elif prop.name == "graphic":
+            return self.graphic
         elif prop.name == "hscroll-policy":
             return self._hscroll_policy
         elif prop.name == "vscroll-policy":
@@ -176,23 +162,36 @@ class GraphicSurface(
                     f"workspace-margins should be a Gtk.Border not {value.__class}"
                 )
             self.workspace_margins = value
+            self.update_workspace_size()
             self.queue_draw()
         elif prop.name == "show-rulers":
             self.show_rulers = bool(value)
             self.queue_draw()
-        elif prop.name == "unit-measure":
-            if not isinstance(value, UNIT):
+        elif prop.name == "rulers-unit":
+            if not isinstance(value, Unit):
                 raise TypeError(
-                    f"unit-measure should be a UNIT enum member not {value.__class}"
+                    f"rulers-unit should be a Unit enum member not {value.__class}"
                 )
-            self.unit_measure = value
+            self.rulers_unit = value
             self.queue_draw()
-        elif prop.name == "show-cropbox":
-            self.show_cropbox = bool(value)
-            self.queue_draw()
-        elif prop.name == "data":
-            self.data = self._validate_data(value)
-            self.queue_draw()
+        elif prop.name == "graphic":
+            if isinstance(value, Graphic):
+                if self.graphic is not None:
+                    self.graphic.on_removed()
+                self.graphic = value
+                self.graphic.on_added(self)
+                self.update_metrics()
+                self.update_workspace_size()
+                self.queue_draw()
+            elif value is None:
+                if self.graphic is not None:
+                    self.graphic.on_removed()
+                self.graphic = None
+                self.queue_draw()
+            else:
+                raise TypeError(
+                    "graphic should implement the acide.graphic.Graphic interface"
+                )
         elif prop.name == "hscroll-policy":
             self._hscroll_policy = value
         elif prop.name == "vscroll-policy":
@@ -209,14 +208,13 @@ class GraphicSurface(
             raise AttributeError(f'unknown property {prop.name}')
 
     __slots__ = (
-        "unit_scale",
-        "monitor_dpi",
-        "monitor_res",
+        "pixel_scale",
         "workspace_size",
+        "graphic_clip",
         "rulers_size",
-        "ps2ppx_transform",
-        "ps2lpx_transform",
-        "ps2mm_transform",
+        "viewport2lpx_transform",
+        "lpx2viewport_transform",
+        "lpx2graphic_transform",
         "device_matrix",
     )
 
@@ -224,33 +222,39 @@ class GraphicSurface(
         super().__init__()
         Measurable.__init__(self)  # Mandatory
 
-        self.unit_scale: int = 1
-        self.monitor_dpi: float = 72.0  # in physical pixel
-        self.monitor_res: Graphene.Size = Graphene.Size()  # in physical pixel
-        self.workspace_size: Graphene.Size = Graphene.Size()  # in PostScript point
-        self.workspace_size.init(612.0, 792.0)  # US Letter
+        self.pixel_scale: int = 1
+        self.workspace_size: Graphene.Size = Graphene.Size()  # in logical pixel
         self.rulers_size: Gtk.Border = Gtk.Border()  # in logical pixel
         self.rulers_size.left = self.rulers_size.top = 20
-        self.ps2ppx_transform: float = 1.0
-        self.ps2lpx_transform: float = 1.0
-        self.ps2mm_transform: float = 25.4 / 72.0
         self.device_matrix: cairo.Matrix = cairo.Matrix()
-        self.connect("realize", self.update_monitor_infos)# in physical pixel
+        self.graphic_clip: Graphene.Rect = Graphene.Rect()
 
-        # GObject Properties default values
-        self.workspace_margins = Gtk.Border()  # in PostScript point
-        self.workspace_margins.top = 100.0
-        self.workspace_margins.bottom = 100.0
-        self.workspace_margins.left = 100.0
-        self.workspace_margins.right = 100.0
-        self.show_rulers = True
-        self.unit_measure = UNIT.MILLIMETER
-
-        # Inherited properties
+        # Inherited Gtk.Widget properties
         self.set_vexpand(True)
         self.set_hexpand(True)
 
-    def update_monitor_infos(self, caller: GObject) -> None:
+        # Inherited Measurable properties
+        self.unit = Unit.MILLIMETER
+        self.dpi = 72.0  # in physical pixel
+
+        # GObject Properties default values
+        self.workspace_margins = Gtk.Border()  # in logical pixel
+        self.workspace_margins.top = 150.0
+        self.workspace_margins.bottom = 150.0
+        self.workspace_margins.left = 150.0
+        self.workspace_margins.right = 150.0
+        self.rulers_unit = Unit.MILLIMETER
+        self.show_rulers = True
+        self.graphic = None
+
+        #
+        self.update_metrics()
+        self.update_workspace_size()
+
+        # Signals
+        self.connect("realize", self.update_monitor_infos)
+
+    def update_monitor_infos(self, caller: GObject.GObject=None) -> None:
         """Update infos for monitor displaying self.
 
         This function can only be called after the widget has been added
@@ -261,28 +265,77 @@ class GraphicSurface(
         display = self.get_display()
         surface = self.get_native().get_surface()
         monitor = display.get_monitor_at_surface(surface)
-        self.unit_scale = monitor.get_scale_factor()
         geometry = monitor.get_geometry()
-        self.monitor_res.width = geometry.width * self.unit_scale
-        self.monitor_res.height = geometry.height * self.unit_scale
-        self.monitor_dpi = self.monitor_res.width / (monitor.get_width_mm() / 25.4)
+        #
+        self.pixel_scale = monitor.get_scale_factor()
+        # Measurable properties
+        self.dpi = (geometry.width * self.pixel_scale) / \
+                   (monitor.get_width_mm() / 25.4)
+        self.size = (monitor.get_width_mm(), monitor.get_height_mm())
+        self.unit = Unit.MILLIMETER
         # Transformation Matrix
-        self.ps2ppx_transform = 1.0 / 72.0 * self.monitor_dpi
-        self.ps2lpx_transform = self.ps2ppx_transform / self.unit_scale
-        self.device_matrix.xx = self.device_matrix.yy = 1 / self.unit_scale
+        self.update_metrics()
         # signals
         monitor.connect("notify::scale-factor", self.update_monitor_infos)
+        # Proprties that should consequently be updates
+        if self.props.graphic is not None:
+            self.graphic.on_updated()
+        self.update_workspace_size()
         print(self)
+
+    def update_metrics(self):
+        """Update internal matrix.
+
+        Update all internel matrix and transformation coefficients used
+        for rendering. This is usually called when properties like :attr:`dpi` or
+        :attr:`size` for this viewport changed or when a :class:`Graphic` is added.
+        It is safe to called update_metrics() at any time when needed.
+        """
+        self.viewport2lpx_transform = self.get_transform(Unit.PIXEL) / self.pixel_scale
+        self.lpx2viewport_transform = 1.0 / self.viewport2lpx_transform
+        if self.props.graphic is not None:
+            self.graphic2lpx_transform = (
+                self.props.graphic.get_transform(Unit.PIXEL) \
+                / (self.props.graphic.dpi / self.dpi) \
+                / self.pixel_scale
+            )
+            self.lpx2graphic_transform = 1.0 / self.graphic2lpx_transform
+        else:
+            self.graphic2lpx_transform = self.lpx2graphic_transform = 1.0
+        self.device_matrix.xx = self.device_matrix.yy = 1 / self.pixel_scale
+
+    def update_workspace_size(self) -> None:
+        """Update workspace size.
+
+        Compute workspace_size attrbute accordingly to displayed :class:`Graphic`
+        and workspace margins settings measured in logical pixel unit.
+        """
+        w = h = 0
+        if self.props.graphic is not None:
+            w = self.props.graphic.size[0] * self.graphic2lpx_transform
+            h = self.props.graphic.size[1] * self.graphic2lpx_transform
+        self.workspace_size.init(
+            w + self.props.workspace_margins.right + \
+                self.props.workspace_margins.left,
+            h + self.props.workspace_margins.top + \
+                self.props.workspace_margins.bottom,
+        ) # in logical pixel
+        self.graphic_clip.init(
+            self.props.workspace_margins.left,
+            self.props.workspace_margins.top,
+            w,
+            h,
+        ) # in logical pixel
 
     def __str__(self) -> str:
         return (
-            f"screen: {self.monitor_res.width} x {self.monitor_res.height}\n"
-            f"Scale factor: {self.unit_scale}\n"
-            f"dpi: {self.monitor_dpi}\n"
-            f"workspace margins: top={self.workspace_margins.top}, "
-            f"bottom={self.workspace_margins.bottom}, "
-            f"left={self.workspace_margins.left}, "
-            f"right={self.workspace_margins.right}"
+            f"screen: {self.size[0]}{self.unit.abbr} x {self.size[1]}{self.unit.abbr}\n"
+            f"Scale factor: {self.pixel_scale}\n"
+            f"dpi: {self.dpi}\n"
+            f"workspace margins: top={self.workspace_margins.top}px, "
+            f"bottom={self.workspace_margins.bottom}px, "
+            f"left={self.workspace_margins.left}px, "
+            f"right={self.workspace_margins.right}px"
         )
 
     @staticmethod
@@ -349,26 +402,29 @@ class GraphicSurface(
         # draw with physical pixel coordinate
         ctx = snap.append_cairo(clip)
         ctx.set_matrix(self.device_matrix)
-        w = clip.get_width() * self.unit_scale
-        h = clip.get_height() * self.unit_scale
-        rw = self.rulers_size.top * self.unit_scale
-        rh = self.rulers_size.left * self.unit_scale
+        w = clip.get_width() * self.pixel_scale
+        h = clip.get_height() * self.pixel_scale
+        rw = self.rulers_size.top * self.pixel_scale
+        rh = self.rulers_size.left * self.pixel_scale
+        # xo *= self.pixel_scale
+        # yo *= self.pixel_scale
         ctx.set_antialias(cairo.ANTIALIAS_NONE)
 
         # rulers ticks
         #TODO: render measurement unit following unit-measure property
-        tick = self.monitor_dpi / 25.4  # mm ticks gap in physical px
+        tick = self.dpi / 25.4  # mm ticks gap in physical px
         tick_len = 8  # ticks lenght in physical px
         ctx.set_source_rgb(1, 1, 1)
 
         # ticks font
         ctx.select_font_face("sans")
-        ctx.set_font_size(10.0 * self.unit_scale)
+        ctx.set_font_size(10.0 * self.pixel_scale)
 
         # Horinzontal ruler
         #FIXME: imprecision in drawing (space transform)
         xt = xo - xo.__floor__() + rw
-        index = int(-xo / self.ps2lpx_transform * self.ps2mm_transform)
+        index = int(-xo / self.viewport2lpx_transform)
+        # index = int(-xo / self.viewport2lpx_transform * self.ps2mm_transform)
         while xt < w:
             if (index % 10 == 0):
                 lw = 2.0
@@ -385,7 +441,8 @@ class GraphicSurface(
         # vertcal ruler
         #FIXME: vertical text position (use of pango to draw text)
         yt = yo - yo.__floor__() + rh
-        index = int(-yo / self.ps2lpx_transform  * self.ps2mm_transform)
+        index = int(-yo / self.viewport2lpx_transform)
+        # index = int(-yo / self.viewport2lpx_transform  * self.ps2mm_transform)
         while yt < h:
             if (index % 10 == 0):
                 lw = 2.0
@@ -409,28 +466,36 @@ class GraphicSurface(
         h = self.get_allocated_height()
         xo = self.props.hadjustment.get_value()
         yo = self.props.vadjustment.get_value()
+        vxo = self.graphic_clip.get_x() - self.rulers_size.left - xo
+        vyo = self.graphic_clip.get_y() - self.rulers_size.top - yo
 
         bg_color = self.get_rgba(.4, .4, .4)
         fg_color = self.get_rgba(.2, .2, .2)
         gr_color = self.get_rgba(1, 1, 1)
 
         fgbox = self.get_rect(0, 0, w, h)
-        graphic = self.get_rect(
-            (self.props.workspace_margins.left * self.ps2lpx_transform) - xo,
-            (self.props.workspace_margins.top * self.ps2lpx_transform) - yo,
-            self.workspace_size.width * self.ps2lpx_transform,
-            self.workspace_size.height * self.ps2lpx_transform,
-        )
         snap.append_color(bg_color, fgbox)
-        snap.append_color(gr_color, graphic)
 
-        if self.props.show_rulers:
-            self.draw_rulers(
-                snap,
-                fgbox,
-                graphic.get_x() - self.rulers_size.left,
-                graphic.get_y() - self.rulers_size.top,
+        if self.props.graphic is not None:
+            #clip = self.graphic_clip.offset_r(-xo, -yo)
+            render = self.props.graphic.get_render(
+                - vxo * self.lpx2graphic_transform,
+                - vyo * self.lpx2graphic_transform,
             )
+            if render is not None:
+                clip = self.get_rect(
+                    (render.x // self.pixel_scale) + vxo + self.rulers_size.left,
+                    (render.y // self.pixel_scale) + vyo + self.rulers_size.top,
+                    render.w // self.pixel_scale,
+                    render.h // self.pixel_scale
+                )
+                if render.texture is not None:
+                    snap.append_texture(render.texture, clip)
+                else:
+                    snap.append_color(gr_color, clip)
+
+                if self.props.show_rulers:
+                    self.draw_rulers(snap, fgbox, vxo, vyo)
 
     def do_get_request_mode(self) -> Gtk.SizeRequestMode:
         """Gets whether the widget prefers a height-for-width layout
@@ -459,20 +524,6 @@ class GraphicSurface(
         """
         self._update_adjustement()
 
-    def get_workspace_width(self) -> int:
-        """Return workspace width measured in logical pixel unit."""
-        return (
-            self.workspace_size.width + self.props.workspace_margins.right + \
-            self.props.workspace_margins.left
-        ) * self.ps2lpx_transform
-
-    def get_workspace_height(self) -> int:
-        """Return workspace height measured in logical pixel unit."""
-        return (
-            self.workspace_size.height + self.props.workspace_margins.top + \
-            self.props.workspace_margins.bottom
-        ) * self.ps2lpx_transform
-
     def do_measure(
         self, orientation: Gtk.Orientation, for_size: int
     ) -> Tuple[int, int, int, int]:
@@ -485,10 +536,10 @@ class GraphicSurface(
         (int minimum, int natural, int minimum_baseline, int natural_baseline).
         """
         if orientation == Gtk.Orientation.HORIZONTAL:
-            width = self.get_workspace_width()
+            width = self.workspace_size.width
             return (width, width, -1, -1)
         else:
-            height = self.get_workspace_height()
+            height = self.workspace_size.height
             return (height, height, -1, -1)
 
     def _update_adjustement(self) -> None:
@@ -503,7 +554,7 @@ class GraphicSurface(
         self.hadjustment.configure(
             self.props.hadjustment.get_value(),  # value
             0,  # lower
-            self.get_workspace_width(),  # upper
+            self.workspace_size.width,  # upper
             1,  # step increment
             self.get_allocated_width() // 100,  # page increment
             self.get_allocated_width(),  # page size
@@ -514,7 +565,7 @@ class GraphicSurface(
         self.vadjustment.configure(
             self.props.vadjustment.get_value(),  # value
             0,  # lower
-            self.get_workspace_height(),  # upper
+            self.workspace_size.height,  # upper
             1,  # step increment
             self.get_allocated_height() // 100,  # page increment
             self.get_allocated_height(),  # page size
