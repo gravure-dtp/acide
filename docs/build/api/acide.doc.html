@@ -295,8 +295,28 @@ toc in any way. It is your responsibility to refresh such variables as required.
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="acide.doc.Document.test">
-<span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.test" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="acide.doc.Document.get_graphic">
+<span class="sig-name descname"><span class="pre">get_graphic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.get_graphic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.get_graphic" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Document.next_page">
+<span class="sig-name descname"><span class="pre">next_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.next_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.next_page" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Document.previous_page">
+<span class="sig-name descname"><span class="pre">previous_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.previous_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.previous_page" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Document.home">
+<span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.home" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.doc.Document.end">
+<span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Document.end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Document.end" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -363,11 +383,11 @@ super().on_updated().</p>
 <span class="sig-name descname"><span class="pre">get_pixbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.get_pixbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.get_pixbuf" title="Permalink to this definition">#</a></dt>
 <dd><p>Get pixbuf at clip rect.</p>
 <p>Implementation should return a pixmap buffer clipped to the region
-described by the parameter <em>rect</em> (defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">Measurable.unit</span></code>
-measure of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>).
+described by the parameter <code class="xref py py-obj docutils literal notranslate"><span class="pre">rect</span></code> (defined in <a class="reference internal" href="acide.measure.html#acide.measure.Measurable.unit" title="acide.measure.Measurable.unit"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acide.measure.Measurable.unit</span></code></a>
+of measure for this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>).
 The returned object should implements the buffer protocol and should
 hold a c-contigous buffer with only one dimension for all its data.
-The pixel data should conform to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Graphic.format</span></code> property.
+The pixel data should conform to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Graphic.mem_format</span></code> property.
 When rendering the pixmap, subclass could consider using the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">scale</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">virtual_dpi</span></code> properties to achieve expected
 result.</p>

@@ -3,5 +3,7 @@
   <gresource prefix="/io/github/gravures/acide">
     <file>gtk/AcideWindow.ui</file>
     <file>gtk/help-overlay.ui</file>
+    <file>gtk/Menu.ui</file>
+    <file>gtk/acide.css</file>
   </gresource>
 </gresources>

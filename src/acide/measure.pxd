@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from acide.types cimport test_sequence, cround
+from acide.types cimport test_sequence, ciround
 
 
 cdef double transform(object unit1, object unit2, double dpi=?)

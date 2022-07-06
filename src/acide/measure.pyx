@@ -313,13 +313,13 @@ cdef class _CMeasurable():
         return self.rect.get_area()
 
     cpdef unsigned int get_pixmap_area(self):
-        _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+        _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
         px_rect = self.rect.scale(_t, _t)
         px_rect.round_extents()
         return <unsigned int> (px_rect.get_area())
 
     cpdef object get_pixmap_rect(self):
-        _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+        _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
         px_rect = self.rect.scale(_t, _t)
         return px_rect.round_extents()
 
@@ -349,11 +349,11 @@ cdef class _CMeasurable():
 
     cpdef _dump_props(self):
         return (
-            f"{self.point[0]:.3f}{self.unit.abbr}, "
-            f"{self.point[1]:.3f}{self.unit.abbr}, "
-            f"{self.size[0]:.3f}{self.unit.abbr}, "
-            f"{self.size[1]:.3f}{self.unit.abbr}, "
-            f"{self.dpi:.3f}dpi"
+            f"{self.point[0]:.1f}{self.unit.abbr}, "
+            f"{self.point[1]:.1f}{self.unit.abbr}, "
+            f"{self.size[0]:.1f}{self.unit.abbr}, "
+            f"{self.size[1]:.1f}{self.unit.abbr}, "
+            f"{self.dpi:.1f}dpi"
         )
 
     def __str__(self):

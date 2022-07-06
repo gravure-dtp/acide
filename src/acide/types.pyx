@@ -207,6 +207,7 @@ cdef class TypedGrid():
             raise IndexError(f"Grid index ({x}, {y}) out of range")
 
     cdef int getindex_at(self, int x, int y):
+        # print(f"DBG: shape{self.view.shape} | {self.view}")
         x = self.view.shape[0] + x if x < 0 else x
         y = self.view.shape[1] + y if y < 0 else y
         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:
@@ -227,6 +228,11 @@ cdef class TypedGrid():
         slx = slx if slx else slice(None, None, None)
         sly = sly if sly else slice(None, None, None)
         self.view = self.view[slx, sly]
+
+    cdef slice_ref(self, object slx, object sly):
+        slx = slx if slx else slice(None, None, None)
+        sly = sly if sly else slice(None, None, None)
+        self.view = self._ref.view[slx, sly]
 
     def __setitem__(self, index, item):
         cdef int indice

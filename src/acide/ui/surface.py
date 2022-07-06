@@ -63,15 +63,6 @@ class GraphicViewport(
     _hscroll_policy = Gtk.ScrollablePolicy.NATURAL
     _vscroll_policy = Gtk.ScrollablePolicy.NATURAL
     __gproperties__ = {
-        "zoom-level": (
-			float,
-    		"zoom level",
-    		"a float value as percent",
-    		10.0,
-    		3200.0,
-    		100.0,
-            GObject.ParamFlags.READWRITE,
-        ),
         "workspace-margins": (
 			object,
     		"size of margins around a page",
@@ -131,9 +122,7 @@ class GraphicViewport(
     }
 
     def do_get_property(self, prop):
-        if prop.name == "zoom-level":
-            return self.zoom_level
-        elif prop.name == "workspace-margins":
+        if prop.name == "workspace-margins":
             return self.workspace_margins
         elif prop.name == "show-rulers":
             return self.show_rulers
@@ -153,14 +142,12 @@ class GraphicViewport(
             raise AttributeError(f'unknown property {prop.name}')
 
     def do_set_property(self, prop, value):
-        if prop.name == "zoom-level":
-            self.zoom_level = value
-            self.queue_draw()
-        elif prop.name == "workspace-margins":
+        if prop.name == "workspace-margins":
             if not isinstance(value, Gtk.Border):
                 raise TypeError(
                     f"workspace-margins should be a Gtk.Border not {value.__class}"
                 )
+            # TODO: minimum margin to rulers size
             self.workspace_margins = value
             self.update_workspace_size()
             self.queue_draw()
@@ -182,6 +169,7 @@ class GraphicViewport(
                 self.graphic.on_added(self)
                 self.update_metrics()
                 self.update_workspace_size()
+                self.graphic.connect("scaled", self._on_graphic_scaled_cb)
                 self.queue_draw()
             elif value is None:
                 if self.graphic is not None:
@@ -209,6 +197,7 @@ class GraphicViewport(
 
     __slots__ = (
         "pixel_scale",
+        "device_margins",
         "workspace_size",
         "graphic_clip",
         "rulers_size",
@@ -238,11 +227,14 @@ class GraphicViewport(
         self.dpi = 72.0  # in physical pixel
 
         # GObject Properties default values
-        self.workspace_margins = Gtk.Border()  # in logical pixel
-        self.workspace_margins.top = 150.0
-        self.workspace_margins.bottom = 150.0
-        self.workspace_margins.left = 150.0
-        self.workspace_margins.right = 150.0
+        self.hadjustment = Gtk.Adjustment()
+        self.vadjustment = Gtk.Adjustment()
+        self.workspace_margins = Gtk.Border()  # in self.unit
+        self.workspace_margins.top = 20.0
+        self.workspace_margins.bottom = 20.0
+        self.workspace_margins.left = 20.0
+        self.workspace_margins.right = 20.0
+        self.device_margins = Gtk.Border()  # in logical pixel
         self.rulers_unit = Unit.MILLIMETER
         self.show_rulers = True
         self.graphic = None
@@ -253,6 +245,11 @@ class GraphicViewport(
 
         # Signals
         self.connect("realize", self.update_monitor_infos)
+
+    def _on_graphic_scaled_cb(self, graphic, scale):
+        self._update_graphic_transform(graphic, scale)
+        self.update_workspace_size()
+        self.queue_draw()
 
     def update_monitor_infos(self, caller: GObject.GObject=None) -> None:
         """Update infos for monitor displaying self.
@@ -273,15 +270,14 @@ class GraphicViewport(
                    (monitor.get_width_mm() / 25.4)
         self.size = (monitor.get_width_mm(), monitor.get_height_mm())
         self.unit = Unit.MILLIMETER
-        # Transformation Matrix
-        self.update_metrics()
         # signals
         monitor.connect("notify::scale-factor", self.update_monitor_infos)
         # Proprties that should consequently be updates
         if self.props.graphic is not None:
             self.graphic.on_updated()
+        # Transformation Matrix
+        self.update_metrics()
         self.update_workspace_size()
-        print(self)
 
     def update_metrics(self):
         """Update internal matrix.
@@ -293,16 +289,18 @@ class GraphicViewport(
         """
         self.viewport2lpx_transform = self.get_transform(Unit.PIXEL) / self.pixel_scale
         self.lpx2viewport_transform = 1.0 / self.viewport2lpx_transform
+        self.device_matrix.xx = self.device_matrix.yy = 1 / self.pixel_scale
         if self.props.graphic is not None:
-            self.graphic2lpx_transform = (
-                self.props.graphic.get_transform(Unit.PIXEL) \
-                / (self.props.graphic.dpi / self.dpi) \
-                / self.pixel_scale
-            )
-            self.lpx2graphic_transform = 1.0 / self.graphic2lpx_transform
+            self._update_graphic_transform(self.props.graphic)
         else:
             self.graphic2lpx_transform = self.lpx2graphic_transform = 1.0
-        self.device_matrix.xx = self.device_matrix.yy = 1 / self.pixel_scale
+
+    def _update_graphic_transform(self, graphic, scale=1):
+        self.graphic2lpx_transform = (
+                (graphic.get_transform(Unit.PIXEL) * (self.dpi / graphic.dpi)) \
+                / self.pixel_scale * scale
+            )
+        self.lpx2graphic_transform = 1.0 / self.graphic2lpx_transform
 
     def update_workspace_size(self) -> None:
         """Update workspace size.
@@ -314,29 +312,197 @@ class GraphicViewport(
         if self.props.graphic is not None:
             w = self.props.graphic.size[0] * self.graphic2lpx_transform
             h = self.props.graphic.size[1] * self.graphic2lpx_transform
+            trs = self.viewport2lpx_transform * self.props.graphic.scale
+            self.device_margins.top = self.props.workspace_margins.top * trs
+            self.device_margins.bottom = self.props.workspace_margins.top * trs
+            self.device_margins.left = self.props.workspace_margins.top * trs
+            self.device_margins.right = self.props.workspace_margins.top * trs
         self.workspace_size.init(
-            w + self.props.workspace_margins.right + \
-                self.props.workspace_margins.left,
-            h + self.props.workspace_margins.top + \
-                self.props.workspace_margins.bottom,
+            w + self.device_margins.right + \
+                self.device_margins.left,
+            h + self.device_margins.top + \
+                self.device_margins.bottom,
         ) # in logical pixel
+        # TODO: clip x,y could not be zero?
         self.graphic_clip.init(
-            self.props.workspace_margins.left,
-            self.props.workspace_margins.top,
+            0,
+            0,
             w,
             h,
         ) # in logical pixel
+        self._update_adjustements()
 
-    def __str__(self) -> str:
-        return (
-            f"screen: {self.size[0]}{self.unit.abbr} x {self.size[1]}{self.unit.abbr}\n"
-            f"Scale factor: {self.pixel_scale}\n"
-            f"dpi: {self.dpi}\n"
-            f"workspace margins: top={self.workspace_margins.top}px, "
-            f"bottom={self.workspace_margins.bottom}px, "
-            f"left={self.workspace_margins.left}px, "
-            f"right={self.workspace_margins.right}px"
+    def do_measure(
+        self, orientation: Gtk.Orientation, for_size: int
+    ) -> Tuple[int, int, int, int]:
+        """Measures widget for the orientation and for the given for_size.
+
+        As an example, if orientation is GTK_ORIENTATION_HORIZONTAL and for_size
+        is 300, this functions will compute the minimum and natural width of widget
+        if it is allocated at a height of 300 pixels.
+        Return measurements are in logical pixel unit within a tuple
+        (int minimum, int natural, int minimum_baseline, int natural_baseline).
+        """
+        if orientation == Gtk.Orientation.HORIZONTAL:
+            return (self.workspace_size.width, self.workspace_size.width, -1, -1)
+        else:
+            return (self.workspace_size.height, self.workspace_size.height, -1, -1)
+
+    def _update_adjustements(self) -> None:
+        """Update horizontal and vertical adustements."""
+        if not self.props.hadjustment:
+            return
+        self._update_hadjustement()
+        self._update_vadjustement()
+
+    def _update_hadjustement(self) -> None:
+        """Sets all properties of the hadjustment at once."""
+        self.props.hadjustment.configure(
+            self.props.hadjustment.get_value(),  # value
+            - self.device_margins.left,  # lower
+            self.workspace_size.width - self.device_margins.left,  # upper
+            1,  # step increment
+            self.get_allocated_width() // 100,  # page increment
+            self.get_allocated_width(),  # page size
         )
+
+    def _update_vadjustement(self) -> None:
+        """Sets all properties of the vadjustment at once."""
+        self.props.vadjustment.configure(
+            self.props.vadjustment.get_value(),  # value
+            - self.device_margins.top,  # lower
+            self.workspace_size.height - self.device_margins.top,  # upper
+            1,  # step increment
+            self.get_allocated_height() // 100,  # page increment
+            self.get_allocated_height(),  # page size
+        )
+
+    def do_snapshot(self, snap: Gtk.Snapshot) -> None:
+        w = self.get_allocated_width()
+        h = self.get_allocated_height()
+        xo = self.props.hadjustment.get_value()
+        yo = self.props.vadjustment.get_value()
+        gx = self.graphic_clip.get_x()
+        gy = self.graphic_clip.get_y()
+
+        bg_color = self.get_rgba(.4, .4, .4)
+        fg_color = self.get_rgba(.2, .2, .2)
+        gr_color = self.get_rgba(1, 1, .8)
+
+        fgbox = self.get_rect(0, 0, w, h)
+        snap.append_color(bg_color, fgbox)
+
+        if self.props.graphic is not None:
+            sc = self.props.graphic.scale
+            render = self.props.graphic.get_render(
+                (xo + gx) * self.lpx2graphic_transform,
+                (yo + gx) * self.lpx2graphic_transform,
+            )
+            if render is not None:
+                clip = self.get_rect(
+                    #(gx - xo) + ((render.x / self.pixel_scale) / sc),
+                    #(gy - yo) + ((render.y / self.pixel_scale) / sc),
+                    (gx - xo) + (render.x * self.graphic2lpx_transform),
+                    (gy - yo) + (render.y * self.graphic2lpx_transform),
+                    render.w / self.pixel_scale,
+                    render.h / self.pixel_scale,
+                )
+                clip_t = self.get_rect(
+                    (gx - xo), (gy - yo),
+                    self.graphic_clip.get_width(),
+                    self.graphic_clip.get_height()
+                )
+                snap.append_color(gr_color, clip_t)
+                if render.texture is not None:
+                    snap.append_texture(render.texture, clip)
+                    pass
+                else:
+                    snap.append_color(gr_color, clip)
+
+                if self.props.show_rulers:
+                    self.draw_rulers(snap, fgbox, xo, yo, sc)
+
+    def draw_rulers(
+        self, snap: Gtk.Snapshot, clip: Graphene.Rect, xo: float, yo: float, scale
+    ) -> None:
+        #TODO: marker on ruler for current mouse pointer position
+        # rulers background in lpx
+        snap.append_color(
+            self.get_rgba(0, 0, 0),
+            self.get_rect(0, 0, clip.get_width(), self.rulers_size.top),
+        )
+        snap.append_color(
+            self.get_rgba(0, 0, 0),
+            self.get_rect(0, 0, self.rulers_size.left, clip.get_height()),
+        )
+
+        #TODO: drawing could be pre-cached for speed-up
+        # draw with physical pixel coordinates
+        ctx = snap.append_cairo(clip)
+        ctx.set_matrix(self.device_matrix)
+        w = clip.get_width() * self.pixel_scale
+        h = clip.get_height() * self.pixel_scale
+        rw = self.rulers_size.top * self.pixel_scale
+        rh = self.rulers_size.left * self.pixel_scale
+        ctx.set_antialias(cairo.ANTIALIAS_NONE)
+
+        # rulers ticks
+        #TODO: render measurement unit following unit-measure property
+        tick = self.dpi / 25.4 * scale # mm ticks gap in physical px
+        tick_len = 8  # ticks lenght in physical px
+        ctx.set_source_rgb(1, 1, 1)
+
+        # ticks font
+        ctx.select_font_face("sans")
+        ctx.set_font_size(10.0 * self.pixel_scale)
+
+        # Horinzontal ruler
+        xt = tick - ((xo * self.pixel_scale) % tick)
+        index = int(xo / scale * self.lpx2viewport_transform)
+
+        while xt < w:
+            if xt < rw:
+                xt += tick
+                index += 1
+                continue
+            if (index % 10 == 0):
+                # set longer tick & draw unit value
+                lw = 2.0
+                ctx.move_to(xt + 2, rw - tick_len * lw - 4)
+                ctx.show_text(str(index))
+            else:
+                lw = 1.0
+            ctx.set_line_width(lw)
+            ctx.move_to(xt, rw)
+            ctx.line_to(xt, rw - tick_len * lw)
+            xt += tick
+            index += 1
+
+        # vertcal ruler
+        #TODO: vertical text position (use of pango to draw text)
+        yt = tick - ((yo * self.pixel_scale) % tick)
+        index = int(yo / scale * self.lpx2viewport_transform)
+        while yt < h:
+            if yt < rw:
+                yt += tick
+                index += 1
+                continue
+            if (index % 10 == 0):
+                lw = 2.0
+                gw = 0  # ctx.glyph_extents(list(str(index))).width
+                ctx.move_to(rh - tick_len * lw - 4, yt - gw)
+                ctx.save()
+                ctx.rotate(-1.5708)
+                ctx.show_text(str(index))
+                ctx.restore()
+            else:
+                lw = 1.0
+            ctx.set_line_width(lw)
+            ctx.move_to(rh, yt)
+            ctx.line_to(rh - tick_len * lw, yt)
+            yt += tick
+            index += 1
+        ctx.stroke()
 
     @staticmethod
     def get_rgba(r, g, b, a=1.0):
@@ -384,119 +550,6 @@ class GraphicViewport(
             ctx.line_to(w, sy)
         ctx.stroke()
 
-    def draw_rulers(
-        self, snap: Gtk.Snapshot, clip: Graphene.Rect, xo: float, yo: float
-    ) -> None:
-        #TODO: marker on ruler for current mouse pointer position
-        # rulers background
-        snap.append_color(
-            self.get_rgba(0, 0, 0),
-            self.get_rect(0, 0, clip.get_width(), self.rulers_size.top),
-        )
-        snap.append_color(
-            self.get_rgba(0, 0, 0),
-            self.get_rect(0, 0, self.rulers_size.left, clip.get_height()),
-        )
-
-        #TODO: drawing could be pre-cached for speed-up
-        # draw with physical pixel coordinate
-        ctx = snap.append_cairo(clip)
-        ctx.set_matrix(self.device_matrix)
-        w = clip.get_width() * self.pixel_scale
-        h = clip.get_height() * self.pixel_scale
-        rw = self.rulers_size.top * self.pixel_scale
-        rh = self.rulers_size.left * self.pixel_scale
-        # xo *= self.pixel_scale
-        # yo *= self.pixel_scale
-        ctx.set_antialias(cairo.ANTIALIAS_NONE)
-
-        # rulers ticks
-        #TODO: render measurement unit following unit-measure property
-        tick = self.dpi / 25.4  # mm ticks gap in physical px
-        tick_len = 8  # ticks lenght in physical px
-        ctx.set_source_rgb(1, 1, 1)
-
-        # ticks font
-        ctx.select_font_face("sans")
-        ctx.set_font_size(10.0 * self.pixel_scale)
-
-        # Horinzontal ruler
-        #FIXME: imprecision in drawing (space transform)
-        xt = xo - xo.__floor__() + rw
-        index = int(-xo / self.viewport2lpx_transform)
-        # index = int(-xo / self.viewport2lpx_transform * self.ps2mm_transform)
-        while xt < w:
-            if (index % 10 == 0):
-                lw = 2.0
-                ctx.move_to(xt + 2, rw - tick_len * lw - 4)
-                ctx.show_text(str(index))
-            else:
-                lw = 1.0
-            ctx.set_line_width(lw)
-            ctx.move_to(xt, rw)
-            ctx.line_to(xt, rw - tick_len * lw)
-            xt += tick
-            index += 1
-
-        # vertcal ruler
-        #FIXME: vertical text position (use of pango to draw text)
-        yt = yo - yo.__floor__() + rh
-        index = int(-yo / self.viewport2lpx_transform)
-        # index = int(-yo / self.viewport2lpx_transform  * self.ps2mm_transform)
-        while yt < h:
-            if (index % 10 == 0):
-                lw = 2.0
-                gw = 0  # ctx.glyph_extents(list(str(index))).width
-                ctx.move_to(rh - tick_len * lw - 4, yt - gw)
-                ctx.save()
-                ctx.rotate(-1.5708)
-                ctx.show_text(str(index))
-                ctx.restore()
-            else:
-                lw = 1.0
-            ctx.set_line_width(lw)
-            ctx.move_to(rh, yt)
-            ctx.line_to(rh - tick_len * lw, yt)
-            yt += tick
-            index += 1
-        ctx.stroke()
-
-    def do_snapshot(self, snap: Gtk.Snapshot) -> None:
-        w = self.get_allocated_width()
-        h = self.get_allocated_height()
-        xo = self.props.hadjustment.get_value()
-        yo = self.props.vadjustment.get_value()
-        vxo = self.graphic_clip.get_x() - self.rulers_size.left - xo
-        vyo = self.graphic_clip.get_y() - self.rulers_size.top - yo
-
-        bg_color = self.get_rgba(.4, .4, .4)
-        fg_color = self.get_rgba(.2, .2, .2)
-        gr_color = self.get_rgba(1, 1, 1)
-
-        fgbox = self.get_rect(0, 0, w, h)
-        snap.append_color(bg_color, fgbox)
-
-        if self.props.graphic is not None:
-            #clip = self.graphic_clip.offset_r(-xo, -yo)
-            render = self.props.graphic.get_render(
-                - vxo * self.lpx2graphic_transform,
-                - vyo * self.lpx2graphic_transform,
-            )
-            if render is not None:
-                clip = self.get_rect(
-                    (render.x // self.pixel_scale) + vxo + self.rulers_size.left,
-                    (render.y // self.pixel_scale) + vyo + self.rulers_size.top,
-                    render.w // self.pixel_scale,
-                    render.h // self.pixel_scale
-                )
-                if render.texture is not None:
-                    snap.append_texture(render.texture, clip)
-                else:
-                    snap.append_color(gr_color, clip)
-
-                if self.props.show_rulers:
-                    self.draw_rulers(snap, fgbox, vxo, vyo)
-
     def do_get_request_mode(self) -> Gtk.SizeRequestMode:
         """Gets whether the widget prefers a height-for-width layout
         or a width-for-height layout.
@@ -522,59 +575,23 @@ class GraphicViewport(
         the widget must ensure the adjustments property values are correct
         and up to date.
         """
-        self._update_adjustement()
-
-    def do_measure(
-        self, orientation: Gtk.Orientation, for_size: int
-    ) -> Tuple[int, int, int, int]:
-        """Measures widget for the orientation and for the given for_size.
-
-        As an example, if orientation is GTK_ORIENTATION_HORIZONTAL and for_size
-        is 300, this functions will compute the minimum and natural width of widget
-        if it is allocated at a height of 300 pixels.
-        Return measurements are in logical pixel unit within a tuple
-        (int minimum, int natural, int minimum_baseline, int natural_baseline).
-        """
-        if orientation == Gtk.Orientation.HORIZONTAL:
-            width = self.workspace_size.width
-            return (width, width, -1, -1)
-        else:
-            height = self.workspace_size.height
-            return (height, height, -1, -1)
-
-    def _update_adjustement(self) -> None:
-        """Update horizontal and vertical adustements."""
-        if not self.props.hadjustment:
-            return
-        self._update_hadjustement()
-        self._update_vadjustement()
-
-    def _update_hadjustement(self) -> None:
-        """Sets all properties of the hadjustment at once."""
-        self.hadjustment.configure(
-            self.props.hadjustment.get_value(),  # value
-            0,  # lower
-            self.workspace_size.width,  # upper
-            1,  # step increment
-            self.get_allocated_width() // 100,  # page increment
-            self.get_allocated_width(),  # page size
-        )
-
-    def _update_vadjustement(self) -> None:
-        """Sets all properties of the vadjustment at once."""
-        self.vadjustment.configure(
-            self.props.vadjustment.get_value(),  # value
-            0,  # lower
-            self.workspace_size.height,  # upper
-            1,  # step increment
-            self.get_allocated_height() // 100,  # page increment
-            self.get_allocated_height(),  # page size
-        )
+        self._update_adjustements()
 
     def _on_hscroll(self, adjustment: Gtk.Adjustment) -> None:
         self.queue_draw()
 
     def _on_vscroll(self, adjustment: Gtk.Adjustment) -> None:
         self.queue_draw()
+
+    def __str__(self) -> str:
+        return (
+            f"screen: {self.size[0]}{self.unit.abbr} x {self.size[1]}{self.unit.abbr}\n"
+            f"Scale factor: {self.pixel_scale}\n"
+            f"dpi: {self.dpi}\n"
+            f"workspace margins: top={self.workspace_margins.top}px, "
+            f"bottom={self.workspace_margins.bottom}px, "
+            f"left={self.workspace_margins.left}px, "
+            f"right={self.workspace_margins.right}px"
+        )
 
 # END

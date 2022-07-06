@@ -1,0 +1,17 @@
+@define-color dark_color rgba(20,20,20,255);
+
+
+.action{
+
+}
+
+button.circular {
+  min-width: 18px;
+  min-height: 18px;
+  padding: 8px 8px 8px 8px;
+}
+
+headerbar {
+  background-color: @dark_color;
+  padding-left: 24px;
+}

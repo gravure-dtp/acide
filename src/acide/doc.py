@@ -111,10 +111,25 @@ class Document():
     toc in any way. It is your responsibility to refresh such variables as required.
     """
     def __init__(self, file: Path = None) -> 'Document':
-        self._pdf: fitz.Document = None
-        self.pages: List[fitz.Page] = []
+        self._pdf: fitz.Document = fitz.open(file)
+        self._pages: List[fitz.Page] = []
+        self._current = 0
+        self._graphic_page = Page(self._pdf.load_page(self._current))
+        print(fitz.TOOLS.mupdf_warnings())
 
-    def test(self):
+    def get_graphic(self):
+        return self._graphic_page
+
+    def next_page(self):
+        pass
+
+    def previous_page(self):
+        pass
+
+    def home(self):
+        pass
+
+    def end(self):
         pass
 
 

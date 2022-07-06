@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
-<cambalache-project version="0.8.2" target_tk="gtk-4.0">
+<cambalache-project version="0.10.2" target_tk="gtk-4.0">
   <ui>
 	(2,1,"window.ui","AcideWindow.ui",None,None,None,None,None,None)
   </ui>
@@ -10,12 +10,26 @@
   <object>
 	(2,1,"GtkApplicationWindow","AcideWindow",None,None,None,None,None),
 	(2,2,"GtkHeaderBar","header_bar",1,None,"titlebar",None,None),
-	(2,3,"GtkMenuButton",None,2,None,"end",None,None),
-	(2,4,"GtkScrolledWindow","scrolled_window",1,None,None,None,None)
+	(2,3,"GtkMenuButton","menu_button",2,None,"end",None,None),
+	(2,4,"GtkScrolledWindow","scrolled_window",1,None,None,None,None),
+	(2,5,"GtkButton","zoom_out_button",2,None,None,None,None),
+	(2,6,"GtkButton","zoom_init_button",2,None,None,None,None),
+	(2,7,"GtkButton","zoom_in_button",2,None,None,None,None),
+	(2,8,"GtkButton","zoom_fit_button",2,None,None,None,None)
   </object>
   <object_property>
-	(2,1,"GtkWindow","default-height","300",None,None,None,None),
-	(2,1,"GtkWindow","default-width","600",None,None,None,None),
-	(2,3,"GtkMenuButton","icon-name","open-menu-symbolic",None,None,None,None)
+	(2,1,"GtkWindow","default-height","800",None,None,None,None,None),
+	(2,1,"GtkWindow","default-width","1200",None,None,None,None,None),
+	(2,1,"GtkWindow","title","Acide",None,None,None,None,None),
+	(2,3,"GtkMenuButton","icon-name","open-menu-symbolic",None,None,None,None,None),
+	(2,3,"GtkWidget","halign","end",None,None,None,None,None),
+	(2,5,"GtkActionable","action-name","win.zoom_out",None,None,None,None,None),
+	(2,5,"GtkButton","icon-name","zoom-out-symbolic",None,None,None,None,None),
+	(2,6,"GtkActionable","action-name","win.zoom_init",None,None,None,None,None),
+	(2,6,"GtkButton","icon-name","zoom-original-symbolic",None,None,None,None,None),
+	(2,7,"GtkActionable","action-name","win.zoom_in",None,None,None,None,None),
+	(2,7,"GtkButton","icon-name","zoom-in-symbolic",None,None,None,None,None),
+	(2,8,"GtkActionable","action-name","win.zoom_fit",None,None,None,None,None),
+	(2,8,"GtkButton","icon-name","zoom-fit-best-symbolic",None,None,None,None,None)
   </object_property>
 </cambalache-project>

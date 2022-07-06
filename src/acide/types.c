@@ -910,6 +910,7 @@ static const char *__pyx_filename;
 static const char *__pyx_f[] = {
   "acide/types.pyx",
   "stringsource",
+  "acide/types.pxd",
 };
 /* ForceInitThreads.proto */
 #ifndef __PYX_FORCE_INIT_THREADS
@@ -1028,7 +1029,7 @@ struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "acide/types.pxd":40
+/* "acide/types.pxd":57
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1046,7 +1047,7 @@ struct __pyx_obj_5acide_5types_TypedGrid {
 };
 
 
-/* "acide/types.pyx":284
+/* "acide/types.pyx":290
  * @cython.final
  * @cython.freelist(4)
  * cdef class __TypedGridIterator():             # <<<<<<<<<<<<<<
@@ -1187,6 +1188,7 @@ struct __pyx_vtabstruct_5acide_5types_TypedGrid {
   int (*getindex_at)(struct __pyx_obj_5acide_5types_TypedGrid *, int, int);
   struct __pyx_obj_5acide_5types_TypedGrid *(*get_slice)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_inplace)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
+  PyObject *(*slice_ref)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_5acide_5types_TypedGrid *__pyx_vtabptr_5acide_5types_TypedGrid;
 
@@ -1818,16 +1820,6 @@ static int __Pyx_check_twos_complement(void) {
 #define __Pyx_div_const_no_overflow(a, b, overflow) ((a) / (b))
 
 /* BaseCaseSigned.proto */
-static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int constant, int *overflow);
-#define __Pyx_div_const_int_checking_overflow __Pyx_div_int_checking_overflow
-
-/* BaseCaseSigned.proto */
 static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow);
 static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow);
 static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow);
@@ -1836,6 +1828,16 @@ static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b,
 static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow);
 static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long constant, int *overflow);
 #define __Pyx_div_const_long_checking_overflow __Pyx_div_long_checking_overflow
+
+/* BaseCaseSigned.proto */
+static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int constant, int *overflow);
+#define __Pyx_div_const_int_checking_overflow __Pyx_div_int_checking_overflow
 
 /* BaseCaseSigned.proto */
 static CYTHON_INLINE long long __Pyx_add_long_long_checking_overflow(long long a, long long b, int *overflow);
@@ -1957,6 +1959,7 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_getitem_at(struct __pyx_obj_5a
 static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, int __pyx_v_x, int __pyx_v_y); /* proto*/
 static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGrid_get_slice(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, PyObject *__pyx_v_slx, PyObject *__pyx_v_sly); /* proto*/
 static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, PyObject *__pyx_v_slx, PyObject *__pyx_v_sly); /* proto*/
+static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_ref(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, PyObject *__pyx_v_slx, PyObject *__pyx_v_sly); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -4563,8 +4566,8 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_getitem_at(struct __pyx_obj_5a
  *             raise IndexError(f"Grid index ({x}, {y}) out of range")
  * 
  *     cdef int getindex_at(self, int x, int y):             # <<<<<<<<<<<<<<
+ *         # print(f"DBG: shape{self.view.shape} | {self.view}")
  *         x = self.view.shape[0] + x if x < 0 else x
- *         y = self.view.shape[1] + y if y < 0 else y
  */
 
 static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, int __pyx_v_x, int __pyx_v_y) {
@@ -4582,26 +4585,26 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("getindex_at", 0);
 
-  /* "acide/types.pyx":210
- * 
+  /* "acide/types.pyx":211
  *     cdef int getindex_at(self, int x, int y):
+ *         # print(f"DBG: shape{self.view.shape} | {self.view}")
  *         x = self.view.shape[0] + x if x < 0 else x             # <<<<<<<<<<<<<<
  *         y = self.view.shape[1] + y if y < 0 else y
  *         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:
  */
   if (((__pyx_v_x < 0) != 0)) {
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_1 = __pyx_t_5;
   } else {
@@ -4609,26 +4612,26 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
   }
   __pyx_v_x = __pyx_t_1;
 
-  /* "acide/types.pyx":211
- *     cdef int getindex_at(self, int x, int y):
+  /* "acide/types.pyx":212
+ *         # print(f"DBG: shape{self.view.shape} | {self.view}")
  *         x = self.view.shape[0] + x if x < 0 else x
  *         y = self.view.shape[1] + y if y < 0 else y             # <<<<<<<<<<<<<<
  *         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:
  *             return -1
  */
   if (((__pyx_v_y < 0) != 0)) {
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_1 = __pyx_t_5;
   } else {
@@ -4636,7 +4639,7 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
   }
   __pyx_v_y = __pyx_t_1;
 
-  /* "acide/types.pyx":212
+  /* "acide/types.pyx":213
  *         x = self.view.shape[0] + x if x < 0 else x
  *         y = self.view.shape[1] + y if y < 0 else y
  *         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:             # <<<<<<<<<<<<<<
@@ -4649,17 +4652,17 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
     __pyx_t_6 = __pyx_t_7;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (!__pyx_t_7) {
   } else {
@@ -4672,23 +4675,23 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
     __pyx_t_6 = __pyx_t_7;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_6 = __pyx_t_7;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_6) {
 
-    /* "acide/types.pyx":213
+    /* "acide/types.pyx":214
  *         y = self.view.shape[1] + y if y < 0 else y
  *         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:
  *             return -1             # <<<<<<<<<<<<<<
@@ -4698,7 +4701,7 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
     __pyx_r = -1;
     goto __pyx_L0;
 
-    /* "acide/types.pyx":212
+    /* "acide/types.pyx":213
  *         x = self.view.shape[0] + x if x < 0 else x
  *         y = self.view.shape[1] + y if y < 0 else y
  *         if x < 0 or x >= self.view.shape[0] or y < 0 or y >= self.view.shape[1]:             # <<<<<<<<<<<<<<
@@ -4707,7 +4710,7 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
  */
   }
 
-  /* "acide/types.pyx":215
+  /* "acide/types.pyx":216
  *             return -1
  *         else:
  *             return self.view[x, y]             # <<<<<<<<<<<<<<
@@ -4715,11 +4718,11 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
  *     cdef TypedGrid get_slice(self, object slx, object sly):
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -4727,10 +4730,10 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
     PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 215, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     goto __pyx_L0;
@@ -4740,8 +4743,8 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
  *             raise IndexError(f"Grid index ({x}, {y}) out of range")
  * 
  *     cdef int getindex_at(self, int x, int y):             # <<<<<<<<<<<<<<
+ *         # print(f"DBG: shape{self.view.shape} | {self.view}")
  *         x = self.view.shape[0] + x if x < 0 else x
- *         y = self.view.shape[1] + y if y < 0 else y
  */
 
   /* function exit code */
@@ -4756,7 +4759,7 @@ static int __pyx_f_5acide_5types_9TypedGrid_getindex_at(struct __pyx_obj_5acide_
   return __pyx_r;
 }
 
-/* "acide/types.pyx":217
+/* "acide/types.pyx":218
  *             return self.view[x, y]
  * 
  *     cdef TypedGrid get_slice(self, object slx, object sly):             # <<<<<<<<<<<<<<
@@ -4778,25 +4781,25 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __Pyx_INCREF(__pyx_v_slx);
   __Pyx_INCREF(__pyx_v_sly);
 
-  /* "acide/types.pyx":219
+  /* "acide/types.pyx":220
  *     cdef TypedGrid get_slice(self, object slx, object sly):
  *         cdef TypedGrid _tg
  *         _tg = TypedGrid.__new__(TypedGrid, self.pytype)             # <<<<<<<<<<<<<<
  *         _tg._ref = self._ref
  *         slx = slx if slx else slice(None, None, None)
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self->pytype);
   __Pyx_GIVEREF(__pyx_v_self->pytype);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_self->pytype);
-  __pyx_t_2 = ((PyObject *)__pyx_tp_new_5acide_5types_TypedGrid(((PyTypeObject *)__pyx_ptype_5acide_5types_TypedGrid), __pyx_t_1, NULL)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_2 = ((PyObject *)__pyx_tp_new_5acide_5types_TypedGrid(((PyTypeObject *)__pyx_ptype_5acide_5types_TypedGrid), __pyx_t_1, NULL)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(((PyObject *)__pyx_t_2));
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v__tg = ((struct __pyx_obj_5acide_5types_TypedGrid *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "acide/types.pyx":220
+  /* "acide/types.pyx":221
  *         cdef TypedGrid _tg
  *         _tg = TypedGrid.__new__(TypedGrid, self.pytype)
  *         _tg._ref = self._ref             # <<<<<<<<<<<<<<
@@ -4811,14 +4814,14 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __pyx_v__tg->_ref = ((struct __pyx_obj_5acide_5types_TypedGrid *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "acide/types.pyx":221
+  /* "acide/types.pyx":222
  *         _tg = TypedGrid.__new__(TypedGrid, self.pytype)
  *         _tg._ref = self._ref
  *         slx = slx if slx else slice(None, None, None)             # <<<<<<<<<<<<<<
  *         sly = sly if sly else slice(None, None, None)
  *         _tg.view = self.view[slx, sly]
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_slx); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_slx); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
   if (__pyx_t_3) {
     __Pyx_INCREF(__pyx_v_slx);
     __pyx_t_2 = __pyx_v_slx;
@@ -4829,14 +4832,14 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __Pyx_DECREF_SET(__pyx_v_slx, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "acide/types.pyx":222
+  /* "acide/types.pyx":223
  *         _tg._ref = self._ref
  *         slx = slx if slx else slice(None, None, None)
  *         sly = sly if sly else slice(None, None, None)             # <<<<<<<<<<<<<<
  *         _tg.view = self.view[slx, sly]
  *         return _tg
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_sly); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_sly); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
   if (__pyx_t_3) {
     __Pyx_INCREF(__pyx_v_sly);
     __pyx_t_2 = __pyx_v_sly;
@@ -4847,14 +4850,14 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __Pyx_DECREF_SET(__pyx_v_sly, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "acide/types.pyx":223
+  /* "acide/types.pyx":224
  *         slx = slx if slx else slice(None, None, None)
  *         sly = sly if sly else slice(None, None, None)
  *         _tg.view = self.view[slx, sly]             # <<<<<<<<<<<<<<
  *         return _tg
  * 
  */
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_slx);
   __Pyx_GIVEREF(__pyx_v_slx);
@@ -4862,17 +4865,17 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __Pyx_INCREF(__pyx_v_sly);
   __Pyx_GIVEREF(__pyx_v_sly);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_sly);
-  __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_memoryview_type))))) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_memoryview_type))))) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v__tg->view);
   __Pyx_DECREF(((PyObject *)__pyx_v__tg->view));
   __pyx_v__tg->view = ((struct __pyx_memoryview_obj *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "acide/types.pyx":224
+  /* "acide/types.pyx":225
  *         sly = sly if sly else slice(None, None, None)
  *         _tg.view = self.view[slx, sly]
  *         return _tg             # <<<<<<<<<<<<<<
@@ -4884,7 +4887,7 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   __pyx_r = __pyx_v__tg;
   goto __pyx_L0;
 
-  /* "acide/types.pyx":217
+  /* "acide/types.pyx":218
  *             return self.view[x, y]
  * 
  *     cdef TypedGrid get_slice(self, object slx, object sly):             # <<<<<<<<<<<<<<
@@ -4907,7 +4910,7 @@ static struct __pyx_obj_5acide_5types_TypedGrid *__pyx_f_5acide_5types_9TypedGri
   return __pyx_r;
 }
 
-/* "acide/types.pyx":226
+/* "acide/types.pyx":227
  *         return _tg
  * 
  *     cdef slice_inplace(self, object slx, object sly):             # <<<<<<<<<<<<<<
@@ -4928,14 +4931,14 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj
   __Pyx_INCREF(__pyx_v_slx);
   __Pyx_INCREF(__pyx_v_sly);
 
-  /* "acide/types.pyx":227
+  /* "acide/types.pyx":228
  * 
  *     cdef slice_inplace(self, object slx, object sly):
  *         slx = slx if slx else slice(None, None, None)             # <<<<<<<<<<<<<<
  *         sly = sly if sly else slice(None, None, None)
  *         self.view = self.view[slx, sly]
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_slx); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_slx); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 228, __pyx_L1_error)
   if (__pyx_t_2) {
     __Pyx_INCREF(__pyx_v_slx);
     __pyx_t_1 = __pyx_v_slx;
@@ -4946,14 +4949,14 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj
   __Pyx_DECREF_SET(__pyx_v_slx, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "acide/types.pyx":228
+  /* "acide/types.pyx":229
  *     cdef slice_inplace(self, object slx, object sly):
  *         slx = slx if slx else slice(None, None, None)
  *         sly = sly if sly else slice(None, None, None)             # <<<<<<<<<<<<<<
  *         self.view = self.view[slx, sly]
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_sly); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_sly); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
   if (__pyx_t_2) {
     __Pyx_INCREF(__pyx_v_sly);
     __pyx_t_1 = __pyx_v_sly;
@@ -4964,14 +4967,14 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj
   __Pyx_DECREF_SET(__pyx_v_sly, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "acide/types.pyx":229
+  /* "acide/types.pyx":230
  *         slx = slx if slx else slice(None, None, None)
  *         sly = sly if sly else slice(None, None, None)
  *         self.view = self.view[slx, sly]             # <<<<<<<<<<<<<<
  * 
- *     def __setitem__(self, index, item):
+ *     cdef slice_ref(self, object slx, object sly):
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_slx);
   __Pyx_GIVEREF(__pyx_v_slx);
@@ -4979,17 +4982,17 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj
   __Pyx_INCREF(__pyx_v_sly);
   __Pyx_GIVEREF(__pyx_v_sly);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_sly);
-  __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->view), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(0, 229, __pyx_L1_error)
+  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_3);
   __Pyx_GOTREF(__pyx_v_self->view);
   __Pyx_DECREF(((PyObject *)__pyx_v_self->view));
   __pyx_v_self->view = ((struct __pyx_memoryview_obj *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "acide/types.pyx":226
+  /* "acide/types.pyx":227
  *         return _tg
  * 
  *     cdef slice_inplace(self, object slx, object sly):             # <<<<<<<<<<<<<<
@@ -5013,8 +5016,114 @@ static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_inplace(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "acide/types.pyx":231
+/* "acide/types.pyx":232
  *         self.view = self.view[slx, sly]
+ * 
+ *     cdef slice_ref(self, object slx, object sly):             # <<<<<<<<<<<<<<
+ *         slx = slx if slx else slice(None, None, None)
+ *         sly = sly if sly else slice(None, None, None)
+ */
+
+static PyObject *__pyx_f_5acide_5types_9TypedGrid_slice_ref(struct __pyx_obj_5acide_5types_TypedGrid *__pyx_v_self, PyObject *__pyx_v_slx, PyObject *__pyx_v_sly) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("slice_ref", 0);
+  __Pyx_INCREF(__pyx_v_slx);
+  __Pyx_INCREF(__pyx_v_sly);
+
+  /* "acide/types.pyx":233
+ * 
+ *     cdef slice_ref(self, object slx, object sly):
+ *         slx = slx if slx else slice(None, None, None)             # <<<<<<<<<<<<<<
+ *         sly = sly if sly else slice(None, None, None)
+ *         self.view = self._ref.view[slx, sly]
+ */
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_slx); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 233, __pyx_L1_error)
+  if (__pyx_t_2) {
+    __Pyx_INCREF(__pyx_v_slx);
+    __pyx_t_1 = __pyx_v_slx;
+  } else {
+    __Pyx_INCREF(__pyx_slice__3);
+    __pyx_t_1 = __pyx_slice__3;
+  }
+  __Pyx_DECREF_SET(__pyx_v_slx, __pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "acide/types.pyx":234
+ *     cdef slice_ref(self, object slx, object sly):
+ *         slx = slx if slx else slice(None, None, None)
+ *         sly = sly if sly else slice(None, None, None)             # <<<<<<<<<<<<<<
+ *         self.view = self._ref.view[slx, sly]
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_sly); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (__pyx_t_2) {
+    __Pyx_INCREF(__pyx_v_sly);
+    __pyx_t_1 = __pyx_v_sly;
+  } else {
+    __Pyx_INCREF(__pyx_slice__3);
+    __pyx_t_1 = __pyx_slice__3;
+  }
+  __Pyx_DECREF_SET(__pyx_v_sly, __pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "acide/types.pyx":235
+ *         slx = slx if slx else slice(None, None, None)
+ *         sly = sly if sly else slice(None, None, None)
+ *         self.view = self._ref.view[slx, sly]             # <<<<<<<<<<<<<<
+ * 
+ *     def __setitem__(self, index, item):
+ */
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_v_slx);
+  __Pyx_GIVEREF(__pyx_v_slx);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_slx);
+  __Pyx_INCREF(__pyx_v_sly);
+  __Pyx_GIVEREF(__pyx_v_sly);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_sly);
+  __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->_ref->view), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(0, 235, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_3);
+  __Pyx_GOTREF(__pyx_v_self->view);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->view));
+  __pyx_v_self->view = ((struct __pyx_memoryview_obj *)__pyx_t_3);
+  __pyx_t_3 = 0;
+
+  /* "acide/types.pyx":232
+ *         self.view = self.view[slx, sly]
+ * 
+ *     cdef slice_ref(self, object slx, object sly):             # <<<<<<<<<<<<<<
+ *         slx = slx if slx else slice(None, None, None)
+ *         sly = sly if sly else slice(None, None, None)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.types.TypedGrid.slice_ref", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_slx);
+  __Pyx_XDECREF(__pyx_v_sly);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pyx":237
+ *         self.view = self._ref.view[slx, sly]
  * 
  *     def __setitem__(self, index, item):             # <<<<<<<<<<<<<<
  *         cdef int indice
@@ -5053,25 +5162,25 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "acide/types.pyx":233
+  /* "acide/types.pyx":239
  *     def __setitem__(self, index, item):
  *         cdef int indice
  *         if not self.view:             # <<<<<<<<<<<<<<
  *             raise IndexError(f"Grid index {index} out of range")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->view)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->view)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
   __pyx_t_2 = ((!__pyx_t_1) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "acide/types.pyx":234
+    /* "acide/types.pyx":240
  *         cdef int indice
  *         if not self.view:
  *             raise IndexError(f"Grid index {index} out of range")             # <<<<<<<<<<<<<<
  * 
  *         if test_sequence(index, (int, int)):
  */
-    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = 0;
     __pyx_t_5 = 127;
@@ -5079,7 +5188,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
     __pyx_t_4 += 11;
     __Pyx_GIVEREF(__pyx_kp_u_Grid_index);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Grid_index);
-    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
     __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
@@ -5090,17 +5199,17 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
     __pyx_t_4 += 13;
     __Pyx_GIVEREF(__pyx_kp_u_out_of_range);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_out_of_range);
-    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 234, __pyx_L1_error)
+    __PYX_ERR(0, 240, __pyx_L1_error)
 
-    /* "acide/types.pyx":233
+    /* "acide/types.pyx":239
  *     def __setitem__(self, index, item):
  *         cdef int indice
  *         if not self.view:             # <<<<<<<<<<<<<<
@@ -5109,14 +5218,14 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  */
   }
 
-  /* "acide/types.pyx":236
+  /* "acide/types.pyx":242
  *             raise IndexError(f"Grid index {index} out of range")
  * 
  *         if test_sequence(index, (int, int)):             # <<<<<<<<<<<<<<
  *             if isinstance(item, self._ref.pytype) or item is None:
  *                 indice = self.getindex_at(index[0], index[1])
  */
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(((PyObject *)(&PyInt_Type)));
   __Pyx_GIVEREF(((PyObject *)(&PyInt_Type)));
@@ -5128,7 +5237,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (likely(__pyx_t_2)) {
 
-    /* "acide/types.pyx":237
+    /* "acide/types.pyx":243
  * 
  *         if test_sequence(index, (int, int)):
  *             if isinstance(item, self._ref.pytype) or item is None:             # <<<<<<<<<<<<<<
@@ -5137,7 +5246,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  */
     __pyx_t_3 = __pyx_v_self->_ref->pytype;
     __Pyx_INCREF(__pyx_t_3);
-    __pyx_t_1 = PyObject_IsInstance(__pyx_v_item, __pyx_t_3); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_1 = PyObject_IsInstance(__pyx_v_item, __pyx_t_3); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 243, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_7 = (__pyx_t_1 != 0);
     if (!__pyx_t_7) {
@@ -5151,24 +5260,24 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
     __pyx_L6_bool_binop_done:;
     if (likely(__pyx_t_2)) {
 
-      /* "acide/types.pyx":238
+      /* "acide/types.pyx":244
  *         if test_sequence(index, (int, int)):
  *             if isinstance(item, self._ref.pytype) or item is None:
  *                 indice = self.getindex_at(index[0], index[1])             # <<<<<<<<<<<<<<
  *                 if indice > -1:
  *                     self._ref.items[indice] = item
  */
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 238, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 238, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_v_indice = ((struct __pyx_vtabstruct_5acide_5types_TypedGrid *)__pyx_v_self->__pyx_vtab)->getindex_at(__pyx_v_self, __pyx_t_8, __pyx_t_9);
 
-      /* "acide/types.pyx":239
+      /* "acide/types.pyx":245
  *             if isinstance(item, self._ref.pytype) or item is None:
  *                 indice = self.getindex_at(index[0], index[1])
  *                 if indice > -1:             # <<<<<<<<<<<<<<
@@ -5178,7 +5287,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
       __pyx_t_2 = ((__pyx_v_indice > -1L) != 0);
       if (likely(__pyx_t_2)) {
 
-        /* "acide/types.pyx":240
+        /* "acide/types.pyx":246
  *                 indice = self.getindex_at(index[0], index[1])
  *                 if indice > -1:
  *                     self._ref.items[indice] = item             # <<<<<<<<<<<<<<
@@ -5187,11 +5296,11 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  */
         if (unlikely(__pyx_v_self->_ref->items == Py_None)) {
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 240, __pyx_L1_error)
+          __PYX_ERR(0, 246, __pyx_L1_error)
         }
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_self->_ref->items, __pyx_v_indice, __pyx_v_item, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 240, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_self->_ref->items, __pyx_v_indice, __pyx_v_item, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 246, __pyx_L1_error)
 
-        /* "acide/types.pyx":239
+        /* "acide/types.pyx":245
  *             if isinstance(item, self._ref.pytype) or item is None:
  *                 indice = self.getindex_at(index[0], index[1])
  *                 if indice > -1:             # <<<<<<<<<<<<<<
@@ -5201,7 +5310,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
         goto __pyx_L8;
       }
 
-      /* "acide/types.pyx":242
+      /* "acide/types.pyx":248
  *                     self._ref.items[indice] = item
  *                 else:
  *                     raise IndexError(             # <<<<<<<<<<<<<<
@@ -5210,14 +5319,14 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  */
       /*else*/ {
 
-        /* "acide/types.pyx":243
+        /* "acide/types.pyx":249
  *                 else:
  *                     raise IndexError(
  *                         f"Grid index ({index[0]}, {index[1]}) out of range"             # <<<<<<<<<<<<<<
  *                     )
  *             else:
  */
-        __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __pyx_t_4 = 0;
         __pyx_t_5 = 127;
@@ -5225,9 +5334,9 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
         __pyx_t_4 += 12;
         __Pyx_GIVEREF(__pyx_kp_u_Grid_index_2);
         PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Grid_index_2);
-        __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_5;
@@ -5239,9 +5348,9 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
         __pyx_t_4 += 2;
         __Pyx_GIVEREF(__pyx_kp_u__8);
         PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u__8);
-        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_10, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_10, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
@@ -5253,27 +5362,27 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
         __pyx_t_4 += 14;
         __Pyx_GIVEREF(__pyx_kp_u_out_of_range_2);
         PyTuple_SET_ITEM(__pyx_t_3, 4, __pyx_kp_u_out_of_range_2);
-        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "acide/types.pyx":242
+        /* "acide/types.pyx":248
  *                     self._ref.items[indice] = item
  *                 else:
  *                     raise IndexError(             # <<<<<<<<<<<<<<
  *                         f"Grid index ({index[0]}, {index[1]}) out of range"
  *                     )
  */
-        __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 248, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_Raise(__pyx_t_3, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 242, __pyx_L1_error)
+        __PYX_ERR(0, 248, __pyx_L1_error)
       }
       __pyx_L8:;
 
-      /* "acide/types.pyx":237
+      /* "acide/types.pyx":243
  * 
  *         if test_sequence(index, (int, int)):
  *             if isinstance(item, self._ref.pytype) or item is None:             # <<<<<<<<<<<<<<
@@ -5283,7 +5392,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
       goto __pyx_L5;
     }
 
-    /* "acide/types.pyx":246
+    /* "acide/types.pyx":252
  *                     )
  *             else:
  *                 raise ValueError(             # <<<<<<<<<<<<<<
@@ -5292,14 +5401,14 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  */
     /*else*/ {
 
-      /* "acide/types.pyx":247
+      /* "acide/types.pyx":253
  *             else:
  *                 raise ValueError(
  *                     f"item should be <None> or an instance "             # <<<<<<<<<<<<<<
  *                     f"of <{self._ref.pytype.__name__}>"
  *                     f" not <{item.__class__.__name__}>"
  */
-      __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 247, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 253, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = 0;
       __pyx_t_5 = 127;
@@ -5308,16 +5417,16 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
       __Pyx_GIVEREF(__pyx_kp_u_item_should_be_None_or_an_instan);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_item_should_be_None_or_an_instan);
 
-      /* "acide/types.pyx":248
+      /* "acide/types.pyx":254
  *                 raise ValueError(
  *                     f"item should be <None> or an instance "
  *                     f"of <{self._ref.pytype.__name__}>"             # <<<<<<<<<<<<<<
  *                     f" not <{item.__class__.__name__}>"
  *                 )
  */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_ref->pytype, __pyx_n_s_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_ref->pytype, __pyx_n_s_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 254, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 248, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 254, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_5;
@@ -5330,19 +5439,19 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
       __Pyx_GIVEREF(__pyx_kp_u_not);
       PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_not);
 
-      /* "acide/types.pyx":249
+      /* "acide/types.pyx":255
  *                     f"item should be <None> or an instance "
  *                     f"of <{self._ref.pytype.__name__}>"
  *                     f" not <{item.__class__.__name__}>"             # <<<<<<<<<<<<<<
  *                 )
  *         else:
  */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_class); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_class); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 255, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 249, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 255, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_5;
@@ -5355,34 +5464,34 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
       __Pyx_GIVEREF(__pyx_kp_u__14);
       PyTuple_SET_ITEM(__pyx_t_3, 4, __pyx_kp_u__14);
 
-      /* "acide/types.pyx":247
+      /* "acide/types.pyx":253
  *             else:
  *                 raise ValueError(
  *                     f"item should be <None> or an instance "             # <<<<<<<<<<<<<<
  *                     f"of <{self._ref.pytype.__name__}>"
  *                     f" not <{item.__class__.__name__}>"
  */
-      __pyx_t_10 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 247, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 253, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "acide/types.pyx":246
+      /* "acide/types.pyx":252
  *                     )
  *             else:
  *                 raise ValueError(             # <<<<<<<<<<<<<<
  *                     f"item should be <None> or an instance "
  *                     f"of <{self._ref.pytype.__name__}>"
  */
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 246, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 246, __pyx_L1_error)
+      __PYX_ERR(0, 252, __pyx_L1_error)
     }
     __pyx_L5:;
 
-    /* "acide/types.pyx":236
+    /* "acide/types.pyx":242
  *             raise IndexError(f"Grid index {index} out of range")
  * 
  *         if test_sequence(index, (int, int)):             # <<<<<<<<<<<<<<
@@ -5392,7 +5501,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
     goto __pyx_L4;
   }
 
-  /* "acide/types.pyx":252
+  /* "acide/types.pyx":258
  *                 )
  *         else:
  *             raise TypeError(f"index should be 2 length sequence of int not {index}")             # <<<<<<<<<<<<<<
@@ -5400,22 +5509,22 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
  *     def __delitem__(self, index):
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_index_should_be_2_length_sequenc, __pyx_t_3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 252, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_index_should_be_2_length_sequenc, __pyx_t_3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 252, __pyx_L1_error)
+    __PYX_ERR(0, 258, __pyx_L1_error)
   }
   __pyx_L4:;
 
-  /* "acide/types.pyx":231
- *         self.view = self.view[slx, sly]
+  /* "acide/types.pyx":237
+ *         self.view = self._ref.view[slx, sly]
  * 
  *     def __setitem__(self, index, item):             # <<<<<<<<<<<<<<
  *         cdef int indice
@@ -5436,7 +5545,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_10__setitem__(struct __pyx_obj_5aci
   return __pyx_r;
 }
 
-/* "acide/types.pyx":254
+/* "acide/types.pyx":260
  *             raise TypeError(f"index should be 2 length sequence of int not {index}")
  * 
  *     def __delitem__(self, index):             # <<<<<<<<<<<<<<
@@ -5475,25 +5584,25 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__delitem__", 0);
 
-  /* "acide/types.pyx":256
+  /* "acide/types.pyx":262
  *     def __delitem__(self, index):
  *         cdef int indice
  *         if not self.view:             # <<<<<<<<<<<<<<
  *             raise IndexError(f"Grid index {index} out of range")
  *         if test_sequence(index, (int, int)):
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->view)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->view)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
   __pyx_t_2 = ((!__pyx_t_1) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "acide/types.pyx":257
+    /* "acide/types.pyx":263
  *         cdef int indice
  *         if not self.view:
  *             raise IndexError(f"Grid index {index} out of range")             # <<<<<<<<<<<<<<
  *         if test_sequence(index, (int, int)):
  *             indice = self.getindex_at(index[0], index[1])
  */
-    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = 0;
     __pyx_t_5 = 127;
@@ -5501,7 +5610,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
     __pyx_t_4 += 11;
     __Pyx_GIVEREF(__pyx_kp_u_Grid_index);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Grid_index);
-    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
     __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
@@ -5512,17 +5621,17 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
     __pyx_t_4 += 13;
     __Pyx_GIVEREF(__pyx_kp_u_out_of_range);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_out_of_range);
-    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 257, __pyx_L1_error)
+    __PYX_ERR(0, 263, __pyx_L1_error)
 
-    /* "acide/types.pyx":256
+    /* "acide/types.pyx":262
  *     def __delitem__(self, index):
  *         cdef int indice
  *         if not self.view:             # <<<<<<<<<<<<<<
@@ -5531,14 +5640,14 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
  */
   }
 
-  /* "acide/types.pyx":258
+  /* "acide/types.pyx":264
  *         if not self.view:
  *             raise IndexError(f"Grid index {index} out of range")
  *         if test_sequence(index, (int, int)):             # <<<<<<<<<<<<<<
  *             indice = self.getindex_at(index[0], index[1])
  *             if indice > -1:
  */
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(((PyObject *)(&PyInt_Type)));
   __Pyx_GIVEREF(((PyObject *)(&PyInt_Type)));
@@ -5550,24 +5659,24 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (likely(__pyx_t_2)) {
 
-    /* "acide/types.pyx":259
+    /* "acide/types.pyx":265
  *             raise IndexError(f"Grid index {index} out of range")
  *         if test_sequence(index, (int, int)):
  *             indice = self.getindex_at(index[0], index[1])             # <<<<<<<<<<<<<<
  *             if indice > -1:
  *                 self._ref.items[indice] = None
  */
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_indice = ((struct __pyx_vtabstruct_5acide_5types_TypedGrid *)__pyx_v_self->__pyx_vtab)->getindex_at(__pyx_v_self, __pyx_t_7, __pyx_t_8);
 
-    /* "acide/types.pyx":260
+    /* "acide/types.pyx":266
  *         if test_sequence(index, (int, int)):
  *             indice = self.getindex_at(index[0], index[1])
  *             if indice > -1:             # <<<<<<<<<<<<<<
@@ -5577,7 +5686,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
     __pyx_t_2 = ((__pyx_v_indice > -1L) != 0);
     if (likely(__pyx_t_2)) {
 
-      /* "acide/types.pyx":261
+      /* "acide/types.pyx":267
  *             indice = self.getindex_at(index[0], index[1])
  *             if indice > -1:
  *                 self._ref.items[indice] = None             # <<<<<<<<<<<<<<
@@ -5586,11 +5695,11 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
  */
       if (unlikely(__pyx_v_self->_ref->items == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 261, __pyx_L1_error)
+        __PYX_ERR(0, 267, __pyx_L1_error)
       }
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_self->_ref->items, __pyx_v_indice, Py_None, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_self->_ref->items, __pyx_v_indice, Py_None, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 267, __pyx_L1_error)
 
-      /* "acide/types.pyx":260
+      /* "acide/types.pyx":266
  *         if test_sequence(index, (int, int)):
  *             indice = self.getindex_at(index[0], index[1])
  *             if indice > -1:             # <<<<<<<<<<<<<<
@@ -5600,7 +5709,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
       goto __pyx_L5;
     }
 
-    /* "acide/types.pyx":263
+    /* "acide/types.pyx":269
  *                 self._ref.items[indice] = None
  *             else:
  *                 raise IndexError(             # <<<<<<<<<<<<<<
@@ -5609,14 +5718,14 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
  */
     /*else*/ {
 
-      /* "acide/types.pyx":264
+      /* "acide/types.pyx":270
  *             else:
  *                 raise IndexError(
  *                     f"Grid index ({index[0]}, {index[1]}) out of range"             # <<<<<<<<<<<<<<
  *                 )
  *         else:
  */
-      __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = 0;
       __pyx_t_5 = 127;
@@ -5624,9 +5733,9 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
       __pyx_t_4 += 12;
       __Pyx_GIVEREF(__pyx_kp_u_Grid_index_2);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Grid_index_2);
-      __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_index, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_9 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) : __pyx_t_5;
@@ -5638,9 +5747,9 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
       __pyx_t_4 += 2;
       __Pyx_GIVEREF(__pyx_kp_u__8);
       PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u__8);
-      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_index, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_9, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_9, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
@@ -5652,27 +5761,27 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
       __pyx_t_4 += 14;
       __Pyx_GIVEREF(__pyx_kp_u_out_of_range_2);
       PyTuple_SET_ITEM(__pyx_t_3, 4, __pyx_kp_u_out_of_range_2);
-      __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 264, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 5, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "acide/types.pyx":263
+      /* "acide/types.pyx":269
  *                 self._ref.items[indice] = None
  *             else:
  *                 raise IndexError(             # <<<<<<<<<<<<<<
  *                     f"Grid index ({index[0]}, {index[1]}) out of range"
  *                 )
  */
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_IndexError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 269, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 263, __pyx_L1_error)
+      __PYX_ERR(0, 269, __pyx_L1_error)
     }
     __pyx_L5:;
 
-    /* "acide/types.pyx":258
+    /* "acide/types.pyx":264
  *         if not self.view:
  *             raise IndexError(f"Grid index {index} out of range")
  *         if test_sequence(index, (int, int)):             # <<<<<<<<<<<<<<
@@ -5682,7 +5791,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
     goto __pyx_L4;
   }
 
-  /* "acide/types.pyx":267
+  /* "acide/types.pyx":273
  *                 )
  *         else:
  *             raise TypeError(             # <<<<<<<<<<<<<<
@@ -5691,36 +5800,36 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
  */
   /*else*/ {
 
-    /* "acide/types.pyx":268
+    /* "acide/types.pyx":274
  *         else:
  *             raise TypeError(
  *                 f"index should be 2 length sequence of int not {index}"             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_index, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_index_should_be_2_length_sequenc, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 268, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_index_should_be_2_length_sequenc, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "acide/types.pyx":267
+    /* "acide/types.pyx":273
  *                 )
  *         else:
  *             raise TypeError(             # <<<<<<<<<<<<<<
  *                 f"index should be 2 length sequence of int not {index}"
  *             )
  */
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 267, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 273, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 267, __pyx_L1_error)
+    __PYX_ERR(0, 273, __pyx_L1_error)
   }
   __pyx_L4:;
 
-  /* "acide/types.pyx":254
+  /* "acide/types.pyx":260
  *             raise TypeError(f"index should be 2 length sequence of int not {index}")
  * 
  *     def __delitem__(self, index):             # <<<<<<<<<<<<<<
@@ -5742,7 +5851,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_12__delitem__(struct __pyx_obj_5aci
   return __pyx_r;
 }
 
-/* "acide/types.pyx":271
+/* "acide/types.pyx":277
  *             )
  * 
  *     def __contains__(self, item):             # <<<<<<<<<<<<<<
@@ -5779,7 +5888,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__contains__", 0);
 
-  /* "acide/types.pyx":272
+  /* "acide/types.pyx":278
  * 
  *     def __contains__(self, item):
  *         if isinstance(item, self._ref.pytype) or item is None:             # <<<<<<<<<<<<<<
@@ -5788,7 +5897,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
  */
   __pyx_t_2 = __pyx_v_self->_ref->pytype;
   __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_2); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_3 = PyObject_IsInstance(__pyx_v_item, __pyx_t_2); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = (__pyx_t_3 != 0);
   if (!__pyx_t_4) {
@@ -5802,7 +5911,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "acide/types.pyx":273
+    /* "acide/types.pyx":279
  *     def __contains__(self, item):
  *         if isinstance(item, self._ref.pytype) or item is None:
  *             for obj in self:             # <<<<<<<<<<<<<<
@@ -5813,26 +5922,26 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
       __pyx_t_2 = ((PyObject *)__pyx_v_self); __Pyx_INCREF(__pyx_t_2); __pyx_t_5 = 0;
       __pyx_t_6 = NULL;
     } else {
-      __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
+      __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 273, __pyx_L1_error)
+      __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 279, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_6)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 273, __pyx_L1_error)
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 273, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 273, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 273, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -5842,7 +5951,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 273, __pyx_L1_error)
+            else __PYX_ERR(0, 279, __pyx_L1_error)
           }
           break;
         }
@@ -5851,7 +5960,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
       __Pyx_XDECREF_SET(__pyx_v_obj, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "acide/types.pyx":274
+      /* "acide/types.pyx":280
  *         if isinstance(item, self._ref.pytype) or item is None:
  *             for obj in self:
  *                 if obj is item:             # <<<<<<<<<<<<<<
@@ -5862,7 +5971,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
       __pyx_t_3 = (__pyx_t_1 != 0);
       if (__pyx_t_3) {
 
-        /* "acide/types.pyx":275
+        /* "acide/types.pyx":281
  *             for obj in self:
  *                 if obj is item:
  *                     return True             # <<<<<<<<<<<<<<
@@ -5873,7 +5982,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         goto __pyx_L0;
 
-        /* "acide/types.pyx":274
+        /* "acide/types.pyx":280
  *         if isinstance(item, self._ref.pytype) or item is None:
  *             for obj in self:
  *                 if obj is item:             # <<<<<<<<<<<<<<
@@ -5882,7 +5991,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
  */
       }
 
-      /* "acide/types.pyx":273
+      /* "acide/types.pyx":279
  *     def __contains__(self, item):
  *         if isinstance(item, self._ref.pytype) or item is None:
  *             for obj in self:             # <<<<<<<<<<<<<<
@@ -5892,7 +6001,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "acide/types.pyx":272
+    /* "acide/types.pyx":278
  * 
  *     def __contains__(self, item):
  *         if isinstance(item, self._ref.pytype) or item is None:             # <<<<<<<<<<<<<<
@@ -5901,7 +6010,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
  */
   }
 
-  /* "acide/types.pyx":276
+  /* "acide/types.pyx":282
  *                 if obj is item:
  *                     return True
  *         return False             # <<<<<<<<<<<<<<
@@ -5911,7 +6020,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "acide/types.pyx":271
+  /* "acide/types.pyx":277
  *             )
  * 
  *     def __contains__(self, item):             # <<<<<<<<<<<<<<
@@ -5931,7 +6040,7 @@ static int __pyx_pf_5acide_5types_9TypedGrid_14__contains__(struct __pyx_obj_5ac
   return __pyx_r;
 }
 
-/* "acide/types.pyx":278
+/* "acide/types.pyx":284
  *         return False
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -5961,7 +6070,7 @@ static PyObject *__pyx_pf_5acide_5types_9TypedGrid_16__iter__(struct __pyx_obj_5
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "acide/types.pyx":279
+  /* "acide/types.pyx":285
  * 
  *     def __iter__(self):
  *         return __TypedGridIterator(self)             # <<<<<<<<<<<<<<
@@ -5969,13 +6078,13 @@ static PyObject *__pyx_pf_5acide_5types_9TypedGrid_16__iter__(struct __pyx_obj_5
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5acide_5types___TypedGridIterator), ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5acide_5types___TypedGridIterator), ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "acide/types.pyx":278
+  /* "acide/types.pyx":284
  *         return False
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -6109,7 +6218,7 @@ static PyObject *__pyx_pf_5acide_5types_9TypedGrid_20__setstate_cython__(CYTHON_
   return __pyx_r;
 }
 
-/* "acide/types.pyx":288
+/* "acide/types.pyx":294
  *     cdef TypedGrid grid
  * 
  *     def __cinit__(self, TypedGrid grid not None):             # <<<<<<<<<<<<<<
@@ -6146,7 +6255,7 @@ static int __pyx_pw_5acide_5types_19__TypedGridIterator_1__cinit__(PyObject *__p
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 288, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 294, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -6157,13 +6266,13 @@ static int __pyx_pw_5acide_5types_19__TypedGridIterator_1__cinit__(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 288, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 294, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("acide.types.__TypedGridIterator.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid), __pyx_ptype_5acide_5types_TypedGrid, 0, "grid", 0))) __PYX_ERR(0, 288, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid), __pyx_ptype_5acide_5types_TypedGrid, 0, "grid", 0))) __PYX_ERR(0, 294, __pyx_L1_error)
   __pyx_r = __pyx_pf_5acide_5types_19__TypedGridIterator___cinit__(((struct __pyx_obj_5acide_5types___TypedGridIterator *)__pyx_v_self), __pyx_v_grid);
 
   /* function exit code */
@@ -6187,7 +6296,7 @@ static int __pyx_pf_5acide_5types_19__TypedGridIterator___cinit__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "acide/types.pyx":289
+  /* "acide/types.pyx":295
  * 
  *     def __cinit__(self, TypedGrid grid not None):
  *         self.grid = grid             # <<<<<<<<<<<<<<
@@ -6200,7 +6309,7 @@ static int __pyx_pf_5acide_5types_19__TypedGridIterator___cinit__(struct __pyx_o
   __Pyx_DECREF(((PyObject *)__pyx_v_self->grid));
   __pyx_v_self->grid = __pyx_v_grid;
 
-  /* "acide/types.pyx":290
+  /* "acide/types.pyx":296
  *     def __cinit__(self, TypedGrid grid not None):
  *         self.grid = grid
  *         self.index = 0             # <<<<<<<<<<<<<<
@@ -6209,32 +6318,32 @@ static int __pyx_pf_5acide_5types_19__TypedGridIterator___cinit__(struct __pyx_o
  */
   __pyx_v_self->index = 0;
 
-  /* "acide/types.pyx":291
+  /* "acide/types.pyx":297
  *         self.grid = grid
  *         self.index = 0
  *         self._len = grid.view.shape[0] * grid.view.shape[1]             # <<<<<<<<<<<<<<
  * 
  *     def __iter__(self):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Multiply(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Multiply(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->_len = __pyx_t_4;
 
-  /* "acide/types.pyx":288
+  /* "acide/types.pyx":294
  *     cdef TypedGrid grid
  * 
  *     def __cinit__(self, TypedGrid grid not None):             # <<<<<<<<<<<<<<
@@ -6256,7 +6365,7 @@ static int __pyx_pf_5acide_5types_19__TypedGridIterator___cinit__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "acide/types.pyx":293
+/* "acide/types.pyx":299
  *         self._len = grid.view.shape[0] * grid.view.shape[1]
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -6282,7 +6391,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_2__iter__(struct _
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "acide/types.pyx":294
+  /* "acide/types.pyx":300
  * 
  *     def __iter__(self):
  *         return self             # <<<<<<<<<<<<<<
@@ -6294,7 +6403,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_2__iter__(struct _
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "acide/types.pyx":293
+  /* "acide/types.pyx":299
  *         self._len = grid.view.shape[0] * grid.view.shape[1]
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -6309,7 +6418,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_2__iter__(struct _
   return __pyx_r;
 }
 
-/* "acide/types.pyx":296
+/* "acide/types.pyx":302
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -6346,7 +6455,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__next__", 0);
 
-  /* "acide/types.pyx":297
+  /* "acide/types.pyx":303
  * 
  *     def __next__(self):
  *         if self.index == self._len:             # <<<<<<<<<<<<<<
@@ -6356,7 +6465,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
   __pyx_t_1 = ((__pyx_v_self->index == __pyx_v_self->_len) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "acide/types.pyx":298
+    /* "acide/types.pyx":304
  *     def __next__(self):
  *         if self.index == self._len:
  *             self.index = 0             # <<<<<<<<<<<<<<
@@ -6365,7 +6474,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
  */
     __pyx_v_self->index = 0;
 
-    /* "acide/types.pyx":299
+    /* "acide/types.pyx":305
  *         if self.index == self._len:
  *             self.index = 0
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -6373,9 +6482,9 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
  *             self.grid.view[
  */
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
-    __PYX_ERR(0, 299, __pyx_L1_error)
+    __PYX_ERR(0, 305, __pyx_L1_error)
 
-    /* "acide/types.pyx":297
+    /* "acide/types.pyx":303
  * 
  *     def __next__(self):
  *         if self.index == self._len:             # <<<<<<<<<<<<<<
@@ -6384,7 +6493,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
  */
   }
 
-  /* "acide/types.pyx":300
+  /* "acide/types.pyx":306
  *             self.index = 0
  *             raise StopIteration
  *         item = self.grid._ref.items[             # <<<<<<<<<<<<<<
@@ -6393,55 +6502,55 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
  */
   if (unlikely(__pyx_v_self->grid->_ref->items == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 300, __pyx_L1_error)
+    __PYX_ERR(0, 306, __pyx_L1_error)
   }
 
-  /* "acide/types.pyx":302
+  /* "acide/types.pyx":308
  *         item = self.grid._ref.items[
  *             self.grid.view[
  *                 self.index % self.grid.view.shape[0],             # <<<<<<<<<<<<<<
  *                 self.index // self.grid.view.shape[0]
  *             ]
  */
-  __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_self->index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_self->index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Remainder(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Remainder(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/types.pyx":303
+  /* "acide/types.pyx":309
  *             self.grid.view[
  *                 self.index % self.grid.view.shape[0],
  *                 self.index // self.grid.view.shape[0]             # <<<<<<<<<<<<<<
  *             ]
  *         ]
  */
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_self->index); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_self->index); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->grid->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_FloorDivide(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_FloorDivide(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "acide/types.pyx":301
+  /* "acide/types.pyx":307
  *             raise StopIteration
  *         item = self.grid._ref.items[
  *             self.grid.view[             # <<<<<<<<<<<<<<
  *                 self.index % self.grid.view.shape[0],
  *                 self.index // self.grid.view.shape[0]
  */
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -6449,24 +6558,24 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
   PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_2);
   __pyx_t_3 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->grid->view), __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self->grid->view), __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "acide/types.pyx":300
+  /* "acide/types.pyx":306
  *             self.index = 0
  *             raise StopIteration
  *         item = self.grid._ref.items[             # <<<<<<<<<<<<<<
  *             self.grid.view[
  *                 self.index % self.grid.view.shape[0],
  */
-  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_self->grid->_ref->items, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_self->grid->_ref->items, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_item = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "acide/types.pyx":306
+  /* "acide/types.pyx":312
  *             ]
  *         ]
  *         self.index += 1             # <<<<<<<<<<<<<<
@@ -6477,11 +6586,11 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
   __pyx_t_7 = __Pyx_add_const_Py_ssize_t_checking_overflow(__pyx_v_self->index, 1, &__pyx_t_6);
   if (unlikely(__pyx_t_6)) {
     PyErr_SetString(PyExc_OverflowError, "value too large");
-    __PYX_ERR(0, 306, __pyx_L1_error)
+    __PYX_ERR(0, 312, __pyx_L1_error)
   }
   __pyx_v_self->index = __pyx_t_7;
 
-  /* "acide/types.pyx":307
+  /* "acide/types.pyx":313
  *         ]
  *         self.index += 1
  *         return item             # <<<<<<<<<<<<<<
@@ -6493,7 +6602,7 @@ static PyObject *__pyx_pf_5acide_5types_19__TypedGridIterator_4__next__(struct _
   __pyx_r = __pyx_v_item;
   goto __pyx_L0;
 
-  /* "acide/types.pyx":296
+  /* "acide/types.pyx":302
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -6687,6 +6796,59 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
 /* "acide/types.pxd":27
  * 
  * 
+ * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b > a: return b
+ *     else: return a
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_b) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("cimax", 0);
+
+  /* "acide/types.pxd":28
+ * 
+ * cdef inline int cimax(int a, int b):
+ *     if b > a: return b             # <<<<<<<<<<<<<<
+ *     else: return a
+ * 
+ */
+  __pyx_t_1 = ((__pyx_v_b > __pyx_v_a) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_b;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":29
+ * cdef inline int cimax(int a, int b):
+ *     if b > a: return b
+ *     else: return a             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_r = __pyx_v_a;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":27
+ * 
+ * 
+ * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b > a: return b
+ *     else: return a
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":32
+ * 
+ * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
  *     if b < a: return b
  *     else: return a
@@ -6698,7 +6860,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cmin", 0);
 
-  /* "acide/types.pxd":28
+  /* "acide/types.pxd":33
  * 
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b             # <<<<<<<<<<<<<<
@@ -6711,7 +6873,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":29
+  /* "acide/types.pxd":34
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -6723,7 +6885,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":27
+  /* "acide/types.pxd":32
  * 
  * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
@@ -6737,23 +6899,76 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   return __pyx_r;
 }
 
-/* "acide/types.pxd":32
+/* "acide/types.pxd":37
  * 
  * 
- * cdef inline int cround(double number):             # <<<<<<<<<<<<<<
+ * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b < a: return b
+ *     else: return a
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_b) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("cimin", 0);
+
+  /* "acide/types.pxd":38
+ * 
+ * cdef inline int cimin(int a, int b):
+ *     if b < a: return b             # <<<<<<<<<<<<<<
+ *     else: return a
+ * 
+ */
+  __pyx_t_1 = ((__pyx_v_b < __pyx_v_a) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_b;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":39
+ * cdef inline int cimin(int a, int b):
+ *     if b < a: return b
+ *     else: return a             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_r = __pyx_v_a;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":37
+ * 
+ * 
+ * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b < a: return b
+ *     else: return a
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":42
+ * 
+ * 
+ * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)
  */
 
-static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
+static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  __Pyx_RefNannySetupContext("cround", 0);
+  __Pyx_RefNannySetupContext("ciround", 0);
 
-  /* "acide/types.pxd":33
+  /* "acide/types.pxd":43
  * 
- * cdef inline int cround(double number):
+ * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)             # <<<<<<<<<<<<<<
  *     else: return <int>(number - 0.5)
  * 
@@ -6764,8 +6979,8 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":34
- * cdef inline int cround(double number):
+  /* "acide/types.pxd":44
+ * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)             # <<<<<<<<<<<<<<
  * 
@@ -6776,15 +6991,92 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":32
+  /* "acide/types.pxd":42
  * 
  * 
- * cdef inline int cround(double number):             # <<<<<<<<<<<<<<
+ * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)
  */
 
   /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":47
+ * 
+ * 
+ * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
+  int __pyx_v_i_num;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  long __pyx_t_3;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("ciceil", 0);
+
+  /* "acide/types.pxd":48
+ * 
+ * cdef inline int ciceil(double number):
+ *     cdef int i_num = <int> number             # <<<<<<<<<<<<<<
+ *     if (<double> i_num) == number: return i_num
+ *     else: return i_num + 1
+ */
+  __pyx_v_i_num = ((int)__pyx_v_number);
+
+  /* "acide/types.pxd":49
+ * cdef inline int ciceil(double number):
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num             # <<<<<<<<<<<<<<
+ *     else: return i_num + 1
+ * 
+ */
+  __pyx_t_1 = ((((double)__pyx_v_i_num) == __pyx_v_number) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_i_num;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":50
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ *     else: return i_num + 1             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_t_2 = 0;
+    __pyx_t_3 = __Pyx_add_const_long_checking_overflow(__pyx_v_i_num, 1, &__pyx_t_2);
+    if (unlikely(__pyx_t_2)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(2, 50, __pyx_L1_error)
+    }
+    __pyx_r = __pyx_t_3;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":47
+ * 
+ * 
+ * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("acide.types.ciceil", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -21074,8 +21366,8 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_id = __Pyx_GetBuiltinName(__pyx_n_s_id); if (!__pyx_builtin_id) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(0, 171, __pyx_L1_error)
   __pyx_builtin_Ellipsis = __Pyx_GetBuiltinName(__pyx_n_s_Ellipsis); if (!__pyx_builtin_Ellipsis) __PYX_ERR(0, 195, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 246, __pyx_L1_error)
-  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 305, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 148, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 151, __pyx_L1_error)
   return 0;
@@ -21507,6 +21799,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5acide_5types_TypedGrid.getindex_at = (int (*)(struct __pyx_obj_5acide_5types_TypedGrid *, int, int))__pyx_f_5acide_5types_9TypedGrid_getindex_at;
   __pyx_vtable_5acide_5types_TypedGrid.get_slice = (struct __pyx_obj_5acide_5types_TypedGrid *(*)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *))__pyx_f_5acide_5types_9TypedGrid_get_slice;
   __pyx_vtable_5acide_5types_TypedGrid.slice_inplace = (PyObject *(*)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *))__pyx_f_5acide_5types_9TypedGrid_slice_inplace;
+  __pyx_vtable_5acide_5types_TypedGrid.slice_ref = (PyObject *(*)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *))__pyx_f_5acide_5types_9TypedGrid_slice_ref;
   if (PyType_Ready(&__pyx_type_5acide_5types_TypedGrid) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5acide_5types_TypedGrid.tp_print = 0;
@@ -21538,15 +21831,15 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TypedGrid, (PyObject *)&__pyx_type_5acide_5types_TypedGrid) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_5types_TypedGrid) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __pyx_ptype_5acide_5types_TypedGrid = &__pyx_type_5acide_5types_TypedGrid;
-  if (PyType_Ready(&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5acide_5types___TypedGridIterator.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_5types___TypedGridIterator.tp_dictoffset && __pyx_type_5acide_5types___TypedGridIterator.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5acide_5types___TypedGridIterator.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TypedGridIterator, (PyObject *)&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 284, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TypedGridIterator, (PyObject *)&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_5types___TypedGridIterator) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
   __pyx_ptype_5acide_5types___TypedGridIterator = &__pyx_type_5acide_5types___TypedGridIterator;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -24656,6 +24949,86 @@ __pyx_capsule_create(void *p, CYTHON_UNUSED const char *sig)
     return cobj;
 }
 
+/* BaseCaseSigned */
+static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) + ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        long r = (long) ((unsigned long) a + (unsigned long) b);
+        long sign_a = __PYX_SIGN_BIT(long) & a;
+        long sign_b = __PYX_SIGN_BIT(long) & b;
+        long sign_r = __PYX_SIGN_BIT(long) & r;
+        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
+        return r;
+    }
+}
+static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 0) {
+        *overflow |= a > __PYX_MAX(long) - b;
+    } else if (b < 0) {
+        *overflow |= a < __PYX_MIN(long) - b;
+    }
+    return a + b;
+}
+static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_const_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) * ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#endif
+    } else {
+        long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(long) / b;
+        *overflow |= a < __PYX_MIN(long) / b;
+    } else if (b == -1) {
+        *overflow |= a == __PYX_MIN(long);
+    } else if (b < -1) {
+        *overflow |= a > __PYX_MIN(long) / b;
+        *overflow |= a < __PYX_MAX(long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    *overflow |= (a == __PYX_MIN(long)) & (b == -1);
+    return a / b;
+}
+
 /* CIntFromPyVerify */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -24755,86 +25128,6 @@ static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *over
         return 0;
     }
     *overflow |= (a == __PYX_MIN(int)) & (b == -1);
-    return a / b;
-}
-
-/* BaseCaseSigned */
-static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
-    if ((sizeof(long) < sizeof(long))) {
-        long big_r = ((long) a) + ((long) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        long r = (long) ((unsigned long) a + (unsigned long) b);
-        long sign_a = __PYX_SIGN_BIT(long) & a;
-        long sign_b = __PYX_SIGN_BIT(long) & b;
-        long sign_r = __PYX_SIGN_BIT(long) & r;
-        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
-        return r;
-    }
-}
-static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow) {
-    if (b > 0) {
-        *overflow |= a > __PYX_MAX(long) - b;
-    } else if (b < 0) {
-        *overflow |= a < __PYX_MIN(long) - b;
-    }
-    return a + b;
-}
-static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long);
-    return __Pyx_add_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long);
-    return __Pyx_add_const_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow) {
-    if ((sizeof(long) < sizeof(long))) {
-        long big_r = ((long) a) * ((long) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return (long) r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return (long) r;
-#endif
-    } else {
-        long prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(long) / b;
-        *overflow |= a < __PYX_MIN(long) / b;
-    } else if (b == -1) {
-        *overflow |= a == __PYX_MIN(long);
-    } else if (b < -1) {
-        *overflow |= a > __PYX_MIN(long) / b;
-        *overflow |= a < __PYX_MAX(long) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    *overflow |= (a == __PYX_MIN(long)) & (b == -1);
     return a / b;
 }
 

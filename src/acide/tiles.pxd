@@ -18,7 +18,7 @@
 import cython
 
 from cython.view cimport array as Carray
-from acide.types cimport TypedGrid, test_sequence, cmin, cmax
+from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin, cimax
 from acide.measure cimport _CMeasurable, Extents_s
 
 cdef extern from "Python.h":
@@ -44,6 +44,9 @@ cdef extern from "Python.h":
         PyBUF_F_CONTIGUOUS,
         PyBUF_ANY_CONTIGUOUS
 
+    cdef bytes PyBytes_FromObject(object o)
+    cdef bytearray PyByteArray_FromObject(object o)
+
 
 cdef object gdk_memory_format_mapping()
 
@@ -58,6 +61,7 @@ cdef class Tile(_CMeasurable):
     cdef Py_ssize_t u_shape
     cdef int u_itemsize
     cdef bytes u_format
+    cdef int format_size
 
     # C METHODS
     cpdef object compress(Tile self, object buffer, object size, object format)
@@ -85,9 +89,11 @@ cdef class TilesGrid(TypedGrid):
 
 
 cdef class Clip():
-    cdef int _x, _y, _w ,_h
+    cdef double _x, _y
+    cdef int _w ,_h
     cdef object _texture
 
+ctypedef unsigned char uc8
 
 cdef class SuperTile(TilesGrid):
     # MEMBERS
@@ -102,15 +108,20 @@ cdef class SuperTile(TilesGrid):
     cpdef move_to(SuperTile self, int x, int y)
     cdef int allocate_buffer(SuperTile self)
     cdef int fill_buffer(SuperTile self)
+    @staticmethod
+    cdef void merge_side_buffers(
+        const uc8[:] west, const uc8[:] east, uc8[:] buffer,
+        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width
+    ) nogil
     cpdef render_texture(SuperTile self)
 
 
 cdef class TilesPool():
     # MEMBERS
     cdef list stack
-    cdef unsigned int depth
-    cdef unsigned int current
-    cdef SuperTile render_tile
+    cdef int depth
+    cdef int current
+    cdef SuperTile render_tile, invalid_render
     cdef object graphic
     cdef object viewport
     cdef object memory_format
@@ -118,9 +129,13 @@ cdef class TilesPool():
 
     # C METHODS
     cdef int make_tiles_grid(TilesPool self, unsigned int scale)
-    cdef object init_tiles_grid(TilesPool self, TilesGrid tg)
+    cdef object init_tiles_grid(
+        TilesPool self, TilesGrid tg,  unsigned int scale
+    )
     cpdef set_rendering(
-        TilesPool self, double x, double y, unsigned int scale=?
+        TilesPool self, double x, double y, int depth=?
     )
     cpdef object render(TilesPool self)
-    cdef object compress_tiles(TilesPool self)
+    cpdef object after_render_cb(TilesPool self)
+    cdef object validate_scales(TilesPool self, list scales)
+

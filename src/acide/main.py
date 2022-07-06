@@ -29,7 +29,7 @@ import fitz
 from acide.ui.surface import GraphicViewport
 from acide.ui.window import AboutDialog, AcideWindow
 from acide import format_size
-from acide.doc import Page
+from acide.doc import Document, Page
 
 #TODO: * Look at GtkUIManager
 #      * Logging
@@ -43,15 +43,9 @@ class AcideApplication(Adw.Application):
     def __init__(self):
         super().__init__(application_id='io.github.gravures.acide',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self.viewport = None
-        self.document = None
 
-    def load_pdf(self):
-        self.document = fitz.open("/home/gilles/PDF/FLIGHT_TEST5.pdf")
-        self.page = self.document.load_page(0)
-        self.graphic_page = Page(self.page)
-        self.viewport.props.graphic = self.graphic_page
-        print(fitz.TOOLS.mupdf_warnings())
+    def load_pdf(self, window):
+        window.set_document(Document("/home/gilles/PDF/FLIGHT_TEST5.pdf"))
 
     def do_startup(self):
         """This function is called when the application is first started.
@@ -76,29 +70,43 @@ class AcideApplication(Adw.Application):
         with the application. when the last one is closed
         the application shuts down.
         """
-        win = self.props.active_window  #TODO: look 4 this
+        self._setup_icon_theme()
+        win = self.props.active_window
         if not win:
             win = AcideWindow(application=self)
-
+        self._setup_menus(win)
         self._setup_theme(win)
-        self._setup_viewport()
-        self.load_pdf()
-        self.viewport.queue_draw()
+
+        self.load_pdf(win)
+
         win.set_default_size(1100, 700)
         win.present_with_time(Gdk.CURRENT_TIME)
 
-    def _setup_viewport(self):
-        win = self.props.active_window
-        self.viewport = GraphicViewport()
-        win.scrolled_window.set_child(self.viewport)
+    def _setup_menus(self, window):
+        builder = Gtk.Builder().new_from_resource(
+            "/io/github/gravures/acide/gtk/Menu.ui"
+        )
+        window.menu_button.set_menu_model(builder.get_object("primary_menu"))
 
     def _setup_theme(self, window):
         sc = window.get_style_context()
         sm = self.get_style_manager()
+        #sc.remove_provider_for_display(sc.get_display(), self.css)
         css = Gtk.CssProvider.new()
-        sc.remove_provider_for_display(window.get_display(), css)
-        sm.set_color_scheme(Adw.ColorScheme.DEFAULT)
-        # sm.set_color_scheme(Adw.ColorScheme.FORCE_DARK)
+        css.load_from_resource("/io/github/gravures/acide/gtk/acide.css")
+        sc.add_provider_for_display(
+            sc.get_display(), css, Gtk.STYLE_PROVIDER_PRIORITY_USER
+        )
+        sm.set_color_scheme(Adw.ColorScheme.PREFER_DARK)
+
+    def _setup_icon_theme(self):
+        icon_theme = Gtk.IconTheme()
+        icon_theme.set_theme_name("Adwaita")
+        icon_theme.add_resource_path("/io/github/gravures/acide/gtk/icons/")
+        self.icon_theme = icon_theme
+
+    def get_icon_theme(self):
+        return self.icon_theme
 
     def on_quit_action(self, action, param):
         # self.config.win_height, self.config.win_width = self.window.get_size()

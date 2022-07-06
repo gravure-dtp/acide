@@ -35,13 +35,27 @@ class _GraphicMeta(ABCMeta, GObjectMeasurableMeta):
 
 
 class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
-    """Graphic Interface.
+    """Graphic Interface, extends :class:`GObject` implements
+    :class:`acide.measure.Measurable`.
 
-    An abstract base class, extends :class:`GObject` implements
-    :class:`Measurable`.
+    An abstract base class representing any graphic object with
+    some metric properties and eventually with an infinite resolution
+    (eg: a vector based graphical object).
+    Subclass should implement the abstract method :meth:`get_pixbuf`.
+
+    Args:
+        rect: A four length Sequence of numbers (x, y, width, height)
+              or a :class:`Graphen.Rect` as the dimension of this :class:`Graphic`.
+        mem_format: a enum's member of :class:`Gdk.MemoryFormat`
+        unit: A member of enumeration :class:`acide.measure.Unit` as the unit
+              of measure for the dimension of this :class:`Graphic`, default
+              to :attr:`acide.measure.Unit.PS_POINT`
     """
 
     __gtype__name__ = "Graphic"
+    __gsignals__ = {
+        'scaled': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+    }
 
     def __init__(
         self,
@@ -59,12 +73,77 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
 
         self._viewport = None
         self._format = mem_format
-        self._scale_factors = (1, 2 , 4, 8, 16, 32)
-        self._scale = Fraction(1, 1)  # we start at 1:1
+        self._init_scales((1, 2 , 4, 8, 16, 32))
+        self._scale_index = 0  # we start at 1:1
         self.tiles_pool = None
 
     def __str__(self):
         return f"Graphic({self._dump_props()})"
+
+    def _init_scales(self, factors):
+        # TODO: reduction factors
+        self._scales = [Fraction(f, 1) for f in factors]
+
+    @property
+    def scale(self) -> Fraction:
+        """The actual scale to apply when rendering on screen
+        (this doesn't change the internal size of this :class:`Graphic`).
+        """
+        return self._scales[self._scale_index]
+
+    def scale_increase(self) -> Fraction:
+        """Increment the scale factor
+
+        Returns:
+            a :class:`Fraction` as the resulting current scale factor
+        """
+        if self._scale_index + 1 < len(self._scales):
+            self._scale_index += 1
+        self.emit("scaled", self._scales[self._scale_index])
+        return self._scales[self._scale_index]
+
+    def scale_decrease(self) -> Fraction:
+        """Decrement the scale factor
+
+        Returns:
+            a :class:`Fraction` as the resulting current scale factor
+        """
+        if self._scale_index - 1 >= 0:
+            self._scale_index -= 1
+        self.emit("scaled", self._scales[self._scale_index])
+        return self._scales[self._scale_index]
+
+    def scale_init(self) -> Fraction:
+        """Set the scale factor to 1:1
+
+        Returns:
+            a :class:`Fraction` as the resulting current scale factor
+        """
+        self._scale_index = 0
+        self.emit("scaled", self._scales[self._scale_index])
+        return self._scales[self._scale_index]
+
+    def scale_fit(self) -> Fraction:
+        """Set the scale factor so the :class:`Graphic` fit in the :obj:`viewport`
+
+        Returns:
+            a :class:`Fraction` as the resulting current scale factor
+        """
+        self._scale_index = 0  # TODO: scale 2 fit
+        self.emit("scaled", self._scales[self._scale_index])
+        return self._scales[self._scale_index]
+
+    def do_scaled(self, scale, *args):
+        self.on_scaled(scale)
+
+    def on_scaled(self, scale) -> None:
+        """Callback method for widget supporting this interface.
+
+        This method is called when this :class:`Graphic` is scaled
+        for display. If you need to override this method don't forget a call
+        to super().on_scaled().
+        """
+        print(f"Graphic scaled to {scale}")
 
     @property
     def virtual_dpi(self) -> int:
@@ -72,7 +151,7 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
 
         This is computed as round(self.dpi * self.scale) (read only).
         """
-        return round(self.dpi * self._scale)
+        return round(self.dpi * self._scales[self._scale_index])
 
     @property
     def mem_format(self) -> Gdk.MemoryFormat:
@@ -92,27 +171,10 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
 
     @property
     def viewport(self) -> Measurable:
-        """The viewport Widget implementing the :class:`Measurable` interface.
-        None until added to a Widget (read only).
+        """The viewport Widget implementing the :class:`acide.measure.Measurable`
+        interface. None until added to a Widget (read only).
         """
         return self._viewport
-
-    @property
-    def scale(self) -> Fraction:
-        """The actual scale to apply when rendering on screen
-        (this doesn't change the internal size of this :class:`Graphic`).
-        """
-        return self._scale
-
-    @scale.setter
-    def scale(self, value: Fraction):
-        if not all(
-            value.numerator in self._scale_factors,
-            value.denominator in self._scale_factors,
-        ):
-            return
-        self._scale = value
-        self.on_scaled()
 
     def on_added(self, viewport: Measurable) -> None:
         """Callback method for widget supporting this interface.
@@ -122,7 +184,9 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         super().on_added().
         """
         self._viewport = viewport
-        self.tiles_pool = TilesPool(self, viewport, self._format, self.get_pixbuf)
+        self.tiles_pool = TilesPool(
+            self, viewport, self._scales, self._format, self.get_pixbuf
+        )
 
     def on_updated(self) -> None:
         """Callback method for widget supporting this interface.
@@ -131,7 +195,9 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         has changed. If you need to override this method don't forget a call to
         super().on_updated().
         """
-        self.tiles_pool.__init__(self, self.viewport, self._format, self.get_pixbuf)
+        self.tiles_pool.__init__(
+            self, self.viewport, self._scales, self._format, self.get_pixbuf
+        )
 
     def on_removed(self) -> None:
         """Callback method for widget supporting this interface.
@@ -143,18 +209,18 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self._viewport = None
         self.tiles_pool = None
 
-    def on_scaled(self) -> None:
-        """Callback method for widget supporting this interface.
-
-        This method is called when this :class:`Graphic` is scaled
-        for display. If you need to override this method don't forget a call
-        to super().on_scaled().
-        """
-        pass
-
     def get_render(self, x: float, y: float) -> Clip:
-        # print(f"RENDER at {x}, {y})")
-        clip = self.tiles_pool.set_rendering(x, y)
+        """Get rendering for a region so the point(x, y) will fit inside.
+
+        The (x, y) coordinates has to be express in the :attr:`Graphic.unit`
+        of measure. If the :class:`Graphic` is not yet renderable,
+        a :class:`acide.tiles.Clip` with *None* as the :attr:`acide.tiles.Clip.texture`
+        will be returned.
+
+        Returns: a :class:`acide.tiles.Clip` of the rendering region that holds
+                 a :class:`Gtk.Texture` and corresponding clipping informations.
+        """
+        clip = self.tiles_pool.set_rendering(x, y, self._scale_index)
         self.tiles_pool.render()
         return clip
 
@@ -163,11 +229,11 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         """Get pixbuf at clip rect.
 
         Implementation should return a pixmap buffer clipped to the region
-        described by the parameter *rect* (defined in :attr:`Measurable.unit`
-        measure of this :class:`Graphic`).
+        described by the parameter :obj:`rect` (defined in :attr:`acide.measure.Measurable.unit`
+        of measure for this :class:`Graphic`).
         The returned object should implements the buffer protocol and should
         hold a c-contigous buffer with only one dimension for all its data.
-        The pixel data should conform to the :attr:`Graphic.format` property.
+        The pixel data should conform to the :attr:`Graphic.mem_format` property.
         When rendering the pixmap, subclass could consider using the
         :attr:`scale` and :attr:`virtual_dpi` properties to achieve expected
         result.

@@ -31,6 +31,16 @@ if not cythonize.found()
 	error('Error: cythonize command not found, cannot build python extensions')
 endif
 
+pkgconfig = find_program('pkg-config', required: true)
+if not pkgconfig.found()
+	error('Error: pkg-config command not found, cannot build python extensions')
+endif
+glib_include = run_command('pkg-config', '--variable=includedir', 'glib-2.0')
+glib_include = glib_include.stdout().strip()
+message('GLib include directory: @0@/glib-2.0'.format(glib_include))
+glib_lib = run_command('pkg-config', '--libs-only-l', 'glib-2.0').stdout().strip()
+message('GLib library directory: @0@/'.format(glib_lib))
+
 message('Building python extensions...')
 returned = run_command(
 	cythonize,
@@ -55,6 +65,7 @@ returned = run_command(
   '-X', 'warn.unused_arg=True',
   '-X', 'warn.unused_result=True',
   '-X', 'warn.multiple_declarators=True',
+  '-E', 'CPATH=@0@/glib-2.0'.format(glib_include),
   'acide/types.pyx',
   'acide/measure.pyx',
   'acide/tiles.pyx'

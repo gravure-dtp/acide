@@ -18,6 +18,7 @@
 """
 
 """
+import time
 from typing import Any, Callable, Union, Optional, NoReturn, Sequence, Tuple
 
 import gi
@@ -26,24 +27,42 @@ gi.require_version("Gdk", "4.0")
 from gi.repository import Gdk, GLib, Graphene
 
 import blosc
-import cython
+cimport cython
 
 from acide import format_size
 from acide.types import TypedGrid
 from acide.measure import Measurable, Unit
 from acide.types import BufferProtocol, Rectangle
-# from acide.graphic import Graphic
+# from acide cimport gbytes
 
 
 BLOSC_MAX_BYTES_CHUNK = 2**31
+
+
+cdef class Timer():
+    cdef double start, time
+    cdef unicode name
+
+    def __cinit__(self, name="unknown"):
+        self.name = name
+        self.start = time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID)
+
+    cpdef stop(self):
+        self.time = (
+            time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID) -\
+            self.start
+        )
+        # print(
+        #     f"BENCHMARK({self.name}): {self.time} μs "
+        #     f"| {self.time / 1000000000:.3f} sec\n"
+        # )
 
 
 cdef object gdk_memory_format_mapping():
     mapping = dict()
     cdef int size
     for _enum in Gdk.MemoryFormat.__enum_values__.values():
-        size = 0
-        size += _enum.value_nick.count("8")
+        size = _enum.value_nick.count("8")
         size += _enum.value_nick.count("16") * 2
         size += _enum.value_nick.count("32") * 4
         mapping[_enum] = size
@@ -76,6 +95,8 @@ cdef class Tile(_CMeasurable):
               describing the origin and size of the Tile. If set to None,
               rect will be initialized at (0, 0, 0, 0), default to None .
     """
+    blosc.set_releasegil(True)
+    blosc.set_nthreads(blosc.detect_number_of_cores() - 2)
 
     @property
     def u(self) -> int:
@@ -102,7 +123,7 @@ cdef class Tile(_CMeasurable):
         self.buffer = None
         self.u_shape = 0
         self.u_itemsize = 0
-        self._size = (0, 0)  # FIXME: self._size & Measurable.get_pixmap_rect()
+        self._size = (0, 0)
 
     def __dealloc__(self):
         self.buffer = None
@@ -165,7 +186,8 @@ cdef class Tile(_CMeasurable):
             raise TypeError("buffer should only have one dimension")
 
         # Sanity check between size and buffer size
-        if size[0] * size[1] * gdk_memory_format_sizes.get(format, 0) <> \
+        self.format_size = gdk_memory_format_sizes.get(format, 0)
+        if size[0] * size[1] * self.format_size  <> \
             p_view.len:
             raise ValueError(
                 "Missmatch between buffer's lenght and pixmap"
@@ -184,19 +206,24 @@ cdef class Tile(_CMeasurable):
         self._u = p_view.len
         self.u_shape = p_view.shape[0]
         self.u_itemsize = p_view.itemsize
-        self.u_format = <bytes> p_view.format
 
+        # we don't care of the buffer format,
+        # buffer will be compressed as bytes in buffer
+        # and we have itemsize and a Gdk.MemoryFormat to carry
+        # buffer's items type info.
+        # self.u_format = <bytes> p_view.format
+        self.u_format = b'B'  # unsigned char
         ptr = <char*> p_view.buf
-        test = self.get_pixmap_rect()
-        print(f"DEBUG: Tile.compress(size{size}, pixmap_rect:{test.get_width()}, {test.get_height()}")
+
+        # TODO: self._size & Measurable.get_pixmap_rect()
 
         self.buffer = blosc.compress_ptr(
             <Py_ssize_t> &ptr[0],
             p_view.len,
             typesize=p_view.itemsize,
             clevel=9,
-            shuffle=blosc.BITSHUFFLE,
-            cname='lz4',
+            shuffle=blosc.SHUFFLE,
+            cname='blosclz',
         )
         self._z = len(self.buffer)
         self._r = self._u / float(self._z)
@@ -205,8 +232,9 @@ cdef class Tile(_CMeasurable):
     cpdef _dump_props(self):
         return (
             f"{_CMeasurable._dump_props(self)}, "
-            f"u:{format_size(self._u)}, z:{format_size(self._z)}, "
-            f"r:{self._r:.2f}, _size:{self._size}"
+            #f"u:{format_size(self._u)}, z:{format_size(self._z)}, "
+            #f"r:{self._r:.1f}, "
+            f"_size:{self._size}"
         )
 
     def __str__(self):
@@ -295,12 +323,16 @@ cdef class TilesGrid(TypedGrid):
                 tile = self._ref.items[self.view[x, y]]
                 if tile is not None:
                     if (<Tile> tile).buffer is None:
+                        _T = Timer("pixbuff_cb")
                         buffer, size = pixbuff_cb((<Tile> tile).rect)
+                        _T.stop()
+                        _T = Timer("Tile.compress()")
                         (<Tile> tile).compress(
                             buffer=buffer,
                             size=size,
                             format=self.memory_format
                         )
+                        _T.stop()
                     self._u += (<Tile> tile)._u
                     self._z += (<Tile> tile)._z
         if self._z <> 0:
@@ -377,9 +409,9 @@ cdef class TilesGrid(TypedGrid):
         return (
             f"{self.__class__.__name__}@({id(self)}):\n"
             f"{super().__str__()}\n"
-            f"extents: ({self.extents.x0:.3f}, {self.extents.y0:.3f}, "
-            f"{self.extents.x1:.3f}, {self.extents.y1:.3f})\n"
-            f"u:{format_size(self._u)}, z:{format_size(self._z)}, r:{self._r:.2f}"
+            f"extents: ({self.extents.x0:.1f}, {self.extents.y0:.1f}, "
+            f"{self.extents.x1:.1f}, {self.extents.y1:.1f})\n"
+            f"u:{format_size(self._u)}, z:{format_size(self._z)}, r:{self._r:.1f}"
         )
 
 
@@ -395,7 +427,7 @@ cdef class Clip():
         self._h = h
         self._texture = None
 
-    def __init__(self, x: int =0, y: int =0, w: int =0, h: int =0):
+    def __init__(self, x: float =0, y: float =0, w: int =0, h: int =0):
         pass
 
     @property
@@ -442,8 +474,7 @@ cdef class SuperTile(TilesGrid):
             raise TypeError("grid should be a TilesGrid instance")
         self._ref = grid
         self.memory_format = (<TilesGrid> grid).memory_format
-        self.view = (<TilesGrid> grid).view
-        self.slice_inplace(slice(0,2,1), slice(0,2,1))
+        self.slice_ref(slice(0, 2, 1), slice(0, 2, 1))
         self.is_valid = False
         self.buffer = None
         self._clip = Clip.__new__(Clip)
@@ -463,15 +494,15 @@ cdef class SuperTile(TilesGrid):
                to the :attr:`TilesGrid.base` :class:`TilesGrid`.
         """
         cdef int w, h
+        w, h = self._ref.view.shape
+        x = (x - 1) if x >= (w - 1) else x
+        y = (y - 1) if y >= (h - 1) else y
         if self._ref.view[x, y] != self.view[0, 0]:
-            w, h = self._ref.view.shape
-            x = (x - 1) if x >= (w - 1) else x
-            y = (y - 1) if y >= (h - 1) else y
-            self.view = self._ref.view
-            self.slice_inplace(slice(x,2,1), slice(y,2,1))
-            self._clip._x = x * self._clip._w
-            self._clip._y = y * self._clip._h
+            self.slice_ref(slice(x, x + 2, 1), slice(y, y + 2, 1))
             self.compute_extents()
+            self._clip._x = self.extents.x0  # x * self._clip._w
+            self._clip._y = self.extents.y0  # y * self._clip._h
+            self.buffer = None
             self.invalidate()
 
     cpdef invalidate(self):
@@ -480,8 +511,10 @@ cdef class SuperTile(TilesGrid):
         After this call the content of the internal buffer will be
         recomputed with the next access to :attr:`SuperTiles.texture`.
         """
-        self.is_valid = False
         self._clip._texture = None
+        self.glib_bytes = None
+        self.buffer = None
+        self.is_valid = False
 
     cdef int allocate_buffer(self):
         """Allocate self.buffer to host offscreen image
@@ -530,10 +563,10 @@ cdef class SuperTile(TilesGrid):
 
     cdef int fill_buffer(self):
         """Actually decompress the subtiles buffers in the SuperTile.buffer."""
+        _T = Timer("decompress buffers")
         cdef Carray buffer_west
         cdef Carray buffer_east
         cdef Py_ssize_t w_buf, rows, x_in, x_out, y
-        cdef int channels
         cdef Tile tile0, tile1, tile2, tile3
         cdef bint isvalid
         try:
@@ -590,39 +623,58 @@ cdef class SuperTile(TilesGrid):
                 tile3.buffer,
                 address=<Py_ssize_t> &buffer_east.data[tile1.u_shape],
             )
+            _T.stop()
 
             # fusion of the east and west buffers
-            channels = 3
-            w_buf = (tile0._size[0] + tile1._size[0]) * channels
+            _T = Timer("merge_side_buffers")
             rows = tile0._size[1] + tile2._size[1]
-            for y in range(rows):
-                # copy west
-                x_in = tile0._size[0] * y * channels
-                x_out = w_buf * y
-                self.buffer[x_out:x_out + tile0._size[0] * channels] = (
-                    buffer_west[x_in:x_in + tile0._size[0] * channels]
-                )
-                # copy east
-                x_in = tile1._size[0] * y * channels
-                x_out += tile0._size[0] * channels
-                self.buffer[x_out:x_out + tile1._size[0] * channels] = (
-                    buffer_east[x_in:x_in + tile1._size[0] * channels]
-                )
-
+            SuperTile.merge_side_buffers(
+                buffer_west, buffer_east, self.buffer,
+                rows, tile0._size[0] * tile0.format_size,
+                tile1._size[0] * tile0.format_size
+            )
+            _T.stop()
             return 1
         else:
             self.msg = "Invalid buffer or Tile's format to fill buffer"
             return -2
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
+    @staticmethod
+    cdef void merge_side_buffers(
+        const uc8[:] west, const uc8[:] east, uc8[:] buffer,
+        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width
+    ) nogil:
+        cdef Py_ssize_t x_in, x_out, y
+        cdef Py_ssize_t buf_width = east_width + west_width
+        for y in range(rows):
+            # copy west
+            x_in = west_width * y
+            x_out = buf_width * y
+            buffer[x_out:x_out + west_width] = west[x_in:x_in + west_width]
+            # copy east
+            x_in = east_width * y
+            x_out += west_width
+            buffer[x_out:x_out + east_width] = east[x_in:x_in + east_width]
+
     cpdef render_texture(self):
         cdef int ret
         if not self.is_valid:
             if self.buffer is None:
+                _T = Timer("allocate_buffer")
                 ret = self.allocate_buffer()
+                _T.stop()
                 if ret < 0:
                     raise MemoryError(f"{self.msg}")
             if self.fill_buffer() > 0:
-                self.glib_bytes = GLib.Bytes.new(memoryview(self.buffer))  #FIXME: here data is copied
+                _T = Timer("glib.bytes")
+                #FIXME: here data is copied 2 times !!!
+                self.glib_bytes = GLib.Bytes.new_take(
+                    PyBytes_FromObject(self.buffer)
+                )
+                _T.stop()
+                _T = Timer("Gdk.Texture")
                 self._clip._texture = Gdk.MemoryTexture.new(
                     self._clip._w,
                     self._clip._h,
@@ -630,7 +682,10 @@ cdef class SuperTile(TilesGrid):
                     self.glib_bytes,
                     3 * self._clip._w,
                 )
+                _T.stop()
                 self.is_valid = True
+                print(self,
+                     f"\nClip: ({self._clip._x}, {self._clip._y}) {self._clip._w}x{self._clip._h}\n")
             else:
                 self.invalidate()
 
@@ -669,13 +724,13 @@ cdef class TilesPool():
                    the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
     """
 
-    def __cinit__(self, graphic, viewport, mem_format, pixbuff_cb):
+    def __cinit__(self, graphic, viewport, scales, mem_format, pixbuff_cb):
         if (
             not isinstance(graphic, Measurable) or \
             not isinstance(viewport, Measurable)
         ):
             raise TypeError(
-                "graphic and viewport parameters shoulde implement"
+                "graphic and viewport parameters should implement"
                 " the Measurable interface"
             )
         self.graphic = graphic
@@ -687,29 +742,55 @@ cdef class TilesPool():
         self,
         graphic: Measurable,
         viewport: Measurable,
+        scales: Sequence[int],
         mem_format: Gdk.MemoryFormat,
         pixbuff_cb: Callable[[Graphene.Rect], BufferProtocol],
     ):
-        self.depth = 1
-        self.current = 0
+        _T = Timer("TilesPool init")
+        self.current = -1
         self.stack = []
-        if self.make_tiles_grid(scale=1) > 0:
-            # viewport.size could be (0, 0) if widget is not yet realized
-            # so be prepared to this
-            self.init_tiles_grid(<TilesGrid> self.stack[self.current])
-            print(self.stack[self.current], "\n")
-            self.render_tile = SuperTile(self.stack[self.current])
-            print(self.render_tile, "\n")
+        self.validate_scales(scales)
+
+        for scl in scales:
+            if self.make_tiles_grid(scale=int(scl)) > 0:
+                # viewport.size could be (0, 0)
+                # if widget is not yet realized
+                # so be prepared to this
+                self.current += 1
+                self.init_tiles_grid(
+                    <TilesGrid> self.stack[self.current], int(scl)
+                )
+            else:
+                self.stack = []
+                break
+        self.depth = len(self.stack)
+        # keep current at -1 so 1st call to set_rendering()
+        # could initialize the render_tile
+        self.current = -1
+        _T.stop()
+
+    cdef validate_scales(self, list scales):
+        try:
+            for scl in scales:
+                assert (int(scl) > 0)
+        except Exception:
+            raise ValueError(
+                f"scales should be a Sequence of value interpretable as"
+                f"int > 0"
+            )
+        scales.sort()
 
     cdef int make_tiles_grid(self, unsigned int scale):
+        cdef double vw, vh, gw, gh, trs
+        cdef int width, height
         vw, vh = self.viewport.size
         if vw!=0 and vh!=0:
             gw, gh = self.graphic.size
             gw *= scale
             gh *= scale
-            trs = self.graphic.get_transform(self.viewport.unit)
-            width = max(2, (gw / vw * trs).__ceil__())
-            height = max(2, (gh / vh * trs).__ceil__())
+            trs = self.viewport.get_transform(self.graphic.unit)
+            width = cimax(2, ciceil(gw / (vw * trs)))
+            height = cimax(2, ciceil(gh / (vh * trs)))
             self.stack.append(
                 TilesGrid(
                     shape=(width, height),
@@ -719,7 +800,7 @@ cdef class TilesPool():
             return 1
         return 0
 
-    cdef init_tiles_grid(self, TilesGrid tg):
+    cdef init_tiles_grid(self, TilesGrid tg, unsigned int scale):
         cdef int sw, sh, x, y
         cdef double w, h, wt, ht
         sw, sh = tg.view.shape
@@ -731,12 +812,12 @@ cdef class TilesPool():
                 tg[x, y] = Tile(
                     rect=(wt * x, ht * y, wt, ht),
                     unit=self.graphic.unit,
-                    dpi=self.graphic.dpi,
+                    dpi=self.graphic.dpi * scale,
                 )
         tg.compute_extents()
-        self.compress_tiles()
+        # print(tg, "\n")
 
-    cpdef set_rendering(self, double x, double y, unsigned int scale=1):
+    cpdef set_rendering(self, double x, double y, int depth=0):
         """Setup the rendering :class:`SuperTile` so the point
         at :obj:`(x, y)` will fit in its region.
 
@@ -746,23 +827,37 @@ cdef class TilesPool():
         Args:
             x, y: coordinates express in the unit of measure of
                     the :class:`acide.graphic.Graphic`
-            scale: a positive integer as the rendering scale level
+            depth: a positive integer as an index of scales given at
+                   :class:`TilesPool` initialzation
 
         Returns:
             a :class:`Clip` holding the :class:`Gdk.Tetxure`
         """
         cdef int i, j
+
+        if depth != self.current:
+            # FIXME: should we invalidate TilesGrid? or
+            # keep all compressed buffer or an in beetween
+            # (<TilesGrid> self.stack[self.current]).invalidate()
+            self.current = depth
+            (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
+            self.invalid_render = self.render_tile
+            self.render_tile = SuperTile(self.stack[self.current])
+
         i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
+        # print(self.render_tile, "\n")
         return self.render_tile._clip
+
+    cpdef after_render_cb(self):
+        if self.invalid_render is not None:
+            self.invalid_render.invalidate()
+            self.invalid_render = None
 
     cpdef render(self):
         # TODO: make it async
         self.render_tile.render_texture()
 
-    cdef compress_tiles(self):
-        # FIXME: Flight Test, obviously should more elaborate
-        (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
 
 
 

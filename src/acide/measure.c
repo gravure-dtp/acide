@@ -1064,7 +1064,7 @@ struct __pyx_defaults {
   PyObject *__pyx_arg_unit;
 };
 
-/* "acide/types.pxd":40
+/* "acide/types.pxd":57
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1216,7 +1216,7 @@ struct __pyx_vtabstruct_memoryview {
 static struct __pyx_vtabstruct_memoryview *__pyx_vtabptr_memoryview;
 
 
-/* "acide/types.pxd":40
+/* "acide/types.pxd":57
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1230,6 +1230,7 @@ struct __pyx_vtabstruct_5acide_5types_TypedGrid {
   int (*getindex_at)(struct __pyx_obj_5acide_5types_TypedGrid *, int, int);
   struct __pyx_obj_5acide_5types_TypedGrid *(*get_slice)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_inplace)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
+  PyObject *(*slice_ref)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_5acide_5types_TypedGrid *__pyx_vtabptr_5acide_5types_TypedGrid;
 
@@ -1973,6 +1974,42 @@ static int __pyx_slices_overlap(__Pyx_memviewslice *slice1,
 /* Capsule.proto */
 static CYTHON_INLINE PyObject *__pyx_capsule_create(void *p, const char *sig);
 
+/* Common.proto */
+static int __Pyx_check_twos_complement(void) {
+    if ((-1 != ~0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Two's complement required for overflow checks.");
+        return 1;
+    } else if ((sizeof(short) == sizeof(int))) {
+        PyErr_SetString(PyExc_RuntimeError, "sizeof(short) < sizeof(int) required for overflow checks.");
+        return 1;
+    } else {
+        return 0;
+    }
+}
+#define __PYX_IS_UNSIGNED(type) ((((type) -1) > 0))
+#define __PYX_SIGN_BIT(type)    ((((unsigned type) 1) << (sizeof(type) * 8 - 1)))
+#define __PYX_HALF_MAX(type)    ((((type) 1) << (sizeof(type) * 8 - 2)))
+#define __PYX_MIN(type)         ((__PYX_IS_UNSIGNED(type) ? (type) 0 : 0 - __PYX_HALF_MAX(type) - __PYX_HALF_MAX(type)))
+#define __PYX_MAX(type)         ((~__PYX_MIN(type)))
+#define __Pyx_add_no_overflow(a, b, overflow) ((a) + (b))
+#define __Pyx_add_const_no_overflow(a, b, overflow) ((a) + (b))
+#define __Pyx_sub_no_overflow(a, b, overflow) ((a) - (b))
+#define __Pyx_sub_const_no_overflow(a, b, overflow) ((a) - (b))
+#define __Pyx_mul_no_overflow(a, b, overflow) ((a) * (b))
+#define __Pyx_mul_const_no_overflow(a, b, overflow) ((a) * (b))
+#define __Pyx_div_no_overflow(a, b, overflow) ((a) / (b))
+#define __Pyx_div_const_no_overflow(a, b, overflow) ((a) / (b))
+
+/* BaseCaseSigned.proto */
+static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long constant, int *overflow);
+#define __Pyx_div_const_long_checking_overflow __Pyx_div_long_checking_overflow
+
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -2068,7 +2105,7 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
 
 /* Module declarations from 'acide.types' */
 static PyTypeObject *__pyx_ptype_5acide_5types_TypedGrid = 0;
-static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double); /*proto*/
+static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double); /*proto*/
 static int (*__pyx_f_5acide_5types_test_sequence)(PyObject *, PyObject *); /*proto*/
 
 /* Module declarations from 'acide.measure' */
@@ -2143,7 +2180,7 @@ static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_x[] = "x";
 static const char __pyx_k_y[] = "y";
-static const char __pyx_k_3f[] = ".3f";
+static const char __pyx_k_1f[] = ".1f";
 static const char __pyx_k_PS[] = "PS";
 static const char __pyx_k__8[] = ", ";
 static const char __pyx_k__9[] = ")";
@@ -2388,7 +2425,7 @@ static const char __pyx_k_rect_should_be_None_a_Graphen_Re[] = "rect should be N
 static const char __pyx_k_size_should_be_a_two_lenght_sequ[] = "size should be a two lenght sequence of float";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
 static PyObject *__pyx_kp_u_1_0;
-static PyObject *__pyx_kp_u_3f;
+static PyObject *__pyx_kp_u_1f;
 static PyObject *__pyx_n_s_ASCII;
 static PyObject *__pyx_n_s_Any;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
@@ -7108,7 +7145,7 @@ static PyObject *__pyx_pf_5acide_7measure_12_CMeasurable_16get_area(struct __pyx
  *         return self.rect.get_area()
  * 
  *     cpdef unsigned int get_pixmap_area(self):             # <<<<<<<<<<<<<<
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  */
 
@@ -7182,7 +7219,7 @@ static unsigned int __pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_area(struc
   /* "acide/measure.pyx":316
  * 
  *     cpdef unsigned int get_pixmap_area(self):
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))             # <<<<<<<<<<<<<<
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))             # <<<<<<<<<<<<<<
  *         px_rect = self.rect.scale(_t, _t)
  *         px_rect.round_extents()
  */
@@ -7194,7 +7231,7 @@ static unsigned int __pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_area(struc
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_7.__pyx_n = 1;
-  __pyx_t_7.dpi = __pyx_f_5acide_5types_cround(__pyx_v_self->dpi);
+  __pyx_t_7.dpi = __pyx_f_5acide_5types_ciround(__pyx_v_self->dpi);
   __pyx_t_6 = __pyx_f_5acide_7measure_transform(__pyx_t_1, __pyx_t_3, &__pyx_t_7); 
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7202,7 +7239,7 @@ static unsigned int __pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_area(struc
 
   /* "acide/measure.pyx":317
  *     cpdef unsigned int get_pixmap_area(self):
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)             # <<<<<<<<<<<<<<
  *         px_rect.round_extents()
  *         return <unsigned int> (px_rect.get_area())
@@ -7266,7 +7303,7 @@ static unsigned int __pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_area(struc
   __pyx_t_3 = 0;
 
   /* "acide/measure.pyx":318
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  *         px_rect.round_extents()             # <<<<<<<<<<<<<<
  *         return <unsigned int> (px_rect.get_area())
@@ -7324,7 +7361,7 @@ static unsigned int __pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_area(struc
  *         return self.rect.get_area()
  * 
  *     cpdef unsigned int get_pixmap_area(self):             # <<<<<<<<<<<<<<
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  */
 
@@ -7388,7 +7425,7 @@ static PyObject *__pyx_pf_5acide_7measure_12_CMeasurable_18get_pixmap_area(struc
  *         return <unsigned int> (px_rect.get_area())
  * 
  *     cpdef object get_pixmap_rect(self):             # <<<<<<<<<<<<<<
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  */
 
@@ -7461,7 +7498,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_rect(struct _
   /* "acide/measure.pyx":322
  * 
  *     cpdef object get_pixmap_rect(self):
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))             # <<<<<<<<<<<<<<
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))             # <<<<<<<<<<<<<<
  *         px_rect = self.rect.scale(_t, _t)
  *         return px_rect.round_extents()
  */
@@ -7473,7 +7510,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_rect(struct _
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_6.__pyx_n = 1;
-  __pyx_t_6.dpi = __pyx_f_5acide_5types_cround(__pyx_v_self->dpi);
+  __pyx_t_6.dpi = __pyx_f_5acide_5types_ciround(__pyx_v_self->dpi);
   __pyx_t_5 = __pyx_f_5acide_7measure_transform(__pyx_t_1, __pyx_t_3, &__pyx_t_6); 
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7481,7 +7518,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_rect(struct _
 
   /* "acide/measure.pyx":323
  *     cpdef object get_pixmap_rect(self):
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)             # <<<<<<<<<<<<<<
  *         return px_rect.round_extents()
  * 
@@ -7545,7 +7582,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_rect(struct _
   __pyx_t_3 = 0;
 
   /* "acide/measure.pyx":324
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  *         return px_rect.round_extents()             # <<<<<<<<<<<<<<
  * 
@@ -7577,7 +7614,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable_get_pixmap_rect(struct _
  *         return <unsigned int> (px_rect.get_area())
  * 
  *     cpdef object get_pixmap_rect(self):             # <<<<<<<<<<<<<<
- *         _t = transform(self.unit, Unit.PIXEL, cround(self.dpi))
+ *         _t = transform(self.unit, Unit.PIXEL, ciround(self.dpi))
  *         px_rect = self.rect.scale(_t, _t)
  */
 
@@ -8601,7 +8638,7 @@ static PyObject *__pyx_pf_5acide_7measure_12_CMeasurable_26offset(struct __pyx_o
  * 
  *     cpdef _dump_props(self):             # <<<<<<<<<<<<<<
  *         return (
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "
  */
 
 static PyObject *__pyx_pw_5acide_7measure_12_CMeasurable_29_dump_props(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
@@ -8669,17 +8706,17 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
  * 
  *     cpdef _dump_props(self):
  *         return (             # <<<<<<<<<<<<<<
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "
  */
   __Pyx_XDECREF(__pyx_r);
 
   /* "acide/measure.pyx":352
  *     cpdef _dump_props(self):
  *         return (
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "
  */
   __pyx_t_1 = PyTuple_New(14); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8690,7 +8727,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Format(__pyx_t_3, __pyx_kp_u_3f); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 352, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Format(__pyx_t_3, __pyx_kp_u_1f); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_6;
@@ -8715,17 +8752,17 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
 
   /* "acide/measure.pyx":353
  *         return (
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "
- *             f"{self.size[1]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[1]:.1f}{self.unit.abbr}, "
  */
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_point); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_3f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_1f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_6;
@@ -8749,18 +8786,18 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_kp_u__8);
 
   /* "acide/measure.pyx":354
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
- *             f"{self.size[1]:.3f}{self.unit.abbr}, "
- *             f"{self.dpi:.3f}dpi"
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
+ *             f"{self.size[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.dpi:.1f}dpi"
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_2, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Format(__pyx_t_3, __pyx_kp_u_3f); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Format(__pyx_t_3, __pyx_kp_u_1f); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_6;
@@ -8784,10 +8821,10 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   PyTuple_SET_ITEM(__pyx_t_1, 8, __pyx_kp_u__8);
 
   /* "acide/measure.pyx":355
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "
- *             f"{self.size[1]:.3f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
- *             f"{self.dpi:.3f}dpi"
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[1]:.1f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
+ *             f"{self.dpi:.1f}dpi"
  *         )
  */
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 355, __pyx_L1_error)
@@ -8795,7 +8832,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_3f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 355, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_1f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_6;
@@ -8819,15 +8856,15 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   PyTuple_SET_ITEM(__pyx_t_1, 11, __pyx_kp_u__8);
 
   /* "acide/measure.pyx":356
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "
- *             f"{self.size[1]:.3f}{self.unit.abbr}, "
- *             f"{self.dpi:.3f}dpi"             # <<<<<<<<<<<<<<
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.dpi:.1f}dpi"             # <<<<<<<<<<<<<<
  *         )
  * 
  */
   __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->dpi); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_3f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Format(__pyx_t_2, __pyx_kp_u_1f); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_6;
@@ -8843,9 +8880,9 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
   /* "acide/measure.pyx":352
  *     cpdef _dump_props(self):
  *         return (
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
- *             f"{self.point[1]:.3f}{self.unit.abbr}, "
- *             f"{self.size[0]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "             # <<<<<<<<<<<<<<
+ *             f"{self.point[1]:.1f}{self.unit.abbr}, "
+ *             f"{self.size[0]:.1f}{self.unit.abbr}, "
  */
   __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 14, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -8859,7 +8896,7 @@ static PyObject *__pyx_f_5acide_7measure_12_CMeasurable__dump_props(struct __pyx
  * 
  *     cpdef _dump_props(self):             # <<<<<<<<<<<<<<
  *         return (
- *             f"{self.point[0]:.3f}{self.unit.abbr}, "
+ *             f"{self.point[0]:.1f}{self.unit.abbr}, "
  */
 
   /* function exit code */
@@ -13871,6 +13908,59 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
 /* "acide/types.pxd":27
  * 
  * 
+ * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b > a: return b
+ *     else: return a
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_b) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("cimax", 0);
+
+  /* "acide/types.pxd":28
+ * 
+ * cdef inline int cimax(int a, int b):
+ *     if b > a: return b             # <<<<<<<<<<<<<<
+ *     else: return a
+ * 
+ */
+  __pyx_t_1 = ((__pyx_v_b > __pyx_v_a) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_b;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":29
+ * cdef inline int cimax(int a, int b):
+ *     if b > a: return b
+ *     else: return a             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_r = __pyx_v_a;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":27
+ * 
+ * 
+ * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b > a: return b
+ *     else: return a
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":32
+ * 
+ * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
  *     if b < a: return b
  *     else: return a
@@ -13882,7 +13972,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cmin", 0);
 
-  /* "acide/types.pxd":28
+  /* "acide/types.pxd":33
  * 
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b             # <<<<<<<<<<<<<<
@@ -13895,7 +13985,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":29
+  /* "acide/types.pxd":34
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -13907,7 +13997,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":27
+  /* "acide/types.pxd":32
  * 
  * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
@@ -13921,23 +14011,76 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   return __pyx_r;
 }
 
-/* "acide/types.pxd":32
+/* "acide/types.pxd":37
  * 
  * 
- * cdef inline int cround(double number):             # <<<<<<<<<<<<<<
+ * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b < a: return b
+ *     else: return a
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_b) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("cimin", 0);
+
+  /* "acide/types.pxd":38
+ * 
+ * cdef inline int cimin(int a, int b):
+ *     if b < a: return b             # <<<<<<<<<<<<<<
+ *     else: return a
+ * 
+ */
+  __pyx_t_1 = ((__pyx_v_b < __pyx_v_a) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_b;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":39
+ * cdef inline int cimin(int a, int b):
+ *     if b < a: return b
+ *     else: return a             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_r = __pyx_v_a;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":37
+ * 
+ * 
+ * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
+ *     if b < a: return b
+ *     else: return a
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":42
+ * 
+ * 
+ * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)
  */
 
-static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
+static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  __Pyx_RefNannySetupContext("cround", 0);
+  __Pyx_RefNannySetupContext("ciround", 0);
 
-  /* "acide/types.pxd":33
+  /* "acide/types.pxd":43
  * 
- * cdef inline int cround(double number):
+ * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)             # <<<<<<<<<<<<<<
  *     else: return <int>(number - 0.5)
  * 
@@ -13948,8 +14091,8 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":34
- * cdef inline int cround(double number):
+  /* "acide/types.pxd":44
+ * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)             # <<<<<<<<<<<<<<
  * 
@@ -13960,15 +14103,92 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":32
+  /* "acide/types.pxd":42
  * 
  * 
- * cdef inline int cround(double number):             # <<<<<<<<<<<<<<
+ * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)
  */
 
   /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/types.pxd":47
+ * 
+ * 
+ * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ */
+
+static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
+  int __pyx_v_i_num;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  long __pyx_t_3;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("ciceil", 0);
+
+  /* "acide/types.pxd":48
+ * 
+ * cdef inline int ciceil(double number):
+ *     cdef int i_num = <int> number             # <<<<<<<<<<<<<<
+ *     if (<double> i_num) == number: return i_num
+ *     else: return i_num + 1
+ */
+  __pyx_v_i_num = ((int)__pyx_v_number);
+
+  /* "acide/types.pxd":49
+ * cdef inline int ciceil(double number):
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num             # <<<<<<<<<<<<<<
+ *     else: return i_num + 1
+ * 
+ */
+  __pyx_t_1 = ((((double)__pyx_v_i_num) == __pyx_v_number) != 0);
+  if (__pyx_t_1) {
+    __pyx_r = __pyx_v_i_num;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":50
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ *     else: return i_num + 1             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_t_2 = 0;
+    __pyx_t_3 = __Pyx_add_const_long_checking_overflow(__pyx_v_i_num, 1, &__pyx_t_2);
+    if (unlikely(__pyx_t_2)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(3, 50, __pyx_L1_error)
+    }
+    __pyx_r = __pyx_t_3;
+    goto __pyx_L0;
+  }
+
+  /* "acide/types.pxd":47
+ * 
+ * 
+ * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
+ *     cdef int i_num = <int> number
+ *     if (<double> i_num) == number: return i_num
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("acide.types.ciceil", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -28052,7 +28272,7 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_1_0, __pyx_k_1_0, sizeof(__pyx_k_1_0), 0, 1, 0, 0},
-  {&__pyx_kp_u_3f, __pyx_k_3f, sizeof(__pyx_k_3f), 0, 1, 0, 0},
+  {&__pyx_kp_u_1f, __pyx_k_1f, sizeof(__pyx_k_1f), 0, 1, 0, 0},
   {&__pyx_n_s_ASCII, __pyx_k_ASCII, sizeof(__pyx_k_ASCII), 0, 0, 1, 1},
   {&__pyx_n_s_Any, __pyx_k_Any, sizeof(__pyx_k_Any), 0, 0, 1, 1},
   {&__pyx_kp_s_Buffer_view_does_not_expose_stri, __pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 0, 1, 0},
@@ -29209,6 +29429,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
+  /* Common.init */
+  if (unlikely(__Pyx_check_twos_complement())) {
+    PyErr_WriteUnraisable(__pyx_m);
+}
+
+if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
+
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -29362,11 +29589,11 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 40, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5acide_5types_TypedGrid = __Pyx_ImportType(__pyx_t_1, "acide.types", "TypedGrid", sizeof(struct __pyx_obj_5acide_5types_TypedGrid), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 40, __pyx_L1_error)
-  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 40, __pyx_L1_error)
+   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 57, __pyx_L1_error)
+  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -34881,6 +35108,86 @@ __pyx_capsule_create(void *p, CYTHON_UNUSED const char *sig)
     cobj = PyCObject_FromVoidPtr(p, NULL);
 #endif
     return cobj;
+}
+
+/* BaseCaseSigned */
+static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) + ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        long r = (long) ((unsigned long) a + (unsigned long) b);
+        long sign_a = __PYX_SIGN_BIT(long) & a;
+        long sign_b = __PYX_SIGN_BIT(long) & b;
+        long sign_r = __PYX_SIGN_BIT(long) & r;
+        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
+        return r;
+    }
+}
+static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 0) {
+        *overflow |= a > __PYX_MAX(long) - b;
+    } else if (b < 0) {
+        *overflow |= a < __PYX_MIN(long) - b;
+    }
+    return a + b;
+}
+static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_const_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) * ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#endif
+    } else {
+        long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(long) / b;
+        *overflow |= a < __PYX_MIN(long) / b;
+    } else if (b == -1) {
+        *overflow |= a == __PYX_MIN(long);
+    } else if (b < -1) {
+        *overflow |= a > __PYX_MIN(long) / b;
+        *overflow |= a < __PYX_MAX(long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    *overflow |= (a == __PYX_MIN(long)) & (b == -1);
+    return a / b;
 }
 
 /* CIntToPy */

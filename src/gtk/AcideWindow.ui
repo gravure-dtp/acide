@@ -1,16 +1,42 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 0.8.2 -->
+<!-- Created with Cambalache 0.10.2 -->
 <interface>
   <!-- interface-name window.ui -->
   <requires lib="gtk" version="4.0"/>
   <template class="AcideWindow" parent="GtkApplicationWindow">
-    <property name="default-height">300</property>
-    <property name="default-width">600</property>
+    <property name="default-height">800</property>
+    <property name="default-width">1200</property>
+    <property name="title">Acide</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header_bar">
         <child type="end">
-          <object class="GtkMenuButton">
+          <object class="GtkMenuButton" id="menu_button">
+            <property name="halign">end</property>
             <property name="icon-name">open-menu-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="zoom_out_button">
+            <property name="action-name">win.zoom_out</property>
+            <property name="icon-name">zoom-out-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="zoom_init_button">
+            <property name="action-name">win.zoom_init</property>
+            <property name="icon-name">zoom-original-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="zoom_in_button">
+            <property name="action-name">win.zoom_in</property>
+            <property name="icon-name">zoom-in-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="zoom_fit_button">
+            <property name="action-name">win.zoom_fit</property>
+            <property name="icon-name">zoom-fit-best-symbolic</property>
           </object>
         </child>
       </object>
