@@ -385,6 +385,7 @@ class GraphicViewport(
         gx = self.graphic_clip.get_x()
         gy = self.graphic_clip.get_y()
 
+        # TODO: get this from css or preferences
         bg_color = self.get_rgba(.4, .4, .4)
         fg_color = self.get_rgba(.2, .2, .2)
         gr_color = self.get_rgba(1, 1, .8)
@@ -400,22 +401,13 @@ class GraphicViewport(
             )
             if render is not None:
                 clip = self.get_rect(
-                    #(gx - xo) + ((render.x / self.pixel_scale) / sc),
-                    #(gy - yo) + ((render.y / self.pixel_scale) / sc),
                     (gx - xo) + (render.x * self.graphic2lpx_transform),
                     (gy - yo) + (render.y * self.graphic2lpx_transform),
                     render.w / self.pixel_scale,
                     render.h / self.pixel_scale,
                 )
-                clip_t = self.get_rect(
-                    (gx - xo), (gy - yo),
-                    self.graphic_clip.get_width(),
-                    self.graphic_clip.get_height()
-                )
-                snap.append_color(gr_color, clip_t)
                 if render.texture is not None:
                     snap.append_texture(render.texture, clip)
-                    pass
                 else:
                     snap.append_color(gr_color, clip)
 

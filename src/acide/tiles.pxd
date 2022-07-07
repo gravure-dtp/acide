@@ -138,4 +138,5 @@ cdef class TilesPool():
     cpdef object render(TilesPool self)
     cpdef object after_render_cb(TilesPool self)
     cdef object validate_scales(TilesPool self, list scales)
+    cpdef int memory_print(TilesPool self)
 

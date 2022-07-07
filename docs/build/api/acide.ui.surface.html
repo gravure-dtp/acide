@@ -208,8 +208,241 @@
           </label>
         </div>
         <article role="main">
-          <section id="acide-ui-surface-module">
-<h1>acide.ui.surface module<a class="headerlink" href="#acide-ui-surface-module" title="Permalink to this heading">#</a></h1>
+          <section id="module-acide.ui.surface">
+<span id="acide-ui-surface-module"></span><h1>acide.ui.surface module<a class="headerlink" href="#module-acide.ui.surface" title="Permalink to this heading">#</a></h1>
+<p>surface module.</p>
+<p>To allow using of GTK on screens with very high DPI value GTK3 and GTK4
+use logical pixels, as opposed to physical ones. This is, the user can configure
+the desktop environment to scale the pixel size, generally by factor 1 for ordinary
+displays and by 2 for high DPI displays.
+So on a HiDPI display the logical and physical measurements may differ in scale,
+typically by a factor of 2. In most places we’re dealing with logical units methods,
+but take care that some methods like Texture.get_width() returns physical units.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acide.ui.surface.</span></span><span class="sig-name descname"><span class="pre">GraphicViewport</span></span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Widget</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Scrollable</span></code>, <a class="reference internal" href="acide.measure.html#acide.measure.Measurable" title="acide.measure.Measurable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Measurable</span></code></a></p>
+<p>A scrollable widget that render a Graphic Object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_get_property">
+<span class="sig-name descname"><span class="pre">do_get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_get_property" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_set_property">
+<span class="sig-name descname"><span class="pre">do_set_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_set_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_set_property" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.pixel_scale">
+<span class="sig-name descname"><span class="pre">pixel_scale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#acide.ui.surface.GraphicViewport.pixel_scale" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.workspace_size">
+<span class="sig-name descname"><span class="pre">workspace_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Size</span></em><a class="headerlink" href="#acide.ui.surface.GraphicViewport.workspace_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.rulers_size">
+<span class="sig-name descname"><span class="pre">rulers_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Border</span></em><a class="headerlink" href="#acide.ui.surface.GraphicViewport.rulers_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.device_matrix">
+<span class="sig-name descname"><span class="pre">device_matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Matrix</span></em><a class="headerlink" href="#acide.ui.surface.GraphicViewport.device_matrix" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.graphic_clip">
+<span class="sig-name descname"><span class="pre">graphic_clip</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Rect</span></em><a class="headerlink" href="#acide.ui.surface.GraphicViewport.graphic_clip" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.device_margins">
+<span class="sig-name descname"><span class="pre">device_margins</span></span><a class="headerlink" href="#acide.ui.surface.GraphicViewport.device_margins" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.update_monitor_infos">
+<span class="sig-name descname"><span class="pre">update_monitor_infos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.update_monitor_infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.update_monitor_infos" title="Permalink to this definition">#</a></dt>
+<dd><p>Update infos for monitor displaying self.</p>
+<p>This function can only be called after the widget has been added
+to a widget hierarchy with a GtkWindow at the top. In general, we should
+only create display specific resources when a widget has been realized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>caller</strong> (<em>Optional</em><em>[</em><em>Object</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.update_metrics">
+<span class="sig-name descname"><span class="pre">update_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.update_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.update_metrics" title="Permalink to this definition">#</a></dt>
+<dd><p>Update internal matrix.</p>
+<p>Update all internel matrix and transformation coefficients used
+for rendering. This is usually called when properties like <code class="xref py py-attr docutils literal notranslate"><span class="pre">dpi</span></code> or
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">size</span></code> for this viewport changed or when a <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code> is added.
+It is safe to called update_metrics() at any time when needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.update_workspace_size">
+<span class="sig-name descname"><span class="pre">update_workspace_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.update_workspace_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.update_workspace_size" title="Permalink to this definition">#</a></dt>
+<dd><p>Update workspace size.</p>
+<p>Compute workspace_size attrbute accordingly to displayed <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>
+and workspace margins settings measured in logical pixel unit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_measure">
+<span class="sig-name descname"><span class="pre">do_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">for_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_measure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_measure" title="Permalink to this definition">#</a></dt>
+<dd><p>Measures widget for the orientation and for the given for_size.</p>
+<p>As an example, if orientation is GTK_ORIENTATION_HORIZONTAL and for_size
+is 300, this functions will compute the minimum and natural width of widget
+if it is allocated at a height of 300 pixels.
+Return measurements are in logical pixel unit within a tuple
+(int minimum, int natural, int minimum_baseline, int natural_baseline).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orientation</strong> (<em>Orientation</em>) – </p></li>
+<li><p><strong>for_size</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[int, int, int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_snapshot">
+<span class="sig-name descname"><span class="pre">do_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_snapshot" title="Permalink to this definition">#</a></dt>
+<dd><p>snapshot(self, snapshot:Gtk.Snapshot)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>snap</strong> (<em>Snapshot</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.draw_rulers">
+<span class="sig-name descname"><span class="pre">draw_rulers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.draw_rulers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.draw_rulers" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>snap</strong> (<em>Snapshot</em>) – </p></li>
+<li><p><strong>clip</strong> (<em>Rect</em>) – </p></li>
+<li><p><strong>xo</strong> (<em>float</em>) – </p></li>
+<li><p><strong>yo</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.get_rgba">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_rgba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.get_rgba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.get_rgba" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.get_rect">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_rect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.get_rect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.get_rect" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.draw_text">
+<span class="sig-name descname"><span class="pre">draw_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.draw_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.draw_text" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.draw_grid">
+<span class="sig-name descname"><span class="pre">draw_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.draw_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.draw_grid" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_get_request_mode">
+<span class="sig-name descname"><span class="pre">do_get_request_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_get_request_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_get_request_mode" title="Permalink to this definition">#</a></dt>
+<dd><p>Gets whether the widget prefers a height-for-width layout
+or a width-for-height layout.</p>
+<p>Single-child widgets generally propagate the preference of their child,
+more complex widgets need to request something either in context of their
+children or in context of their allocation capabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>SizeRequestMode</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_get_border">
+<span class="sig-name descname"><span class="pre">do_get_border</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_get_border"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_get_border" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the size of a non-scrolling border around
+the outside of the scrollable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<em>Border</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.do_size_allocate">
+<span class="sig-name descname"><span class="pre">do_size_allocate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/ui/surface.html#GraphicViewport.do_size_allocate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.ui.surface.GraphicViewport.do_size_allocate" title="Permalink to this definition">#</a></dt>
+<dd><p>This function is used to assign a size, position and (optionally)
+baseline to child widgets.</p>
+<p>When the parent allocates space to the scrollable child widget,
+the widget must ensure the adjustments property values are correct
+and up to date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> (<em>int</em>) – </p></li>
+<li><p><strong>height</strong> (<em>int</em>) – </p></li>
+<li><p><strong>baseline</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.viewport2lpx_transform">
+<span class="sig-name descname"><span class="pre">viewport2lpx_transform</span></span><a class="headerlink" href="#acide.ui.surface.GraphicViewport.viewport2lpx_transform" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.lpx2viewport_transform">
+<span class="sig-name descname"><span class="pre">lpx2viewport_transform</span></span><a class="headerlink" href="#acide.ui.surface.GraphicViewport.lpx2viewport_transform" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acide.ui.surface.GraphicViewport.lpx2graphic_transform">
+<span class="sig-name descname"><span class="pre">lpx2graphic_transform</span></span><a class="headerlink" href="#acide.ui.surface.GraphicViewport.lpx2graphic_transform" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>

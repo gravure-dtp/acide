@@ -684,8 +684,6 @@ cdef class SuperTile(TilesGrid):
                 )
                 _T.stop()
                 self.is_valid = True
-                print(self,
-                     f"\nClip: ({self._clip._x}, {self._clip._y}) {self._clip._w}x{self._clip._h}\n")
             else:
                 self.invalidate()
 
@@ -815,7 +813,6 @@ cdef class TilesPool():
                     dpi=self.graphic.dpi * scale,
                 )
         tg.compute_extents()
-        # print(tg, "\n")
 
     cpdef set_rendering(self, double x, double y, int depth=0):
         """Setup the rendering :class:`SuperTile` so the point
@@ -846,7 +843,6 @@ cdef class TilesPool():
 
         i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
-        # print(self.render_tile, "\n")
         return self.render_tile._clip
 
     cpdef after_render_cb(self):
@@ -857,6 +853,18 @@ cdef class TilesPool():
     cpdef render(self):
         # TODO: make it async
         self.render_tile.render_texture()
+
+    cpdef int memory_print(self):
+        cdef int mem = 0
+        if self.render_tile is not None:
+            mem += self.render_tile._u * 2  # cause of gbytes
+        if self.invalid_render is not None:
+            mem += self.invalid_render._u * 2  # cause of gbytes
+        for tg in self.stack:
+            (<TilesGrid> tg).stats()
+            mem += (<TilesGrid> tg)._z
+        return mem
+
 
 
 
