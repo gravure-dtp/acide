@@ -18,6 +18,7 @@
 """
 
 """
+import asyncio
 import time
 from typing import Any, Callable, Union, Optional, NoReturn, Sequence, Tuple
 
@@ -31,6 +32,7 @@ cimport cython
 
 from acide import format_size
 from acide.types import TypedGrid
+from acide.async import Scheduler, Priority
 from acide.measure import Measurable, Unit
 from acide.types import BufferProtocol, Rectangle
 # from acide cimport gbytes
@@ -134,6 +136,24 @@ cdef class Tile(_CMeasurable):
         """
         self.buffer = None
         self._u = self._z = self._r = 0
+
+    cpdef compress_async(
+        self,
+        buffer: BufferProtocol,
+        size: Sequence[int, int],
+        format: Gdk.MemoryFormat,
+    ):
+        """Compress the given :obj:`buffer` in the :class:`Tile` asynchroniously.
+        """
+        return self._compress_async(buffer, size, format)
+
+    async def _compress_async(self, buffer, size, format):
+        try:
+            self.compress(buffer, size, format)
+        except asyncio.CancelledError:
+            pass # TODO
+        finally:
+            pass
 
     cpdef compress(
         self,
@@ -735,6 +755,7 @@ cdef class TilesPool():
         self.viewport = viewport
         self.memory_format = mem_format
         self.pixbuff_cb = pixbuff_cb
+        self.scheduler = Scheduler.new()
 
     def __init__(
         self,
@@ -782,11 +803,11 @@ cdef class TilesPool():
         cdef double vw, vh, gw, gh, trs
         cdef int width, height
         vw, vh = self.viewport.size
+        trs = self.viewport.get_transform(self.graphic.unit)
         if vw!=0 and vh!=0:
             gw, gh = self.graphic.size
             gw *= scale
             gh *= scale
-            trs = self.viewport.get_transform(self.graphic.unit)
             width = cimax(2, ciceil(gw / (vw * trs)))
             height = cimax(2, ciceil(gh / (vh * trs)))
             self.stack.append(
@@ -814,6 +835,16 @@ cdef class TilesPool():
                 )
         tg.compute_extents()
 
+    async def run_tasks(self):
+        """Run scheduled Tasks concurently respecting there priority."""
+        await self.scheduler.wait()
+
+    def schedule_compression(self):
+        for tile in self.render_tile:
+            self.scheduler.schedule(
+                tile.compress_async(), priority=Priority.HIGHEST
+            )
+
     cpdef set_rendering(self, double x, double y, int depth=0):
         """Setup the rendering :class:`SuperTile` so the point
         at :obj:`(x, y)` will fit in its region.
@@ -837,15 +868,15 @@ cdef class TilesPool():
             # keep all compressed buffer or an in beetween
             # (<TilesGrid> self.stack[self.current]).invalidate()
             self.current = depth
-            (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
-            self.invalid_render = self.render_tile
+            # (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
+            self.invalid_render = self.render_tile # FIXME
             self.render_tile = SuperTile(self.stack[self.current])
 
         i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
         return self.render_tile._clip
 
-    cpdef after_render_cb(self):
+    cpdef after_render_cb(self): #TODO async cb
         if self.invalid_render is not None:
             self.invalid_render.invalidate()
             self.invalid_render = None
@@ -864,9 +895,5 @@ cdef class TilesPool():
             (<TilesGrid> tg).stats()
             mem += (<TilesGrid> tg)._z
         return mem
-
-
-
-
 
 

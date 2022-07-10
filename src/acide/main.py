@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import asyncio
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -25,7 +26,11 @@ gi.require_version('Adw', '1')
 
 from gi.repository import Adw, Gio, GLib, Gtk, Gdk
 
+import gbulb
+gbulb.install(gtk=True)
+
 import fitz
+
 from acide.ui.surface import GraphicViewport
 from acide.ui.window import AboutDialog, AcideWindow
 from acide import format_size
@@ -147,8 +152,9 @@ class AcideApplication(Adw.Application):
 
 def main(version):
     """The application's entry point."""
-    print(format_size(3840 * 2160 * 24 * 9 / 20))
     app = AcideApplication()
-    return app.run(sys.argv)
+    loop = asyncio.get_event_loop()
+    return loop.run_forever(application=app)
+    #return app.run(sys.argv)
 
 

@@ -31,6 +31,7 @@
         "python3-pymupdf.json",
         "python3-scikit-build.json",
         "python3-blosc.json",
+        "python3-gbulb.json",
         {
             "name" : "acide",
             "builddir" : true,

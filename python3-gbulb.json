@@ -1,0 +1,14 @@
+{
+    "name": "python3-gbulb",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"gbulb\" --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/34/71/d2fdc5c44183153b2579bae0bc05665b24bf3e989c2f44027b8b9ac13a60/gbulb-0.6.3-py2.py3-none-any.whl",
+            "sha256": "05128081beaba915de8ab0245ace86b8cb27c701df016e2134dccf3ad7e170b6"
+        }
+    ]
+}

@@ -20,6 +20,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   acide.async
    acide.doc
    acide.graphic
    acide.measure

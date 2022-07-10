@@ -28,6 +28,7 @@ from gi.repository import Gdk, GObject, Graphene
 from acide.measure import Measurable, GObjectMeasurableMeta, Unit
 from acide.types import Number, Rectangle, BufferProtocol
 from acide.tiles import TilesPool, SuperTile, Clip
+from acide import format_size
 
 
 class _GraphicMeta(ABCMeta, GObjectMeasurableMeta):
@@ -143,7 +144,7 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         for display. If you need to override this method don't forget a call
         to super().on_scaled().
         """
-        print(f"Graphic scaled to {scale}")
+        pass
 
     @property
     def virtual_dpi(self) -> int:
@@ -209,7 +210,9 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self._viewport = None
         self.tiles_pool = None
 
-    def get_render(self, x: float, y: float) -> Clip:
+    def get_render_async(
+        self, x: float, y: float, cancel, callback, data
+    ) -> Clip:
         """Get rendering for a region so the point(x, y) will fit inside.
 
         The (x, y) coordinates has to be express in the :attr:`Graphic.unit`
@@ -222,7 +225,12 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         """
         clip = self.tiles_pool.set_rendering(x, y, self._scale_index)
         self.tiles_pool.render()
+
         return clip
+
+    def get_render_finish(self, result, data):
+        # print(f"TilesPool memory usage: {format_size(self.tiles_pool.memory_print())}")
+        return result.clip
 
     @abstractmethod
     def get_pixbuf(self, rect: Graphene.Rect) -> BufferProtocol:

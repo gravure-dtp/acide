@@ -19,6 +19,7 @@ import cython
 
 from cython.view cimport array as Carray
 from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin, cimax
+from acide.async cimport Scheduler
 from acide.measure cimport _CMeasurable, Extents_s
 
 cdef extern from "Python.h":
@@ -64,7 +65,12 @@ cdef class Tile(_CMeasurable):
     cdef int format_size
 
     # C METHODS
-    cpdef object compress(Tile self, object buffer, object size, object format)
+    cpdef object compress_async(
+        Tile self, object buffer, object size, object format
+    )
+    cpdef object compress(
+        Tile self, object buffer, object size, object format
+    )
     cpdef object invalidate(Tile self)
 
 
@@ -119,6 +125,7 @@ cdef class SuperTile(TilesGrid):
 cdef class TilesPool():
     # MEMBERS
     cdef list stack
+    cdef Scheduler scheduler
     cdef int depth
     cdef int current
     cdef SuperTile render_tile, invalid_render
