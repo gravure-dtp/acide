@@ -165,6 +165,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/acide.ui.surface.html">acide.ui.surface module</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/acide.asyncop.html">acide.asyncop module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/acide.doc.html">acide.doc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/acide.graphic.html">acide.graphic module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/acide.measure.html">acide.measure module</a></li>
@@ -257,7 +258,7 @@
 <span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gsk&#39;</span><span class="p">,</span> <span class="s1">&#39;4.0&#39;</span><span class="p">)</span>
 <span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Graphene&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Graphene</span><span class="p">,</span> <span class="n">Gsk</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">Gio</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Graphene</span><span class="p">,</span> <span class="n">Gsk</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span>
 <span class="kn">import</span> <span class="nn">cairo</span>
 
 <span class="kn">from</span> <span class="nn">acide.measure</span> <span class="kn">import</span> <span class="n">Measurable</span><span class="p">,</span> <span class="n">GObjectMeasurableMeta</span><span class="p">,</span> <span class="n">Unit</span>
@@ -379,8 +380,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_added</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_metrics</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_graphic_ready_cb</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;scaled&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_graphic_scaled_cb</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_removed</span><span class="p">()</span>
@@ -397,11 +398,11 @@
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;hadjustment&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hadjustment</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_hadjustement</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;value-changed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_hscroll</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;value-changed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_view_changed</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;vadjustment&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vadjustment</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_vadjustement</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;value-changed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_vscroll</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;value-changed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_view_changed</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown property </span><span class="si">{</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
@@ -415,6 +416,7 @@
         <span class="s2">&quot;lpx2viewport_transform&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lpx2graphic_transform&quot;</span><span class="p">,</span>
         <span class="s2">&quot;device_matrix&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;render&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -427,6 +429,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers_size</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="mi">20</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device_matrix</span><span class="p">:</span> <span class="n">cairo</span><span class="o">.</span><span class="n">Matrix</span> <span class="o">=</span> <span class="n">cairo</span><span class="o">.</span><span class="n">Matrix</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span> <span class="o">=</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Inherited Gtk.Widget properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_vexpand</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -456,10 +459,14 @@
         <span class="c1"># Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;realize&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_monitor_infos</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_on_graphic_ready_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graphic</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_view_changed</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_on_graphic_scaled_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graphic</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_graphic_transform</span><span class="p">(</span><span class="n">graphic</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_workspace_size</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_view_changed</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GraphicViewport.update_monitor_infos"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.update_monitor_infos">[docs]</a>    <span class="k">def</span> <span class="nf">update_monitor_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update infos for monitor displaying self.</span>
@@ -588,41 +595,35 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="GraphicViewport.do_snapshot"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">do_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_width</span><span class="p">()</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_height</span><span class="p">()</span>
         <span class="n">xo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
         <span class="n">yo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
-        <span class="n">gy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span>
 
         <span class="c1"># TODO: get this from css or preferences</span>
         <span class="n">bg_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.4</span><span class="p">,</span> <span class="mf">.4</span><span class="p">)</span>
         <span class="n">fg_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mf">.2</span><span class="p">,</span> <span class="mf">.2</span><span class="p">,</span> <span class="mf">.2</span><span class="p">)</span>
         <span class="n">gr_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rgba</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">.8</span><span class="p">)</span>
 
-        <span class="n">fgbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">fgbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_allocated_height</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">bg_color</span><span class="p">,</span> <span class="n">fgbox</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">scale</span>
-            <span class="n">render</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">get_render</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">xo</span> <span class="o">+</span> <span class="n">gx</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
-                <span class="p">(</span><span class="n">yo</span> <span class="o">+</span> <span class="n">gx</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">-</span> <span class="n">xo</span><span class="p">)</span> <span class="o">+</span> \
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span><span class="p">),</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span> <span class="o">-</span> <span class="n">yo</span><span class="p">)</span> <span class="o">+</span> \
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">w</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">render</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">clip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">gx</span> <span class="o">-</span> <span class="n">xo</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span><span class="p">),</span>
-                    <span class="p">(</span><span class="n">gy</span> <span class="o">-</span> <span class="n">yo</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic2lpx_transform</span><span class="p">),</span>
-                    <span class="n">render</span><span class="o">.</span><span class="n">w</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span>
-                    <span class="n">render</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">render</span><span class="o">.</span><span class="n">texture</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">snap</span><span class="o">.</span><span class="n">append_texture</span><span class="p">(</span><span class="n">render</span><span class="o">.</span><span class="n">texture</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">gr_color</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">texture</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">snap</span><span class="o">.</span><span class="n">append_texture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">texture</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">snap</span><span class="o">.</span><span class="n">append_color</span><span class="p">(</span><span class="n">gr_color</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">show_rulers</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">draw_rulers</span><span class="p">(</span><span class="n">snap</span><span class="p">,</span> <span class="n">fgbox</span><span class="p">,</span> <span class="n">xo</span><span class="p">,</span> <span class="n">yo</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">show_rulers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">draw_rulers</span><span class="p">(</span><span class="n">snap</span><span class="p">,</span> <span class="n">fgbox</span><span class="p">,</span> <span class="n">xo</span><span class="p">,</span> <span class="n">yo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GraphicViewport.draw_rulers"><a class="viewcode-back" href="../../../api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.draw_rulers">[docs]</a>    <span class="k">def</span> <span class="nf">draw_rulers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">snap</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Snapshot</span><span class="p">,</span> <span class="n">clip</span><span class="p">:</span> <span class="n">Graphene</span><span class="o">.</span><span class="n">Rect</span><span class="p">,</span> <span class="n">xo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">scale</span>
@@ -658,7 +659,7 @@
         <span class="n">ctx</span><span class="o">.</span><span class="n">select_font_face</span><span class="p">(</span><span class="s2">&quot;sans&quot;</span><span class="p">)</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="mf">10.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span>
 
-        <span class="c1"># Horinzontal ruler</span>
+        <span class="c1"># Horizontal ruler</span>
         <span class="n">xt</span> <span class="o">=</span> <span class="n">tick</span> <span class="o">-</span> <span class="p">((</span><span class="n">xo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span> <span class="o">%</span> <span class="n">tick</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xo</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2viewport_transform</span><span class="p">)</span>
 
@@ -680,7 +681,7 @@
             <span class="n">xt</span> <span class="o">+=</span> <span class="n">tick</span>
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="c1"># vertcal ruler</span>
+        <span class="c1"># vertical ruler</span>
         <span class="c1">#TODO: vertical text position (use of pango to draw text)</span>
         <span class="n">yt</span> <span class="o">=</span> <span class="n">tick</span> <span class="o">-</span> <span class="p">((</span><span class="n">yo</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">)</span> <span class="o">%</span> <span class="n">tick</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">yo</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lpx2viewport_transform</span><span class="p">)</span>
@@ -779,10 +780,24 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_adjustements</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_on_hscroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjustment</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Adjustment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_on_view_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjustment</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Adjustment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">on_panned</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">hadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_x</span><span class="p">())</span> <span class="o">*</span> \
+                 <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">vadjustment</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphic_clip</span><span class="o">.</span><span class="n">get_y</span><span class="p">())</span> <span class="o">*</span> \
+                 <span class="bp">self</span><span class="o">.</span><span class="n">lpx2graphic_transform</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># self.render = self.props.graphic.get_render()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">get_render_async</span><span class="p">(</span>
+                <span class="n">cancellable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_get_render_cb</span><span class="p">,</span> <span class="n">user_data</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="c1">#self.queue_draw()</span>
 
-    <span class="k">def</span> <span class="nf">_on_vscroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjustment</span><span class="p">:</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Adjustment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_on_get_render_cb</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">Graphic</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Gio</span><span class="o">.</span><span class="n">Task</span><span class="p">,</span> <span class="n">user_data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">graphic</span><span class="o">.</span><span class="n">get_render_finish</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue_draw</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

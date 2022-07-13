@@ -47,7 +47,7 @@ gi.require_version("Gdk", "4.0")
 gi.require_version('Gsk', '4.0')
 gi.require_version('Graphene', '1.0')
 
-from gi.repository import Gdk, GdkPixbuf, GObject, Graphene, Gsk, Gtk, Pango
+from gi.repository import Gdk, GdkPixbuf, Gio, GObject, Graphene, Gsk, Gtk, Pango
 import cairo
 
 from acide.measure import Measurable, GObjectMeasurableMeta, Unit
@@ -169,8 +169,8 @@ class GraphicViewport(
                 self.graphic.on_added(self)
                 self.update_metrics()
                 self.update_workspace_size()
+                self.graphic.connect("ready", self._on_graphic_ready_cb)
                 self.graphic.connect("scaled", self._on_graphic_scaled_cb)
-                self.queue_draw()
             elif value is None:
                 if self.graphic is not None:
                     self.graphic.on_removed()
@@ -187,11 +187,11 @@ class GraphicViewport(
         elif prop.name == "hadjustment":
             self.hadjustment = value
             self._update_hadjustement()
-            self.hadjustment.connect("value-changed", self._on_hscroll)
+            self.hadjustment.connect("value-changed", self._on_view_changed)
         elif prop.name == "vadjustment":
             self.vadjustment = value
             self._update_vadjustement()
-            self.vadjustment.connect("value-changed", self._on_vscroll)
+            self.vadjustment.connect("value-changed", self._on_view_changed)
         else:
             raise AttributeError(f'unknown property {prop.name}')
 
@@ -205,6 +205,7 @@ class GraphicViewport(
         "lpx2viewport_transform",
         "lpx2graphic_transform",
         "device_matrix",
+        "render",
     )
 
     def __init__(self):
@@ -217,6 +218,7 @@ class GraphicViewport(
         self.rulers_size.left = self.rulers_size.top = 20
         self.device_matrix: cairo.Matrix = cairo.Matrix()
         self.graphic_clip: Graphene.Rect = Graphene.Rect()
+        self.render = None
 
         # Inherited Gtk.Widget properties
         self.set_vexpand(True)
@@ -246,10 +248,14 @@ class GraphicViewport(
         # Signals
         self.connect("realize", self.update_monitor_infos)
 
+    def _on_graphic_ready_cb(self, graphic, state):
+        if state:
+            self._on_view_changed(None)
+
     def _on_graphic_scaled_cb(self, graphic, scale):
         self._update_graphic_transform(graphic, scale)
         self.update_workspace_size()
-        self.queue_draw()
+        self._on_view_changed(None)
 
     def update_monitor_infos(self, caller: GObject.GObject=None) -> None:
         """Update infos for monitor displaying self.
@@ -378,41 +384,35 @@ class GraphicViewport(
         )
 
     def do_snapshot(self, snap: Gtk.Snapshot) -> None:
-        w = self.get_allocated_width()
-        h = self.get_allocated_height()
         xo = self.props.hadjustment.get_value()
         yo = self.props.vadjustment.get_value()
-        gx = self.graphic_clip.get_x()
-        gy = self.graphic_clip.get_y()
 
         # TODO: get this from css or preferences
         bg_color = self.get_rgba(.4, .4, .4)
         fg_color = self.get_rgba(.2, .2, .2)
         gr_color = self.get_rgba(1, 1, .8)
 
-        fgbox = self.get_rect(0, 0, w, h)
+        fgbox = self.get_rect(
+            0, 0, self.get_allocated_width(), self.get_allocated_height()
+        )
         snap.append_color(bg_color, fgbox)
 
-        if self.props.graphic is not None:
-            sc = self.props.graphic.scale
-            render = self.props.graphic.get_render(
-                (xo + gx) * self.lpx2graphic_transform,
-                (yo + gx) * self.lpx2graphic_transform,
+        if self.render is not None:
+            clip = self.get_rect(
+                (self.graphic_clip.get_x() - xo) + \
+                    (self.render.x * self.graphic2lpx_transform),
+                (self.graphic_clip.get_y() - yo) + \
+                    (self.render.y * self.graphic2lpx_transform),
+                self.render.w / self.pixel_scale,
+                self.render.h / self.pixel_scale,
             )
-            if render is not None:
-                clip = self.get_rect(
-                    (gx - xo) + (render.x * self.graphic2lpx_transform),
-                    (gy - yo) + (render.y * self.graphic2lpx_transform),
-                    render.w / self.pixel_scale,
-                    render.h / self.pixel_scale,
-                )
-                if render.texture is not None:
-                    snap.append_texture(render.texture, clip)
-                else:
-                    snap.append_color(gr_color, clip)
+            if self.render.texture is not None:
+                snap.append_texture(self.render.texture, clip)
+            else:
+                snap.append_color(gr_color, clip)
 
-                if self.props.show_rulers:
-                    self.draw_rulers(snap, fgbox, xo, yo, sc)
+            if self.props.show_rulers:
+                self.draw_rulers(snap, fgbox, xo, yo, self.props.graphic.scale)
 
     def draw_rulers(
         self, snap: Gtk.Snapshot, clip: Graphene.Rect, xo: float, yo: float, scale
@@ -448,7 +448,7 @@ class GraphicViewport(
         ctx.select_font_face("sans")
         ctx.set_font_size(10.0 * self.pixel_scale)
 
-        # Horinzontal ruler
+        # Horizontal ruler
         xt = tick - ((xo * self.pixel_scale) % tick)
         index = int(xo / scale * self.lpx2viewport_transform)
 
@@ -470,7 +470,7 @@ class GraphicViewport(
             xt += tick
             index += 1
 
-        # vertcal ruler
+        # vertical ruler
         #TODO: vertical text position (use of pango to draw text)
         yt = tick - ((yo * self.pixel_scale) % tick)
         index = int(yo / scale * self.lpx2viewport_transform)
@@ -569,10 +569,24 @@ class GraphicViewport(
         """
         self._update_adjustements()
 
-    def _on_hscroll(self, adjustment: Gtk.Adjustment) -> None:
-        self.queue_draw()
+    def _on_view_changed(self, adjustment: Gtk.Adjustment) -> None:
+        if self.props.graphic is not None:
+            self.props.graphic.on_panned(
+                (self.props.hadjustment.get_value() + self.graphic_clip.get_x()) * \
+                 self.lpx2graphic_transform,
+                (self.props.vadjustment.get_value() + self.graphic_clip.get_y()) * \
+                 self.lpx2graphic_transform,
+            )
+            # self.render = self.props.graphic.get_render()
+            self.props.graphic.get_render_async(
+                cancellable=None, callback=self._on_get_render_cb, user_data=None
+            )
+        #self.queue_draw()
 
-    def _on_vscroll(self, adjustment: Gtk.Adjustment) -> None:
+    def _on_get_render_cb(
+        self, src: Graphic, result: Gio.Task, user_data: Any
+    ) -> None:
+        self.render = self.props.graphic.get_render_finish(result, None)
         self.queue_draw()
 
     def __str__(self) -> str:

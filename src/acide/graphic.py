@@ -18,15 +18,16 @@
 
 from abc import ABCMeta, abstractmethod
 from fractions import Fraction
-from typing import Union, Any
+from typing import Union, Any, Callable
 
 import gi
 gi.require_version("Gdk", "4.0")
 gi.require_version('Graphene', '1.0')
-from gi.repository import Gdk, GObject, Graphene
+from gi.repository import Gdk, GLib, Gio, GObject, Graphene
 
 from acide.measure import Measurable, GObjectMeasurableMeta, Unit
 from acide.types import Number, Rectangle, BufferProtocol
+from acide.asyncop import AsyncReadyCallback
 from acide.tiles import TilesPool, SuperTile, Clip
 from acide import format_size
 
@@ -55,6 +56,7 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
 
     __gtype__name__ = "Graphic"
     __gsignals__ = {
+        'ready': (GObject.SIGNAL_RUN_FIRST, None, (bool,)),
         'scaled': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
@@ -84,6 +86,12 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
     def _init_scales(self, factors):
         # TODO: reduction factors
         self._scales = [Fraction(f, 1) for f in factors]
+
+    def do_ready(self, state, *args):
+        pass
+
+    def do_scaled(self, scale, *args):
+        self.on_scaled(scale)
 
     @property
     def scale(self) -> Fraction:
@@ -134,18 +142,6 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self.emit("scaled", self._scales[self._scale_index])
         return self._scales[self._scale_index]
 
-    def do_scaled(self, scale, *args):
-        self.on_scaled(scale)
-
-    def on_scaled(self, scale) -> None:
-        """Callback method for widget supporting this interface.
-
-        This method is called when this :class:`Graphic` is scaled
-        for display. If you need to override this method don't forget a call
-        to super().on_scaled().
-        """
-        pass
-
     @property
     def virtual_dpi(self) -> int:
         """The :attr:`scale` dependant dpi.
@@ -178,7 +174,7 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         return self._viewport
 
     def on_added(self, viewport: Measurable) -> None:
-        """Callback method for widget supporting this interface.
+        """Callback method for widget using this :class:`Graphic`.
 
         This method is called when this :class:`Graphic` is added to a widget.
         If you need to override this method don't forget a call to
@@ -188,20 +184,22 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self.tiles_pool = TilesPool(
             self, viewport, self._scales, self._format, self.get_pixbuf
         )
+        self.emit("ready", self.tiles_pool.is_ready)
 
     def on_updated(self) -> None:
-        """Callback method for widget supporting this interface.
+        """Callback method for widget using this :class:`Graphic`.
 
         This method is called when some of the viewport Widget's properties
-        has changed. If you need to override this method don't forget a call to
+        haved changed. If you need to override this method don't forget a call to
         super().on_updated().
         """
         self.tiles_pool.__init__(
             self, self.viewport, self._scales, self._format, self.get_pixbuf
         )
+        self.emit("ready", self.tiles_pool.is_ready)
 
     def on_removed(self) -> None:
-        """Callback method for widget supporting this interface.
+        """Callback method for widget using this :class:`Graphic`.
 
         This method is called when this :class:`Graphic` is removed
         from a widget. If you need to override this method don't forget a call
@@ -210,27 +208,47 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self._viewport = None
         self.tiles_pool = None
 
-    def get_render_async(
-        self, x: float, y: float, cancel, callback, data
-    ) -> Clip:
-        """Get rendering for a region so the point(x, y) will fit inside.
+    def on_scaled(self, scale) -> None:
+        """Callback method for widget using this :class:`Graphic`.
 
-        The (x, y) coordinates has to be express in the :attr:`Graphic.unit`
-        of measure. If the :class:`Graphic` is not yet renderable,
-        a :class:`acide.tiles.Clip` with *None* as the :attr:`acide.tiles.Clip.texture`
-        will be returned.
+        This method is called when this :class:`Graphic` is scaled
+        for display. If you need to override this method don't forget a call
+        to super().on_scaled().
+        """
+        pass
+
+    def on_panned(self, x: float, y: float) -> None:
+        """Callback method for widget using this :class:`Graphic`.
+
+        This method should be called by widget that have panned their contents.
+        This actually move the rendering region of this :class:`Graphic`
+        so the point(x, y) will fit inside. The (x, y) coordinates has to be express
+        in the :attr:`Graphic.unit` of measure.
+        """
+        self.tiles_pool.set_rendering(x, y, self._scale_index)
+
+    def get_render(self) -> Clip:
+        """Get the rendering region as a :class:`Clip`.
+
+        If the :class:`Graphic` is not yet renderable, a :class:`acide.tiles.Clip`
+        with *None* as the :attr:`acide.tiles.Clip.texture` will be returned.
 
         Returns: a :class:`acide.tiles.Clip` of the rendering region that holds
                  a :class:`Gtk.Texture` and corresponding clipping informations.
         """
-        clip = self.tiles_pool.set_rendering(x, y, self._scale_index)
-        self.tiles_pool.render()
+        return self.tiles_pool.render()
 
-        return clip
+    def get_render_async(
+        self,
+        cancellable: Gio.Cancellable,
+        callback: AsyncReadyCallback,
+        user_data: Any = None,
+    ) -> None:
+        gtask = Gio.Task.new(self, cancellable, callback, user_data)
+        self.tiles_pool.render_async(None, callback, gtask)
 
-    def get_render_finish(self, result, data):
-        # print(f"TilesPool memory usage: {format_size(self.tiles_pool.memory_print())}")
-        return result.clip
+    def get_render_finish(self, result: Gio.Task, data: any) -> Clip:
+        return self.tiles_pool.render_finish(result)
 
     @abstractmethod
     def get_pixbuf(self, rect: Graphene.Rect) -> BufferProtocol:

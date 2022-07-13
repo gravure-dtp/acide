@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="acide.graphic module" href="acide.graphic.html" /><link rel="prev" title="acide.async module" href="acide.async.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="acide.graphic module" href="acide.graphic.html" /><link rel="prev" title="acide.asyncop module" href="acide.asyncop.html" />
 
     <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
         <title>acide.doc module - acide 0.1.0 documentation</title>
@@ -166,7 +166,7 @@
 <li class="toctree-l4"><a class="reference internal" href="acide.ui.surface.html">acide.ui.surface module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="acide.async.html">acide.async module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="acide.asyncop.html">acide.asyncop module</a></li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">acide.doc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="acide.graphic.html">acide.graphic module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="acide.measure.html">acide.measure module</a></li>
@@ -351,7 +351,7 @@ toc in any way. It is your responsibility to refresh such variables as required.
 <dl class="py method">
 <dt class="sig sig-object py" id="acide.doc.Page.on_added">
 <span class="sig-name descname"><span class="pre">on_added</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">viewport</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.on_added"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.on_added" title="Permalink to this definition">#</a></dt>
-<dd><p>Callback method for widget supporting this interface.</p>
+<dd><p>Callback method for widget using this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>.</p>
 <p>This method is called when this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code> is added to a widget.
 If you need to override this method don’t forget a call to
 super().on_added().</p>
@@ -368,9 +368,9 @@ super().on_added().</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="acide.doc.Page.on_updated">
 <span class="sig-name descname"><span class="pre">on_updated</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acide/doc.html#Page.on_updated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acide.doc.Page.on_updated" title="Permalink to this definition">#</a></dt>
-<dd><p>Callback method for widget supporting this interface.</p>
+<dd><p>Callback method for widget using this <code class="xref py py-class docutils literal notranslate"><span class="pre">Graphic</span></code>.</p>
 <p>This method is called when some of the viewport Widget’s properties
-has changed. If you need to override this method don’t forget a call to
+haved changed. If you need to override this method don’t forget a call to
 super().on_updated().</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -420,14 +420,14 @@ result.</p>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="acide.async.html">
+          <a class="prev-page" href="acide.asyncop.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">acide.async module</div>
+                <div class="title">acide.asyncop module</div>
                 
               </div>
             </a>

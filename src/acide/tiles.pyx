@@ -19,20 +19,24 @@
 
 """
 import asyncio
+import functools
 import time
-from typing import Any, Callable, Union, Optional, NoReturn, Sequence, Tuple
+from typing import (
+    Any, Callable, Union, Optional, NoReturn, Sequence, Tuple,
+    Coroutine, Awaitable
+)
 
 import gi
 gi.require_version('Graphene', '1.0')
 gi.require_version("Gdk", "4.0")
-from gi.repository import Gdk, GLib, Graphene
+from gi.repository import Gdk, Gio, GLib, Graphene
 
 import blosc
 cimport cython
 
 from acide import format_size
 from acide.types import TypedGrid
-from acide.async import Scheduler, Priority
+from acide.asyncop import AsyncReadyCallback, Scheduler, Priority
 from acide.measure import Measurable, Unit
 from acide.types import BufferProtocol, Rectangle
 # from acide cimport gbytes
@@ -136,24 +140,6 @@ cdef class Tile(_CMeasurable):
         """
         self.buffer = None
         self._u = self._z = self._r = 0
-
-    cpdef compress_async(
-        self,
-        buffer: BufferProtocol,
-        size: Sequence[int, int],
-        format: Gdk.MemoryFormat,
-    ):
-        """Compress the given :obj:`buffer` in the :class:`Tile` asynchroniously.
-        """
-        return self._compress_async(buffer, size, format)
-
-    async def _compress_async(self, buffer, size, format):
-        try:
-            self.compress(buffer, size, format)
-        except asyncio.CancelledError:
-            pass # TODO
-        finally:
-            pass
 
     cpdef compress(
         self,
@@ -334,7 +320,6 @@ cdef class TilesGrid(TypedGrid):
             pixbuff_cb: a callback function to retrieve parts of a pixmap in
                         the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
         """
-        #TODO: make it async
         cdef Py_ssize_t x, y
         cdef object tile
         self._u = self._z = 0
@@ -355,6 +340,45 @@ cdef class TilesGrid(TypedGrid):
                         _T.stop()
                     self._u += (<Tile> tile)._u
                     self._z += (<Tile> tile)._z
+        if self._z <> 0:
+            self._r = self._u / float(self._z)
+
+    cpdef compress_async(
+        self, pixbuff_cb: Callable[[Graphene.Rect], BufferProtocol]
+    ):
+        """Compress asynchronously all Tiles in this Grid.
+
+        Args:
+            pixbuff_cb: a callback function to retrieve parts of a pixmap in
+                        the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
+
+        Returns:
+            a coroutine doing the compression.
+        """
+        return self._compress_co(pixbuff_cb)
+
+    async def _compress_co(self, pixbuff_cb):
+        cdef Py_ssize_t x, y
+        cdef object tile
+        self._u = self._z = 0
+        for x in range(self.view.shape[0]):
+            for y in range(self.view.shape[1]):
+                tile = self._ref.items[self.view[x, y]]
+                if tile is not None:
+                    if (<Tile> tile).buffer is None:
+                        _T = Timer("pixbuff_cb")
+                        buffer, size = pixbuff_cb((<Tile> tile).rect)
+                        _T.stop()
+                        _T = Timer("Tile.compress()")
+                        (<Tile> tile).compress(
+                            buffer=buffer,
+                            size=size,
+                            format=self.memory_format
+                        )
+                        _T.stop()
+                    self._u += (<Tile> tile)._u
+                    self._z += (<Tile> tile)._z
+                    await asyncio.sleep(0)
         if self._z <> 0:
             self._r = self._u / float(self._z)
 
@@ -474,6 +498,12 @@ cdef class Clip():
     def texture(self):
         """A :class:`Gdk.Texture` holding the pixmap"""
         return self._texture
+
+    def __str__(self):
+        return (
+            f"Clip(x={self._x}, y={self._y}, w={self._w}, h={self._h}, "
+            f"texture={self._texture})"
+        )
 
 
 cdef class SuperTile(TilesGrid):
@@ -707,6 +737,41 @@ cdef class SuperTile(TilesGrid):
             else:
                 self.invalidate()
 
+    async def render_texture_async(self) -> Coroutine:
+        cdef int ret
+        if not self.is_valid:
+            if self.buffer is None:
+                _T = Timer("allocate_buffer")
+                ret = self.allocate_buffer()
+                _T.stop()
+                await asyncio.sleep(0)
+
+                if ret < 0:
+                    raise MemoryError(f"{self.msg}")
+            if self.fill_buffer() > 0:
+                await asyncio.sleep(0)
+
+                _T = Timer("glib.bytes")
+                #FIXME: here data is copied 2 times !!!
+                self.glib_bytes = GLib.Bytes.new_take(
+                    PyBytes_FromObject(self.buffer)
+                )
+                _T.stop()
+                await asyncio.sleep(0)
+
+                _T = Timer("Gdk.Texture")
+                self._clip._texture = Gdk.MemoryTexture.new(
+                    self._clip._w,
+                    self._clip._h,
+                    self.memory_format,
+                    self.glib_bytes,
+                    3 * self._clip._w,
+                )
+                _T.stop()
+                self.is_valid = True
+            else:
+                self.invalidate()
+
     @property
     def clip(self) -> Clip:
         """A :class:`Clip` holding a :class:`Gdk.Texture` filled with
@@ -755,7 +820,11 @@ cdef class TilesPool():
         self.viewport = viewport
         self.memory_format = mem_format
         self.pixbuff_cb = pixbuff_cb
+        self.render_tile = None
         self.scheduler = Scheduler.new()
+        self.scheduler.run("forever")
+        self.null_clip = Clip()
+        self.current = -1
 
     def __init__(
         self,
@@ -787,6 +856,11 @@ cdef class TilesPool():
         # could initialize the render_tile
         self.current = -1
         _T.stop()
+
+    @property
+    def is_ready(self):
+        "True if this :class:`TilesPool` is ready to accept rendering request."
+        return bool(len(self.stack))
 
     cdef validate_scales(self, list scales):
         try:
@@ -839,12 +913,6 @@ cdef class TilesPool():
         """Run scheduled Tasks concurently respecting there priority."""
         await self.scheduler.wait()
 
-    def schedule_compression(self):
-        for tile in self.render_tile:
-            self.scheduler.schedule(
-                tile.compress_async(), priority=Priority.HIGHEST
-            )
-
     cpdef set_rendering(self, double x, double y, int depth=0):
         """Setup the rendering :class:`SuperTile` so the point
         at :obj:`(x, y)` will fit in its region.
@@ -857,9 +925,6 @@ cdef class TilesPool():
                     the :class:`acide.graphic.Graphic`
             depth: a positive integer as an index of scales given at
                    :class:`TilesPool` initialzation
-
-        Returns:
-            a :class:`Clip` holding the :class:`Gdk.Tetxure`
         """
         cdef int i, j
 
@@ -868,22 +933,75 @@ cdef class TilesPool():
             # keep all compressed buffer or an in beetween
             # (<TilesGrid> self.stack[self.current]).invalidate()
             self.current = depth
-            # (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
-            self.invalid_render = self.render_tile # FIXME
+            self.invalid_render = self.render_tile
             self.render_tile = SuperTile(self.stack[self.current])
-
         i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
-        return self.render_tile._clip
-
-    cpdef after_render_cb(self): #TODO async cb
-        if self.invalid_render is not None:
-            self.invalid_render.invalidate()
-            self.invalid_render = None
 
     cpdef render(self):
-        # TODO: make it async
-        self.render_tile.render_texture()
+        """Request rendering on the :class:`SuperTile`.
+
+        Returns:
+            a :class:`Clip` holding the :class:`Gdk.Tetxure`
+        """
+        if self.render_tile is not None:
+            (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
+            self.render_tile.render_texture()
+            return self.render_tile._clip
+        else:
+            return self.null_clip
+
+    def render_async(
+        self,
+        cancellable: Gio.Cancellable,
+        callback: AsyncReadyCallback,
+        user_data: Any,
+    ) -> None:
+        """Request asynchronious rendering on the :class:`SuperTile`.
+
+        :obj:`callback` function will be called when rendering will be done,
+        :obj:`callback` function should request the result by calling
+        :meth:`render_finish`.
+
+        args:
+            cancellable:
+            callback:
+            user_data:
+        """
+        if isinstance(user_data, Gio.Task):
+            gtask = user_data
+        else:
+            gtask = Gio.Task.new(self, cancellable, callback, user_data)
+        self.scheduler.schedule(
+            self.render_tile.compress_async(self.pixbuff_cb),
+            Priority.HIGHEST
+        )
+        self.scheduler.schedule(
+            self._on_compress_async_cb_co(gtask), Priority.NEXT
+        )
+        # self.scheduler.run()
+
+    async def _on_compress_async_cb_co(
+        self, gtask: Gio.AsyncResult
+    ) -> Coroutine:
+        self.scheduler.schedule(
+            self.render_tile.render_texture_async(),
+            Priority.HIGHEST,
+            functools.partial(self._on_render_ready_cb, gtask)
+        )
+
+    def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:
+        # complete the gtask calling the render_async callback
+        gtask.return_boolean(True)
+
+    def render_finish(self, result: Gio.Task, data: any = None):
+        if result.propagate_boolean():
+            if self.invalid_render is not None:
+                self.invalid_render.invalidate()
+                self.invalid_render = None
+            return self.render_tile._clip
+        else:
+            return self.null_clip
 
     cpdef int memory_print(self):
         cdef int mem = 0

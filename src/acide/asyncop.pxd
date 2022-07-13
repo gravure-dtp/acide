@@ -1,4 +1,4 @@
-# async.pxd
+# asyncop.pxd
 #
 # Copyright 2022 Gilles Coissac
 #
@@ -17,6 +17,7 @@
 #
 cimport cython
 
+
 @cython.final
 cdef class Scheduler():
     cdef list queues
@@ -24,6 +25,10 @@ cdef class Scheduler():
     cdef int lowest
     cdef object dones
     cdef int task_id
+    cdef double rate
 
-    cpdef object schedule(Scheduler self, object co, object priority)
-    cpdef object _scheduler(Scheduler self, int priority_id, object policy=*)
+    cpdef object schedule(
+        Scheduler self, object co, object priority, object callback=*
+    )
+
+

@@ -164,7 +164,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/acide.ui.surface.html">acide.ui.surface module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="api/acide.async.html">acide.async module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/acide.asyncop.html">acide.asyncop module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/acide.doc.html">acide.doc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/acide.graphic.html">acide.graphic module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/acide.measure.html">acide.measure module</a></li>
@@ -242,10 +242,10 @@
 </li>
         </ul></li>
         <li>
-    acide.async
+    acide.asyncop
 
         <ul>
-          <li><a href="api/acide.async.html#module-acide.async">module</a>
+          <li><a href="api/acide.asyncop.html#module-acide.asyncop">module</a>
 </li>
         </ul></li>
         <li>
@@ -262,6 +262,8 @@
           <li><a href="api/acide.graphic.html#module-acide.graphic">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     acide.measure
 
@@ -269,8 +271,6 @@
           <li><a href="api/acide.measure.html#module-acide.measure">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     acide.tiles
 
@@ -299,8 +299,6 @@
           <li><a href="api/acide.ui.surface.html#module-acide.ui.surface">module</a>
 </li>
         </ul></li>
-        <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.after_render_cb">after_render_cb() (acide.tiles.TilesPool method)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -331,7 +329,7 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.tiles.html#acide.tiles.Tile.compress_async">compress_async() (acide.tiles.Tile method)</a>
+        <li><a href="api/acide.tiles.html#acide.tiles.TilesGrid.compress_async">compress_async() (acide.tiles.TilesGrid method)</a>
 </li>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.contains">contains() (acide.measure.Measurable method)</a>
 </li>
@@ -361,6 +359,8 @@
 </li>
         <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.do_measure">do_measure() (acide.ui.surface.GraphicViewport method)</a>
 </li>
+        <li><a href="api/acide.graphic.html#acide.graphic.Graphic.do_ready">do_ready() (acide.graphic.Graphic method)</a>
+</li>
         <li><a href="api/acide.graphic.html#acide.graphic.Graphic.do_scaled">do_scaled() (acide.graphic.Graphic method)</a>
 </li>
     </ul></td>
@@ -373,7 +373,7 @@
 </li>
         <li><a href="api/acide.doc.html#acide.doc.Document">Document (class in acide.doc)</a>
 </li>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.dones">dones (acide.async.Scheduler attribute)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.dones">dones (acide.asyncop.Scheduler attribute)</a>
 </li>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.dpi">dpi (acide.measure.Measurable property)</a>
 </li>
@@ -433,10 +433,12 @@
 </li>
         <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.get_rect">get_rect() (acide.ui.surface.GraphicViewport static method)</a>
 </li>
-        <li><a href="api/acide.graphic.html#acide.graphic.Graphic.get_render_async">get_render_async() (acide.graphic.Graphic method)</a>
+        <li><a href="api/acide.graphic.html#acide.graphic.Graphic.get_render">get_render() (acide.graphic.Graphic method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/acide.graphic.html#acide.graphic.Graphic.get_render_async">get_render_async() (acide.graphic.Graphic method)</a>
+</li>
         <li><a href="api/acide.graphic.html#acide.graphic.Graphic.get_render_finish">get_render_finish() (acide.graphic.Graphic method)</a>
 </li>
         <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.get_rgba">get_rgba() (acide.ui.surface.GraphicViewport static method)</a>
@@ -473,7 +475,7 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Priority.HIGHEST">HIGHEST (acide.async.Priority attribute)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Priority.HIGHEST">HIGHEST (acide.asyncop.Priority attribute)</a>
 </li>
         <li><a href="api/acide.doc.html#acide.doc.Document.home">home() (acide.doc.Document method)</a>
 </li>
@@ -491,10 +493,10 @@
 </li>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.inch2ps_transform">inch2ps_transform (acide.measure.Measurable property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.inch2px_transform">inch2px_transform (acide.measure.Measurable property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/acide.tiles.html#acide.tiles.SuperTile.invalidate">invalidate() (acide.tiles.SuperTile method)</a>
 
         <ul>
@@ -503,6 +505,8 @@
           <li><a href="api/acide.tiles.html#acide.tiles.TilesGrid.invalidate">(acide.tiles.TilesGrid method)</a>
 </li>
         </ul></li>
+        <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.is_ready">is_ready (acide.tiles.TilesPool attribute)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -511,7 +515,7 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Priority.LOWEST">LOWEST (acide.async.Priority attribute)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Priority.LOWEST">LOWEST (acide.asyncop.Priority attribute)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -547,7 +551,7 @@
         <ul>
           <li><a href="api/acide.html#module-acide">acide</a>
 </li>
-          <li><a href="api/acide.async.html#module-acide.async">acide.async</a>
+          <li><a href="api/acide.asyncop.html#module-acide.asyncop">acide.asyncop</a>
 </li>
           <li><a href="api/acide.doc.html#module-acide.doc">acide.doc</a>
 </li>
@@ -576,11 +580,11 @@
   <h2>N</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.new">new() (acide.async.Scheduler static method)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.new">new() (acide.asyncop.Scheduler static method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Priority.NEXT">NEXT (acide.async.Priority attribute)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Priority.NEXT">NEXT (acide.asyncop.Priority attribute)</a>
 </li>
         <li><a href="api/acide.doc.html#acide.doc.Document.next_page">next_page() (acide.doc.Document method)</a>
 </li>
@@ -600,6 +604,8 @@
           <li><a href="api/acide.graphic.html#acide.graphic.Graphic.on_added">(acide.graphic.Graphic method)</a>
 </li>
         </ul></li>
+        <li><a href="api/acide.graphic.html#acide.graphic.Graphic.on_panned">on_panned() (acide.graphic.Graphic method)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/acide.graphic.html#acide.graphic.Graphic.on_removed">on_removed() (acide.graphic.Graphic method)</a>
@@ -622,7 +628,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/acide.doc.html#acide.doc.Page">Page (class in acide.doc)</a>
 </li>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.pendings">pendings (acide.async.Scheduler attribute)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.pendings">pendings (acide.asyncop.Scheduler attribute)</a>
 </li>
         <li><a href="api/acide.measure.html#acide.measure.Unit.PIXEL">PIXEL (acide.measure.Unit attribute)</a>
 </li>
@@ -632,7 +638,7 @@
 </li>
         <li><a href="api/acide.doc.html#acide.doc.Document.previous_page">previous_page() (acide.doc.Document method)</a>
 </li>
-        <li><a href="api/acide.async.html#acide.async.Priority">Priority (class in acide.async)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Priority">Priority (class in acide.asyncop)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -666,15 +672,31 @@
         </ul></li>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.rect">rect (acide.measure.Measurable property)</a>
 </li>
+        <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.render">render (acide.ui.surface.GraphicViewport attribute)</a>
+</li>
         <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.render">render() (acide.tiles.TilesPool method)</a>
+</li>
+        <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.render_async">render_async() (acide.tiles.TilesPool method)</a>
+</li>
+        <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.render_finish">render_finish() (acide.tiles.TilesPool method)</a>
+</li>
+        <li><a href="api/acide.tiles.html#acide.tiles.SuperTile.render_texture">render_texture() (acide.tiles.SuperTile method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.tiles.html#acide.tiles.SuperTile.render_texture">render_texture() (acide.tiles.SuperTile method)</a>
+        <li><a href="api/acide.tiles.html#acide.tiles.SuperTile.render_texture_async">render_texture_async() (acide.tiles.SuperTile method)</a>
 </li>
         <li><a href="api/acide.measure.html#acide.measure.Measurable.rounds">rounds() (acide.measure.Measurable method)</a>
 </li>
         <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.rulers_size">rulers_size (acide.ui.surface.GraphicViewport attribute)</a>
+</li>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.run">run() (acide.asyncop.Scheduler method)</a>
+</li>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.run_completed">run_completed() (acide.asyncop.Scheduler method)</a>
+</li>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.run_forever">run_forever() (acide.asyncop.Scheduler method)</a>
+</li>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.run_once">run_once() (acide.asyncop.Scheduler method)</a>
 </li>
         <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.run_tasks">run_tasks() (acide.tiles.TilesPool method)</a>
 </li>
@@ -696,15 +718,11 @@
 </li>
         <li><a href="api/acide.graphic.html#acide.graphic.Graphic.scale_init">scale_init() (acide.graphic.Graphic method)</a>
 </li>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.schedule">schedule() (acide.async.Scheduler method)</a>
-</li>
-        <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.schedule_compression">schedule_compression() (acide.tiles.TilesPool method)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler.schedule">schedule() (acide.asyncop.Scheduler method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Scheduler">Scheduler (class in acide.async)</a>
-</li>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.set_priority_cb">set_priority_cb() (acide.async.Scheduler method)</a>
+        <li><a href="api/acide.asyncop.html#acide.asyncop.Scheduler">Scheduler (class in acide.asyncop)</a>
 </li>
         <li><a href="api/acide.tiles.html#acide.tiles.TilesPool.set_rendering">set_rendering() (acide.tiles.TilesPool method)</a>
 </li>
@@ -796,8 +814,6 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/acide.async.html#acide.async.Scheduler.wait">wait() (acide.async.Scheduler method)</a>
-</li>
         <li><a href="api/acide.ui.surface.html#acide.ui.surface.GraphicViewport.workspace_size">workspace_size (acide.ui.surface.GraphicViewport attribute)</a>
 </li>
     </ul></td>

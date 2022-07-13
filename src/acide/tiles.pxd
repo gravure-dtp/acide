@@ -19,7 +19,7 @@ import cython
 
 from cython.view cimport array as Carray
 from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin, cimax
-from acide.async cimport Scheduler
+from acide.asyncop cimport Scheduler
 from acide.measure cimport _CMeasurable, Extents_s
 
 cdef extern from "Python.h":
@@ -65,9 +65,6 @@ cdef class Tile(_CMeasurable):
     cdef int format_size
 
     # C METHODS
-    cpdef object compress_async(
-        Tile self, object buffer, object size, object format
-    )
     cpdef object compress(
         Tile self, object buffer, object size, object format
     )
@@ -84,7 +81,8 @@ cdef class TilesGrid(TypedGrid):
 
     # C METHODS
     cpdef object invalidate(TilesGrid self)
-    cpdef compress(TilesGrid self, object graphic)
+    cpdef compress(TilesGrid self, object pixbuff_cb)
+    cpdef compress_async(TilesGrid self, object pixbuff_cb)
     cdef compute_extents(TilesGrid self)
     cdef bint contains_point(TilesGrid self, double x, double y)
     cdef bint contains_extents(
@@ -133,6 +131,7 @@ cdef class TilesPool():
     cdef object viewport
     cdef object memory_format
     cdef object pixbuff_cb
+    cdef Clip null_clip
 
     # C METHODS
     cdef int make_tiles_grid(TilesPool self, unsigned int scale)
@@ -143,7 +142,6 @@ cdef class TilesPool():
         TilesPool self, double x, double y, int depth=?
     )
     cpdef object render(TilesPool self)
-    cpdef object after_render_cb(TilesPool self)
     cdef object validate_scales(TilesPool self, list scales)
     cpdef int memory_print(TilesPool self)
 
