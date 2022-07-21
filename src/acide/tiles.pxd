@@ -98,7 +98,15 @@ cdef class Clip():
 
 ctypedef unsigned char uc8
 
+
 cdef class SuperTile(TilesGrid):
+    # MEMBERS
+
+    # C METHODS
+    cpdef bint move_to(SuperTile self, int x, int y)
+
+
+cdef class RenderTile(SuperTile):
     # MEMBERS
     cdef Carray buffer
     cdef object glib_bytes
@@ -107,16 +115,16 @@ cdef class SuperTile(TilesGrid):
     cdef unicode msg
 
     # C METHODS
-    cpdef invalidate(SuperTile self)
-    cpdef move_to(SuperTile self, int x, int y)
-    cdef int allocate_buffer(SuperTile self)
-    cdef int fill_buffer(SuperTile self)
+    cpdef invalidate(RenderTile self)
+    cpdef bint move_to(RenderTile self, int x, int y)
+    cdef int allocate_buffer(RenderTile self)
+    cdef int fill_buffer(RenderTile self)
     @staticmethod
     cdef void merge_side_buffers(
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
         Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width
     ) nogil
-    cpdef render_texture(SuperTile self)
+    cpdef render_texture(RenderTile self)
 
 
 cdef class TilesPool():
@@ -125,7 +133,7 @@ cdef class TilesPool():
     cdef Scheduler scheduler
     cdef int depth
     cdef int current
-    cdef SuperTile render_tile, invalid_render
+    cdef RenderTile render_tile, invalid_render
     cdef object graphic
     cdef object viewport
     cdef object memory_format

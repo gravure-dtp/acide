@@ -20,7 +20,6 @@
 """
 import asyncio
 import functools
-import time
 from typing import (
     Any, Callable, Union, Optional, NoReturn, Sequence, Tuple,
     Coroutine, Awaitable
@@ -36,7 +35,7 @@ cimport cython
 
 from acide import format_size
 from acide.types import TypedGrid, BufferProtocol, Rectangle, PixbufCallback
-from acide.types import Pixbuf
+from acide.types import Pixbuf, Timer
 from acide.asyncop import AsyncReadyCallback, Scheduler, Priority, Run
 from acide.measure import Measurable, Unit
 # from acide cimport gbytes
@@ -44,26 +43,7 @@ from acide.measure import Measurable, Unit
 
 BLOSC_MAX_BYTES_CHUNK = 2**31
 
-
-cdef class Timer():
-    cdef double start, time
-    cdef unicode name
-
-    def __cinit__(self, name="unknown"):
-        self.name = name
-        self.start = time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID)
-
-    cpdef stop(self):
-        self.time = (
-            time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID) -\
-            self.start
-        )
-
-        # print(
-        #     f"BENCHMARK({self.name}): {self.time} μs "
-        #     f"| {self.time / 1000000000:.3f} sec\n"
-        # )
-
+Timer.set_logging(False)
 
 cdef object gdk_memory_format_mapping():
     mapping = dict()
@@ -466,7 +446,7 @@ cdef class TilesGrid(TypedGrid):
 
 cdef class Clip():
     """A simple structure to hold a rendered region
-    returned by a :class:`SuperTile`.
+    returned by a :class:`RenderTile`.
     """
 
     def __cinit__(self, x=0, y=0, w=0, h=0):
@@ -512,33 +492,35 @@ cdef class Clip():
 
 
 cdef class SuperTile(TilesGrid):
-    """A two by two :class:`TilesGrid`.
+    """A special view of another :class:`TilesGrid`.
 
-    A :class:`SuperTile` is a [2,2] view of a :class:`TilesGrid`.
-    The goal is to agregate the subTile's compressed buffer of this view
-    in an uncompressed one available as a :class:`Gdk.Texture`
-    by accessing its :attr:`SuperTile.texture` property.
+    A :class:`SuperTile` could be moved on its referred :class:`TilesGrid`
+    in the mean of doing diverses operations (eg: compression, deallocating
+    buffer, getting stats...) only on :class:`Tile` belonging to this view.
 
     Args:
-        grid: a :class:`TilesGrid` that this SuperTile will refer to.
+        grid: a :class:`TilesGrid` that this :class:`SuperTile` will refer to.
+        width: an :class:`int` as the width of this view (default to 2).
+        height: an :class:`int` as the height of this view (default to 2).
     """
 
-    def __cinit__(self, grid, *args, **kwargs):
-        #TODO: make SuperTile size parametrable
+    def __cinit__(self, grid, width = 2, height = 2, *args, **kwargs):
         if grid is None or not isinstance(grid, TilesGrid):
             raise TypeError("grid should be a TilesGrid instance")
+        if width < 0: width = 0
+        else: width = cimin(width, (<TilesGrid> grid).view.shape[0])
+        if height < 0: height = 0
+        else: height = cimin(height, (<TilesGrid> grid).view.shape[1])
         self._ref = grid
         self.memory_format = (<TilesGrid> grid).memory_format
-        self.slice_ref(slice(0, 2, 1), slice(0, 2, 1))
-        self.is_valid = False
-        self.buffer = None
-        self._clip = Clip.__new__(Clip)
+        self.slice_ref(slice(0, width, 1), slice(0, height, 1))
         self.compute_extents()
+        self.stats()
 
-    def __init__(self, grid: TilesGrid):
+    def __init__(self, grid: TilesGrid, width: int = 2, height: int = 2):
         pass
 
-    cpdef move_to(self, int x, int y):
+    cpdef bint move_to(self, int x, int y):
         """Move this :class:`SuperTile` onto its base :class:`TilesGrid`.
 
         This method always keep the :class:`SuperTile`
@@ -548,23 +530,65 @@ cdef class SuperTile(TilesGrid):
          x, y: indices for the top-left :class:`Tile` relatif
                to the :attr:`TilesGrid.base` :class:`TilesGrid`.
         """
-        cdef int w, h
-        w, h = self._ref.view.shape
-        x = (x - 1) if x >= (w - 1) else x
-        y = (y - 1) if y >= (h - 1) else y
+        cdef int rw, rh, sw, sh
+        sw, sh = self.view.shape
+        rw, rh = self._ref.view.shape
+        x = (x - (sw - 1)) if x >= (rw - (sw - 1)) else x
+        y = (y - (sh - 1)) if y >= (rh - (sh - 1)) else y
         if self._ref.view[x, y] != self.view[0, 0]:
-            self.slice_ref(slice(x, x + 2, 1), slice(y, y + 2, 1))
+            self.slice_ref(slice(x, x + sw, 1), slice(y, y + sh, 1))
             self.compute_extents()
-            self._clip._x = self.extents.x0  # x * self._clip._w
-            self._clip._y = self.extents.y0  # y * self._clip._h
+            self.stats()
+            return True
+        return False
+
+
+cdef class RenderTile(SuperTile):
+    """A two by two :class:`SuperTile`.
+
+    A :class:`RenderTile` is a (2,2) shaped :class:`SuperTile`.
+    The goal is to agregate the subTile's compressed buffer of this view
+    in an uncompressed one available as a :class:`Gdk.Texture`.
+    This :class:`Gdk.Texture` could be retrieved by accessing
+    the :attr:`RenderTile.clip` property.
+
+    Args:
+        grid: a :class:`TilesGrid` that this RenderTile will refer to.
+    """
+
+    def __cinit__(self, grid, *args, **kwargs):
+        self.is_valid = False
+        self.buffer = None
+        self._clip = Clip.__new__(Clip)
+
+    def __init__(self, grid: TilesGrid):
+        pass
+
+    cpdef bint move_to(self, int x, int y):
+        """Move this :class:`RenderTile` onto its base :class:`TilesGrid`.
+
+        This method always keep the :class:`RenderTile`
+        fully contained in its base :class:`TilesGrid`.
+
+        Args:
+         x, y: indices for the top-left :class:`Tile` relatif
+               to the :attr:`TilesGrid.base` :class:`TilesGrid`.
+        """
+        if SuperTile.move_to(self, x, y):
+            self._clip._x = self.extents.x0
+            self._clip._y = self.extents.y0
             self.buffer = None
             self.invalidate()
+            return True
+        return False
 
     cpdef invalidate(self):
         """Mark the content of the internal uncompressed buffer as invalid.
 
-        After this call the content of the internal buffer will be
-        recomputed with the next access to :attr:`SuperTiles.texture`.
+        After this call the content of the internal buffer should be
+        recomputed with a call to one of the rendering methods:
+        :meth:`RenderTile.render_texture`,
+        :meth:`RenderTile.render_texture_async`.
         """
         self._clip._texture = None
         self.glib_bytes = None
@@ -582,7 +606,7 @@ cdef class SuperTile(TilesGrid):
             tile2 = <Tile?> self.getitem_at(0,1)
             tile3 = <Tile?> self.getitem_at(1,1)
         except TypeError:
-            self.msg = "Invalid Tiles to allocate buffer's SuperTile"
+            self.msg = "Invalid Tiles to allocate buffer's RenderTile"
             return -1
 
         if tile0.buffer and tile1.buffer and \
@@ -613,11 +637,11 @@ cdef class SuperTile(TilesGrid):
             self._r = self._u / float(self._z)
             return 1
         else:
-            self.msg = "Invalid Tile's buffer to allocate buffer's SuperTile"
+            self.msg = "Invalid Tile's buffer to allocate buffer's RenderTile"
             return -2
 
     cdef int fill_buffer(self):
-        """Actually decompress the subtiles buffers in the SuperTile.buffer."""
+        """Actually decompress the subtiles buffers in the RenderTile.buffer."""
         _T = Timer("decompress buffers")
         cdef Carray buffer_west
         cdef Carray buffer_east
@@ -683,7 +707,7 @@ cdef class SuperTile(TilesGrid):
             # fusion of the east and west buffers
             _T = Timer("merge_side_buffers")
             rows = tile0._size[1] + tile2._size[1]
-            SuperTile.merge_side_buffers(
+            RenderTile.merge_side_buffers(
                 buffer_west, buffer_east, self.buffer,
                 rows, tile0._size[0] * tile0.format_size,
                 tile1._size[0] * tile0.format_size
@@ -809,7 +833,7 @@ cdef class TilesPool():
                   implement :class:`acide.measure.Measurable`
         mem_format: a enum's member of :class:`Gdk.MemoryFormat`
         pixbuf_cb: a callback function to retrieve parts of a pixmap in
-                   the form pixbuf_cb(rect: Graphene.Rect) -> BufferProtocol
+                   the form pixbuf_cb(rect: Graphene.Rect, scale: int) -> :class:`acide.types.Pixbuf`
     """
 
     def __cinit__(self, graphic, viewport, scales, mem_format, pixbuf_cb):
@@ -918,15 +942,9 @@ cdef class TilesPool():
         cdef int i = 0
         cdef int _next = 0
         cdef int scale = int(self.graphic.scale)
+
         tg = self.stack[self.current]
 
-        # prio = self.scheduler.add_priority()
-        # self.scheduler.add(
-        #     tg.compress_async(self.pixbuf_cb, scale),
-        #     priority=prio,
-        #     callback=None,
-        #     name=f"tile_grid[{self.current}]_compress_#{prio}",
-        # )
         self.scheduler.stop()
         gen = tg.compress_async_generator(self.pixbuf_cb, scale)
         for _co in gen:
@@ -954,7 +972,7 @@ cdef class TilesPool():
                 i += 1
 
     cpdef set_rendering(self, double x, double y, int depth=0):
-        """Setup the rendering :class:`SuperTile` so the point
+        """Setup the rendering :class:`RenderTile` so the point
         at :obj:`(x, y)` will fit in its region.
 
         This method is usually called by a :class:`acide.graphic.Graphic`
@@ -967,6 +985,7 @@ cdef class TilesPool():
                    :class:`TilesPool` initialzation
         """
         cdef int i, j
+        i, j = self.stack[self.current].get_tile_indices(x, y)
 
         if depth != self.current:
             # FIXME: should we invalidate TilesGrid? or
@@ -974,13 +993,12 @@ cdef class TilesPool():
             # (<TilesGrid> self.stack[self.current]).invalidate()
             self.current = depth
             self.invalid_render = self.render_tile
-            self.render_tile = SuperTile(self.stack[self.current])
+            self.render_tile = RenderTile(self.stack[self.current])
             self.schedule_compression()
-        i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
 
     cpdef render(self):
-        """Request rendering on the :class:`SuperTile`.
+        """Request rendering on the :class:`RenderTile`.
 
         Returns:
             a :class:`Clip` holding a :class:`Gdk.Tetxure`
@@ -998,7 +1016,7 @@ cdef class TilesPool():
         callback: AsyncReadyCallback,
         user_data: Any,
     ) -> None:
-        """Request asynchronious rendering on the :class:`SuperTile`.
+        """Request asynchronious rendering on the :class:`RenderTile`.
 
         :obj:`callback` function will be called when rendering will be done,
         :obj:`callback` function should request the result by calling

@@ -17,6 +17,7 @@
 #
 from typing import Any, Union, Optional, NoReturn, Sequence, Tuple, Callable
 from decimal import Decimal
+import time
 
 import gi
 gi.require_version('Graphene', '1.0')
@@ -47,6 +48,9 @@ cdef bint test_sequence(object seq, tuple _types):
 @cython.final
 @cython.freelist(16)
 cdef class Pixbuf():
+    """A class to encapsulate results returned by function
+    creating pixmap buffer.
+    """
 
     def __cinit__(
         self,
@@ -59,6 +63,54 @@ cdef class Pixbuf():
         self.width = width
         self.height = height
         self.obj = obj
+
+    def __init__(
+        self,
+        buffer: BufferProtocol,
+        width: int,
+        height: int,
+        obj: Optional[Any] = None,
+    ):
+        pass
+
+
+cdef bint _log_timer[1]
+_log_timer[0] = 0
+cdef void _set_log_timer(bint val):
+    _log_timer[0] = val
+cdef bint _get_log_timer():
+    return _log_timer[0]
+
+cdef class Timer():
+    """A simple utility to benchmark part of code."""
+    cdef double start, time
+    cdef unicode name
+
+    def __cinit__(self, name: str = "unknown"):
+        self.name = name
+        self.start = time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID)
+
+    @staticmethod
+    def set_logging(bint val) -> None:
+        """Set a global logging flag for all :class:`Timer` instances.
+        """
+        _set_log_timer(val)
+
+    def stop(self) -> None:
+        """Stop the :class:`Timer`.
+
+        Stop and log the result on sys.stdout if global logging was
+        set with :meth:`set_logging`.
+        """
+        self.time = (
+            time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID) -\
+            self.start
+        )
+        if _get_log_timer():
+            print(
+                f"BENCHMARK({self.name}): {self.time} μs "
+                f"| {self.time / 1000000000:.3f} sec\n"
+            )
 
 
 cdef class TypedGrid():
