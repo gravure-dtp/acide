@@ -50,8 +50,14 @@ cdef inline int ciceil(double number):
     else: return i_num + 1
 
 
-
 cdef bint test_sequence(object seq, tuple _types)
+
+
+cdef class Pixbuf():
+    cdef readonly object buffer
+    cdef readonly int width
+    cdef readonly int height
+    cdef readonly object obj
 
 
 cdef class TypedGrid:

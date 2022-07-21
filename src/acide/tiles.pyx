@@ -35,10 +35,10 @@ import blosc
 cimport cython
 
 from acide import format_size
-from acide.types import TypedGrid
-from acide.asyncop import AsyncReadyCallback, Scheduler, Priority
+from acide.types import TypedGrid, BufferProtocol, Rectangle, PixbufCallback
+from acide.types import Pixbuf
+from acide.asyncop import AsyncReadyCallback, Scheduler, Priority, Run
 from acide.measure import Measurable, Unit
-from acide.types import BufferProtocol, Rectangle
 # from acide cimport gbytes
 
 
@@ -58,6 +58,7 @@ cdef class Timer():
             time.clock_gettime_ns(time.CLOCK_PROCESS_CPUTIME_ID) -\
             self.start
         )
+
         # print(
         #     f"BENCHMARK({self.name}): {self.time} μs "
         #     f"| {self.time / 1000000000:.3f} sec\n"
@@ -143,18 +144,16 @@ cdef class Tile(_CMeasurable):
 
     cpdef compress(
         self,
-        buffer: BufferProtocol,
-        size: Sequence[int, int],
+        Pixbuf pixbuf,
         format: Gdk.MemoryFormat,
     ):
-        """Compress the given :obj:`buffer` in the :class:`Tile`'s own buffer.
+        """Compress the given :obj:`pixbuf` in the :class:`Tile`'s own buffer.
         Blosc has a maximum blocksize of 2**31 bytes = 2Gb, larger arrays must
         be chunked by slicing.
 
         Args:
-            buffer: A one dmensional c-contigous buffer to compress.
-            size: A two lenght :class:`Sequence` of :class:`int` (width, height)
-                  describing the pixmap size in pixel behind the buffer.
+            pixbuf: A :class:`acide.types.Pixbuf` holding an one dmensional
+                    c-contigous buffer to compress.
             format: a member of enumeration :class:`Gdk.MemoryFormat`
                     describing formats that pixmap data have in memory.
 
@@ -169,18 +168,16 @@ cdef class Tile(_CMeasurable):
         cdef Py_buffer* p_view = &view
         cdef char* ptr
 
-        if not test_sequence(size, (int, int)):
-            raise TypeError(
-                f"size should be a 2 length sequence of int not {size}"
-            )
+        if pixbuf is None:
+            raise ValueError("argument pixbuf couldn´t be None")
 
-        if isinstance(buffer, memoryview):
-            p_view = PyMemoryView_GET_BUFFER(buffer)
-        elif PyObject_CheckBuffer(buffer):
-            PyObject_GetBuffer(buffer, p_view, PyBUF_SIMPLE)
+        if isinstance(pixbuf.buffer, memoryview):
+            p_view = PyMemoryView_GET_BUFFER(pixbuf.buffer)
+        elif PyObject_CheckBuffer(pixbuf.buffer):
+            PyObject_GetBuffer(pixbuf.buffer, p_view, PyBUF_SIMPLE)
         else:
             raise TypeError(
-                "Argument buffer should be either a memoryview"
+                "buffer should be either a memoryview"
                 "or an object implementing the buffer protocol"
                 "and data should be contigous in memory"
             )
@@ -193,7 +190,7 @@ cdef class Tile(_CMeasurable):
 
         # Sanity check between size and buffer size
         self.format_size = gdk_memory_format_sizes.get(format, 0)
-        if size[0] * size[1] * self.format_size  <> \
+        if pixbuf.width * pixbuf.height * self.format_size  <> \
             p_view.len:
             raise ValueError(
                 "Missmatch between buffer's lenght and pixmap"
@@ -208,7 +205,7 @@ cdef class Tile(_CMeasurable):
                 f"{format_size(p_view.len)}."
             )
 
-        self._size = tuple(size)
+        self._size = (pixbuf.width, pixbuf.height)
         self._u = p_view.len
         self.u_shape = p_view.shape[0]
         self.u_itemsize = p_view.itemsize
@@ -221,8 +218,6 @@ cdef class Tile(_CMeasurable):
         self.u_format = b'B'  # unsigned char
         ptr = <char*> p_view.buf
 
-        # TODO: self._size & Measurable.get_pixmap_rect()
-
         self.buffer = blosc.compress_ptr(
             <Py_ssize_t> &ptr[0],
             p_view.len,
@@ -234,6 +229,7 @@ cdef class Tile(_CMeasurable):
         self._z = len(self.buffer)
         self._r = self._u / float(self._z)
         PyBuffer_Release(p_view)
+        del pixbuf
 
     cpdef _dump_props(self):
         return (
@@ -285,9 +281,12 @@ cdef class TilesGrid(TypedGrid):
         return self._r
 
     def __cinit__(
-        self, shape=None, format=Gdk.MemoryFormat.R8G8B8, *args, **kwargs
+        self,
+        shape=None,
+        format=Gdk.MemoryFormat.R8G8B8,
+        *args,
+        **kwargs
     ):
-        #TODO: all tiles should have same properties, shape, pixel format,...
         self.pytype = Tile
         self._u = 0
         self._z = 0
@@ -313,74 +312,80 @@ cdef class TilesGrid(TypedGrid):
                 if tile is not None:
                     (<Tile> tile).invalidate()
 
-    cpdef compress(self, pixbuff_cb: Callable[[Graphene.Rect], BufferProtocol]):
-        """Compress all Tiles in this Grid that have not yet a valid internal buffer.
-
-        Args:
-            pixbuff_cb: a callback function to retrieve parts of a pixmap in
-                        the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
-        """
+    def _compress_gen(self, pixbuf_cb: PixbufCallback, scale: int):
         cdef Py_ssize_t x, y
-        cdef object tile
         self._u = self._z = 0
         for x in range(self.view.shape[0]):
             for y in range(self.view.shape[1]):
                 tile = self._ref.items[self.view[x, y]]
-                if tile is not None:
+                if isinstance(tile, Tile):
                     if (<Tile> tile).buffer is None:
-                        _T = Timer("pixbuff_cb")
-                        buffer, size = pixbuff_cb((<Tile> tile).rect)
-                        _T.stop()
-                        _T = Timer("Tile.compress()")
-                        (<Tile> tile).compress(
-                            buffer=buffer,
-                            size=size,
-                            format=self.memory_format
-                        )
-                        _T.stop()
+                        pixbuf = pixbuf_cb((<Tile> tile).rect, scale)
+                        # yield
+                        (<Tile> tile).compress(pixbuf, self.memory_format)
+                        # yield
                     self._u += (<Tile> tile)._u
                     self._z += (<Tile> tile)._z
-        if self._z <> 0:
+        if self._z != 0:
             self._r = self._u / float(self._z)
 
-    cpdef compress_async(
-        self, pixbuff_cb: Callable[[Graphene.Rect], BufferProtocol]
-    ):
+    def compress(self, pixbuf_cb: PixbufCallback, scale: int) -> None:
+        """Compress all Tiles in this Grid that have not yet a valid internal buffer.
+
+        Args:
+            pixbuf_cb: a callback function to retrieve parts of a pixmap in
+                        the form pixbuf_cb(rect: Graphene.Rect) -> BufferProtocol
+            scale: an int as a scale factor passed to the pixbuf_cb function
+        """
+        for step in self._compress_gen(pixbuf_cb, scale):
+            continue
+
+    async def compress_async(
+        self, pixbuf_cb: PixbufCallback, scale: int
+    ) -> Coroutine:
         """Compress asynchronously all Tiles in this Grid.
 
         Args:
-            pixbuff_cb: a callback function to retrieve parts of a pixmap in
-                        the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
+            pixbuf_cb: a callback function to retrieve parts of a pixmap in
+                        the form pixbuf_cb(rect: Graphene.Rect) -> BufferProtocol
+            scale: an int as a scale factor passed to the pixbuf_cb function
 
         Returns:
             a coroutine doing the compression.
         """
-        return self._compress_co(pixbuff_cb)
+        # for step in self._compress_gen(pixbuf_cb, scale):
+        #     await asyncio.sleep(0)
+        self._compress_gen(pixbuf_cb, scale)
 
-    async def _compress_co(self, pixbuff_cb):
+    async def _compress_tile_co(self, tile, pixbuf_cb, int scale):
+        cdef Tile _tile = <Tile> tile
+        if  _tile.buffer is None:
+            pixbuf = pixbuf_cb(_tile.rect, scale)
+            # await asyncio.sleep(0)
+            _tile.compress(pixbuf, self.memory_format)
+        self._u += _tile._u
+        self._z += _tile._z
+        if self._z != 0:
+            self._r = self._u / float(self._z)
+
+    def compress_async_generator(self, pixbuf_cb: PixbufCallback, scale: int):
+        """Compress asynchronously all Tiles in this Grid.
+
+        Args:
+            pixbuf_cb: a callback function to retrieve parts of a pixmap in
+                        the form pixbuf_cb(rect: Graphene.Rect) -> BufferProtocol
+            scale: an int as a scale factor passed to the pixbuf_cb function
+
+        Returns:
+            a generator yielding for each Tile a coroutine doing the compression.
+        """
         cdef Py_ssize_t x, y
-        cdef object tile
         self._u = self._z = 0
         for x in range(self.view.shape[0]):
             for y in range(self.view.shape[1]):
                 tile = self._ref.items[self.view[x, y]]
-                if tile is not None:
-                    if (<Tile> tile).buffer is None:
-                        _T = Timer("pixbuff_cb")
-                        buffer, size = pixbuff_cb((<Tile> tile).rect)
-                        _T.stop()
-                        _T = Timer("Tile.compress()")
-                        (<Tile> tile).compress(
-                            buffer=buffer,
-                            size=size,
-                            format=self.memory_format
-                        )
-                        _T.stop()
-                    self._u += (<Tile> tile)._u
-                    self._z += (<Tile> tile)._z
-                    await asyncio.sleep(0)
-        if self._z <> 0:
-            self._r = self._u / float(self._z)
+                if isinstance(tile, Tile):
+                    yield self._compress_tile_co(tile, pixbuf_cb, scale)
 
     cdef compute_extents(self):
         cdef Extents_s tl, br
@@ -804,10 +809,10 @@ cdef class TilesPool():
                   implement :class:`acide.measure.Measurable`
         mem_format: a enum's member of :class:`Gdk.MemoryFormat`
         pixbuf_cb: a callback function to retrieve parts of a pixmap in
-                   the form pixbuff_cb(rect: Graphene.Rect) -> BufferProtocol
+                   the form pixbuf_cb(rect: Graphene.Rect) -> BufferProtocol
     """
 
-    def __cinit__(self, graphic, viewport, scales, mem_format, pixbuff_cb):
+    def __cinit__(self, graphic, viewport, scales, mem_format, pixbuf_cb):
         if (
             not isinstance(graphic, Measurable) or \
             not isinstance(viewport, Measurable)
@@ -819,10 +824,10 @@ cdef class TilesPool():
         self.graphic = graphic
         self.viewport = viewport
         self.memory_format = mem_format
-        self.pixbuff_cb = pixbuff_cb
+        self.pixbuf_cb = pixbuf_cb
         self.render_tile = None
         self.scheduler = Scheduler.new()
-        self.scheduler.run("forever")
+        self.scheduler.run(Run.FOREVER)
         self.null_clip = Clip()
         self.current = -1
 
@@ -832,7 +837,7 @@ cdef class TilesPool():
         viewport: Measurable,
         scales: Sequence[int],
         mem_format: Gdk.MemoryFormat,
-        pixbuff_cb: Callable[[Graphene.Rect], BufferProtocol],
+        pixbuf_cb: PixbufCallback,
     ):
         _T = Timer("TilesPool init")
         self.current = -1
@@ -909,9 +914,44 @@ cdef class TilesPool():
                 )
         tg.compute_extents()
 
-    async def run_tasks(self):
-        """Run scheduled Tasks concurently respecting there priority."""
-        await self.scheduler.wait()
+    cdef schedule_compression(self):
+        cdef int i = 0
+        cdef int _next = 0
+        cdef int scale = int(self.graphic.scale)
+        tg = self.stack[self.current]
+
+        # prio = self.scheduler.add_priority()
+        # self.scheduler.add(
+        #     tg.compress_async(self.pixbuf_cb, scale),
+        #     priority=prio,
+        #     callback=None,
+        #     name=f"tile_grid[{self.current}]_compress_#{prio}",
+        # )
+        self.scheduler.stop()
+        gen = tg.compress_async_generator(self.pixbuf_cb, scale)
+        for _co in gen:
+            self.scheduler.add(
+                _co,
+                priority=Priority.NEXT,
+                callback=None,
+                name=f"tile_grid[{self.current}][{i}]_compress",
+            )
+            i += 1
+
+        if self.current < len(self.stack) - 2:
+            i = 0
+            _next = self.current + 1
+            tg = self.stack[_next]
+            scale = int(self.graphic._scales[self.graphic._scale_index + 1])
+            gen = tg.compress_async_generator(self.pixbuf_cb, scale)
+            for _co in gen:
+                self.scheduler.add(
+                    _co,
+                    priority=Priority.NEXT,
+                    callback=None,
+                    name=f"tile_grid[{_next}][{i}]_compress_#LOW",
+                )
+                i += 1
 
     cpdef set_rendering(self, double x, double y, int depth=0):
         """Setup the rendering :class:`SuperTile` so the point
@@ -935,6 +975,7 @@ cdef class TilesPool():
             self.current = depth
             self.invalid_render = self.render_tile
             self.render_tile = SuperTile(self.stack[self.current])
+            self.schedule_compression()
         i, j = self.stack[self.current].get_tile_indices(x, y)
         self.render_tile.move_to(i, j)
 
@@ -942,10 +983,10 @@ cdef class TilesPool():
         """Request rendering on the :class:`SuperTile`.
 
         Returns:
-            a :class:`Clip` holding the :class:`Gdk.Tetxure`
+            a :class:`Clip` holding a :class:`Gdk.Tetxure`
         """
         if self.render_tile is not None:
-            (<TilesGrid> self.stack[self.current]).compress(self.pixbuff_cb)
+            (<TilesGrid> self.stack[self.current]).compress(self.pixbuf_cb)
             self.render_tile.render_texture()
             return self.render_tile._clip
         else:
@@ -968,27 +1009,36 @@ cdef class TilesPool():
             callback:
             user_data:
         """
+        if self.render_task is not None and \
+           not self.render_task.done():
+            self.render_task.cancel()
+
         if isinstance(user_data, Gio.Task):
             gtask = user_data
         else:
             gtask = Gio.Task.new(self, cancellable, callback, user_data)
-        self.scheduler.schedule(
-            self.render_tile.compress_async(self.pixbuff_cb),
-            Priority.HIGHEST
+        self.scheduler.stop()
+        self.render_task = self.scheduler.add(
+            self._render_super_tile_co(gtask),
+            Priority.HIGH,
+            callback=None,
+            name="render_tile",
         )
-        self.scheduler.schedule(
-            self._on_compress_async_cb_co(gtask), Priority.NEXT
-        )
-        # self.scheduler.run()
+        self.scheduler.run(Run.LAST)
 
-    async def _on_compress_async_cb_co(
-        self, gtask: Gio.AsyncResult
-    ) -> Coroutine:
-        self.scheduler.schedule(
-            self.render_tile.render_texture_async(),
-            Priority.HIGHEST,
-            functools.partial(self._on_render_ready_cb, gtask)
-        )
+    async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
+        try:
+            await self.render_tile.compress_async(
+                self.pixbuf_cb, self.graphic.scale
+            )
+            await self.render_tile.render_texture_async()
+        except asyncio.CancelledError:
+            print("render cancelled")
+            raise
+        else:
+            self._on_render_ready_cb(gtask)
+        finally:
+            pass
 
     def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:
         # complete the gtask calling the render_async callback

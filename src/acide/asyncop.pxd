@@ -17,18 +17,30 @@
 #
 cimport cython
 
+@cython.final
+cdef class PriorityQueue():
+    cdef int id
+    cdef object queue
+    cdef object event
+    cdef object pendings
+    cdef object dones
 
 @cython.final
 cdef class Scheduler():
-    cdef list queues
     cdef list priorities
-    cdef int lowest
-    cdef object dones
     cdef int task_id
     cdef double rate
+    cdef bint loop_run
+    cdef double time
+    cdef object last_mode
+    cdef object runner
 
-    cpdef object schedule(
-        Scheduler self, object co, object priority, object callback=*
+    cpdef int add_priority(Scheduler self)
+    cpdef object add(
+        Scheduler self,
+        object co, object priority, object callback=*, object name=*
     )
+    cdef clear(Scheduler self)
+    cdef control(Scheduler self, PriorityQueue priority)
 
 

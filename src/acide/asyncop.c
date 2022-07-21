@@ -908,175 +908,165 @@ static const char *__pyx_f[] = {
 };
 
 /*--- Type declarations ---*/
+struct __pyx_obj_5acide_7asyncop_PriorityQueue;
 struct __pyx_obj_5acide_7asyncop_Scheduler;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed;
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever;
-struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule;
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait;
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled;
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever;
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once;
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete;
+struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add;
 
-/* "acide/asyncop.pxd":30
- *     cdef double rate
+/* "acide/asyncop.pxd":39
  * 
- *     cpdef object schedule(             # <<<<<<<<<<<<<<
- *         Scheduler self, object co, object priority, object callback=*
- *     )
+ *     cpdef int add_priority(Scheduler self)
+ *     cpdef object add(             # <<<<<<<<<<<<<<
+ *         Scheduler self,
+ *         object co, object priority, object callback=*, object name=*
  */
-struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule {
+struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add {
   int __pyx_n;
   PyObject *callback;
+  PyObject *name;
 };
 
-/* "acide/asyncop.pxd":22
+/* "acide/asyncop.pxd":21
+ * 
+ * @cython.final
+ * cdef class PriorityQueue():             # <<<<<<<<<<<<<<
+ *     cdef int id
+ *     cdef object queue
+ */
+struct __pyx_obj_5acide_7asyncop_PriorityQueue {
+  PyObject_HEAD
+  int id;
+  PyObject *queue;
+  PyObject *event;
+  PyObject *pendings;
+  PyObject *dones;
+};
+
+
+/* "acide/asyncop.pxd":29
  * 
  * @cython.final
  * cdef class Scheduler():             # <<<<<<<<<<<<<<
- *     cdef list queues
  *     cdef list priorities
+ *     cdef int task_id
  */
 struct __pyx_obj_5acide_7asyncop_Scheduler {
   PyObject_HEAD
   struct __pyx_vtabstruct_5acide_7asyncop_Scheduler *__pyx_vtab;
-  PyObject *queues;
   PyObject *priorities;
-  int lowest;
-  PyObject *dones;
   int task_id;
   double rate;
+  int loop_run;
+  double time;
+  PyObject *last_mode;
+  PyObject *runner;
 };
 
 
-/* "acide/asyncop.pyx":75
+/* "acide/asyncop.pyx":114
+ *                 self.pendings.remove(task)
+ * 
+ *     async def wait(self):             # <<<<<<<<<<<<<<
+ *         await self.event.wait()
+ * 
+ */
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait {
+  PyObject_HEAD
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self;
+};
+
+
+/* "acide/asyncop.pyx":272
  * 
  *     @staticmethod
  *     async def _scheduled(             # <<<<<<<<<<<<<<
  *         awt: Awaitable,
- *         result: asyncio.Future,
+ *         priority: PriorityQueue,
  */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled {
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled {
   PyObject_HEAD
   PyObject *__pyx_v_awt;
   PyObject *__pyx_v_callback;
   PyObject *__pyx_v_loop;
   PyObject *__pyx_v_name;
-  PyObject *__pyx_v_priority;
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority;
   PyObject *__pyx_v_result;
-  PyObject *__pyx_t_0;
-  PyObject *__pyx_t_1;
-};
-
-
-/* "acide/asyncop.pyx":121
- *         return task
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:             # <<<<<<<<<<<<<<
- *         if self.queues[priority_id]:
- *             if priority_id == 0:
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner {
-  PyObject_HEAD
-  PyObject *__pyx_v_done;
-  PyObject *__pyx_v_pending;
-  PyObject *__pyx_v_policy;
-  PyObject *__pyx_v_priority_id;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
-};
-
-
-/* "acide/asyncop.pyx":133
- *             self.dones |= done
- * 
- *     async def _task(             # <<<<<<<<<<<<<<
- *         self,
- *         runner: Coroutine,
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task {
-  PyObject_HEAD
-  PyObject *__pyx_v_priority_id;
-  PyObject *__pyx_v_runner;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
-};
-
-
-/* "acide/asyncop.pyx":150
- *                     self.priorities[priority_id + 1].set()
- * 
- *     async def _scheduler(             # <<<<<<<<<<<<<<
- *         self,
- *         priority_id: int,
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler {
-  PyObject_HEAD
-  PyObject *__pyx_v_policy;
-  PyObject *__pyx_v_priority_id;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
-};
-
-
-/* "acide/asyncop.pyx":159
- *         )
- * 
- *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once {
-  PyObject_HEAD
-  Py_ssize_t __pyx_v_i;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
-};
-
-
-/* "acide/asyncop.pyx":168
- *         print(f"scheduler completed {self}")
- * 
- *     async def run_completed(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed {
-  PyObject_HEAD
-  Py_ssize_t __pyx_7genexpr__pyx_v_i;
-  PyObject *__pyx_v_scheduler;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
-};
-
-
-/* "acide/asyncop.pyx":179
- *         print(f"scheduler completed {self}")
- * 
- *     async def run_forever(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.priorities[0].set()
- *         while True:
- */
-struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever {
-  PyObject_HEAD
-  Py_ssize_t __pyx_8genexpr1__pyx_v_i;
-  PyObject *__pyx_v_scheduler;
-  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
+  PyObject *__pyx_v_start;
   PyObject *__pyx_t_0;
   PyObject *__pyx_t_1;
   PyObject *__pyx_t_2;
 };
 
 
+/* "acide/asyncop.pyx":313
+ *                 r += 1
+ * 
+ *     async def run_forever(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         try:
+ *             self.loop_run = True
+ */
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever {
+  PyObject_HEAD
+  PyObject *__pyx_v_p;
+  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
+  PyObject *__pyx_t_0;
+  PyObject *__pyx_t_1;
+  PyObject *__pyx_t_2;
+  PyObject *__pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+};
 
-/* "acide/asyncop.pyx":47
+
+/* "acide/asyncop.pyx":331
+ *             return
+ * 
+ *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_once")
+ *         # try:
+ */
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once {
+  PyObject_HEAD
+  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
+};
+
+
+/* "acide/asyncop.pyx":349
+ *         #     self.loop_run = False
+ * 
+ *     async def run_until_complete(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_until_complete")
+ *         # try:
+ */
+struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete {
+  PyObject_HEAD
+  struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self;
+};
+
+
+
+/* "acide/asyncop.pyx":128
  * 
  * @cython.final
  * cdef class Scheduler():             # <<<<<<<<<<<<<<
- *     def __cinit__(self):
- *         self.queues = [set(), set()]
+ *     """Schedule *coroutines* and *awaitable* concurently as prioritized *Tasks*.
+ * 
  */
 
 struct __pyx_vtabstruct_5acide_7asyncop_Scheduler {
-  PyObject *(*schedule)(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule *__pyx_optional_args);
+  int (*add_priority)(struct __pyx_obj_5acide_7asyncop_Scheduler *, int __pyx_skip_dispatch);
+  PyObject *(*add)(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add *__pyx_optional_args);
+  PyObject *(*clear)(struct __pyx_obj_5acide_7asyncop_Scheduler *);
+  PyObject *(*control)(struct __pyx_obj_5acide_7asyncop_Scheduler *, struct __pyx_obj_5acide_7asyncop_PriorityQueue *);
 };
 static struct __pyx_vtabstruct_5acide_7asyncop_Scheduler *__pyx_vtabptr_5acide_7asyncop_Scheduler;
-static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_schedule(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule *__pyx_optional_args);
+static int __pyx_f_5acide_7asyncop_9Scheduler_add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *, int __pyx_skip_dispatch);
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_add(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add *__pyx_optional_args);
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_clear(struct __pyx_obj_5acide_7asyncop_Scheduler *);
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_control(struct __pyx_obj_5acide_7asyncop_Scheduler *, struct __pyx_obj_5acide_7asyncop_PriorityQueue *);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1152,12 +1142,58 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
+#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
+#endif
+
+/* PyErrFetchRestore.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#if CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
+#else
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#endif
+#else
+#define __Pyx_PyErr_Clear() PyErr_Clear()
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+/* RaiseDoubleKeywords.proto */
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+/* ParseKeywords.proto */
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
+    const char* function_name);
+
 /* RaiseArgTupleInvalid.proto */
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
-/* KeywordStringCheck.proto */
-static int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -1260,52 +1296,11 @@ static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObje
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
+/* PyObjectCall2Args.proto */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
 
 /* FetchCommonType.proto */
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
-
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
-#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
-#else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
-#endif
-
-/* PyErrFetchRestore.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
-#else
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#endif
-#else
-#define __Pyx_PyErr_Clear() PyErr_Clear()
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
-#endif
 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
@@ -1333,9 +1328,6 @@ static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject *
 #else
 static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
 #endif
-
-/* PyObjectCall2Args.proto */
-static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
 
 /* PyObjectGetMethod.proto */
 static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
@@ -1442,6 +1434,61 @@ static PyObject *__Pyx__Coroutine_GetAwaitableIter(PyObject *o);
 /* CoroutineYieldFrom.proto */
 static CYTHON_INLINE PyObject* __Pyx_Coroutine_Yield_From(__pyx_CoroutineObject *gen, PyObject *source);
 
+/* GCCDiagnostics.proto */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+#define __Pyx_HAS_GCC_DIAGNOSTIC
+#endif
+
+/* BuildPyUnicode.proto */
+static PyObject* __Pyx_PyUnicode_BuildFromAscii(Py_ssize_t ulength, char* chars, int clength,
+                                                int prepend_sign, char padding_char);
+
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* CIntToPyUnicode.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_int(int value, Py_ssize_t width, char padding_char, char format_char);
+
+/* CIntToPyUnicode.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_Py_ssize_t(Py_ssize_t value, Py_ssize_t width, char padding_char, char format_char);
+
+/* JoinPyUnicode.proto */
+static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
+                                      Py_UCS4 max_char);
+
+/* KeywordStringCheck.proto */
+static int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
+
+/* ListCompAppend.proto */
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        __Pyx_SET_SIZE(list, len + 1);
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#endif
+
+/* pyobject_as_double.proto */
+static double __Pyx__PyObject_AsDouble(PyObject* obj);
+#if CYTHON_COMPILING_IN_PYPY
+#define __Pyx_PyObject_AsDouble(obj)\
+(likely(PyFloat_CheckExact(obj)) ? PyFloat_AS_DOUBLE(obj) :\
+ likely(PyInt_CheckExact(obj)) ?\
+ PyFloat_AsDouble(obj) : __Pyx__PyObject_AsDouble(obj))
+#else
+#define __Pyx_PyObject_AsDouble(obj)\
+((likely(PyFloat_CheckExact(obj))) ?\
+ PyFloat_AS_DOUBLE(obj) : __Pyx__PyObject_AsDouble(obj))
+#endif
+
 /* PyObjectFormatSimple.proto */
 #if CYTHON_COMPILING_IN_PYPY
     #define __Pyx_PyObject_FormatSimple(s, f) (\
@@ -1463,13 +1510,6 @@ static CYTHON_INLINE PyObject* __Pyx_Coroutine_Yield_From(__pyx_CoroutineObject 
         likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
         PyObject_Format(s, f))
 #endif
-
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* JoinPyUnicode.proto */
-static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
-                                      Py_UCS4 max_char);
 
 /* GetItemInt.proto */
 #define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
@@ -1493,17 +1533,48 @@ static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
 static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
                                                      int is_list, int wraparound, int boundscheck);
 
-/* GCCDiagnostics.proto */
-#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-#define __Pyx_HAS_GCC_DIAGNOSTIC
+/* ArgTypeTest.proto */
+#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
+    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
+        __Pyx__ArgTypeTest(obj, type, name, exact))
+static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
+
+/* PyUnicode_Unicode.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj);
+
+/* ReturnWithStopIteration.proto */
+#define __Pyx_ReturnWithStopIteration(value)\
+    if (value == Py_None) PyErr_SetNone(PyExc_StopIteration); else __Pyx__ReturnWithStopIteration(value)
+static void __Pyx__ReturnWithStopIteration(PyObject* value);
+
+/* FastTypeChecks.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_TypeCheck(obj, type) __Pyx_IsSubtype(Py_TYPE(obj), (PyTypeObject *)type)
+static CYTHON_INLINE int __Pyx_IsSubtype(PyTypeObject *a, PyTypeObject *b);
+static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches(PyObject *err, PyObject *type);
+static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObject *type1, PyObject *type2);
+#else
+#define __Pyx_TypeCheck(obj, type) PyObject_TypeCheck(obj, (PyTypeObject *)type)
+#define __Pyx_PyErr_GivenExceptionMatches(err, type) PyErr_GivenExceptionMatches(err, type)
+#define __Pyx_PyErr_GivenExceptionMatches2(err, type1, type2) (PyErr_GivenExceptionMatches(err, type1) || PyErr_GivenExceptionMatches(err, type2))
+#endif
+#define __Pyx_PyException_Check(obj) __Pyx_TypeCheck(obj, PyExc_Exception)
+
+/* GetException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_GetException(type, value, tb)  __Pyx__GetException(__pyx_tstate, type, value, tb)
+static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#else
+static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 #endif
 
-/* BuildPyUnicode.proto */
-static PyObject* __Pyx_PyUnicode_BuildFromAscii(Py_ssize_t ulength, char* chars, int clength,
-                                                int prepend_sign, char padding_char);
-
-/* CIntToPyUnicode.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_int(int value, Py_ssize_t width, char padding_char, char format_char);
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
+#endif
 
 /* ObjectGetItem.proto */
 #if CYTHON_USE_TYPE_SLOTS
@@ -1511,24 +1582,6 @@ static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* k
 #else
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
-
-/* PyIntCompare.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
-
-/* RaiseTooManyValuesToUnpack.proto */
-static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
-
-/* RaiseNeedMoreValuesToUnpack.proto */
-static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
-
-/* IterFinish.proto */
-static CYTHON_INLINE int __Pyx_IterFinish(void);
-
-/* UnpackItemEndCheck.proto */
-static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
-
-/* PyIntCompare.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_NeObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
 
 /* pop_index.proto */
 static PyObject* __Pyx__PyObject_PopNewIndex(PyObject* L, PyObject* py_ix);
@@ -1553,47 +1606,8 @@ static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t
         __Pyx__PyObject_PopIndex(L, py_ix))
 #endif
 
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
-#endif
-
-/* ListCompAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
-/* GetException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_GetException(type, value, tb)  __Pyx__GetException(__pyx_tstate, type, value, tb)
-static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
-#endif
-
-/* BytesEquals.proto */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* UnicodeEquals.proto */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* SetVTable.proto */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* PyErrExceptionMatches.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1608,6 +1622,9 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStrNoError(PyObject* obj, P
 
 /* SetupReduce.proto */
 static int __Pyx_setup_reduce(PyObject* type_obj);
+
+/* SetVTable.proto */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
@@ -1698,6 +1715,16 @@ static int __Pyx_check_twos_complement(void) {
 #define __Pyx_div_const_no_overflow(a, b, overflow) ((a) / (b))
 
 /* BaseCaseSigned.proto */
+static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow);
+static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int constant, int *overflow);
+#define __Pyx_div_const_int_checking_overflow __Pyx_div_int_checking_overflow
+
+/* BaseCaseSigned.proto */
 static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow);
 static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow);
 static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow);
@@ -1707,11 +1734,69 @@ static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b,
 static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long constant, int *overflow);
 #define __Pyx_div_const_long_checking_overflow __Pyx_div_long_checking_overflow
 
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+/* BaseCaseSigned.proto */
+static CYTHON_INLINE long long __Pyx_add_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_sub_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_mul_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_div_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_add_const_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_sub_const_long_long_checking_overflow(long long a, long long b, int *overflow);
+static CYTHON_INLINE long long __Pyx_mul_const_long_long_checking_overflow(long long a, long long constant, int *overflow);
+#define __Pyx_div_const_long_long_checking_overflow __Pyx_div_long_long_checking_overflow
+
+/* BaseCaseUnsigned.proto */
+static CYTHON_INLINE unsigned int __Pyx_add_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
+static CYTHON_INLINE unsigned int __Pyx_sub_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
+static CYTHON_INLINE unsigned int __Pyx_mul_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
+static CYTHON_INLINE unsigned int __Pyx_div_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
+#define __Pyx_add_const_unsigned_int_checking_overflow __Pyx_add_unsigned_int_checking_overflow
+#define __Pyx_sub_const_unsigned_int_checking_overflow __Pyx_sub_unsigned_int_checking_overflow
+static CYTHON_INLINE unsigned int __Pyx_mul_const_unsigned_int_checking_overflow(unsigned int a, unsigned int constant, int *overflow);
+#define __Pyx_div_const_unsigned_int_checking_overflow __Pyx_div_unsigned_int_checking_overflow
+
+/* BaseCaseUnsigned.proto */
+static CYTHON_INLINE unsigned long __Pyx_add_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
+static CYTHON_INLINE unsigned long __Pyx_sub_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
+static CYTHON_INLINE unsigned long __Pyx_mul_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
+static CYTHON_INLINE unsigned long __Pyx_div_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
+#define __Pyx_add_const_unsigned_long_checking_overflow __Pyx_add_unsigned_long_checking_overflow
+#define __Pyx_sub_const_unsigned_long_checking_overflow __Pyx_sub_unsigned_long_checking_overflow
+static CYTHON_INLINE unsigned long __Pyx_mul_const_unsigned_long_checking_overflow(unsigned long a, unsigned long constant, int *overflow);
+#define __Pyx_div_const_unsigned_long_checking_overflow __Pyx_div_unsigned_long_checking_overflow
+
+/* BaseCaseUnsigned.proto */
+static CYTHON_INLINE unsigned long long __Pyx_add_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
+static CYTHON_INLINE unsigned long long __Pyx_sub_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
+static CYTHON_INLINE unsigned long long __Pyx_mul_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
+static CYTHON_INLINE unsigned long long __Pyx_div_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
+#define __Pyx_add_const_unsigned_long_long_checking_overflow __Pyx_add_unsigned_long_long_checking_overflow
+#define __Pyx_sub_const_unsigned_long_long_checking_overflow __Pyx_sub_unsigned_long_long_checking_overflow
+static CYTHON_INLINE unsigned long long __Pyx_mul_const_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long constant, int *overflow);
+#define __Pyx_div_const_unsigned_long_long_checking_overflow __Pyx_div_unsigned_long_long_checking_overflow
+
+/* SizeCheck.proto */
+static int __Pyx_check_sane_Py_ssize_t(void) {
+    if (((sizeof(Py_ssize_t) <= sizeof(int)) ||
+#ifdef HAVE_LONG_LONG
+            (sizeof(Py_ssize_t) == sizeof(PY_LONG_LONG)) ||
+#endif
+            (sizeof(Py_ssize_t) == sizeof(long)))) {
+        return 0;
+    } else {
+        PyErr_Format(PyExc_RuntimeError,\
+            "Bad size for int type %.60s: %d", "Py_ssize_t", (int) sizeof(Py_ssize_t));
+        return 1;
+    }
+}
+
+/* Binop.proto */
+static CYTHON_INLINE Py_ssize_t __Pyx_sub_const_Py_ssize_t_checking_overflow(Py_ssize_t a, Py_ssize_t b, int *overflow);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
@@ -1719,206 +1804,230 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
-/* FastTypeChecks.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_TypeCheck(obj, type) __Pyx_IsSubtype(Py_TYPE(obj), (PyTypeObject *)type)
-static CYTHON_INLINE int __Pyx_IsSubtype(PyTypeObject *a, PyTypeObject *b);
-static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches(PyObject *err, PyObject *type);
-static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObject *type1, PyObject *type2);
-#else
-#define __Pyx_TypeCheck(obj, type) PyObject_TypeCheck(obj, (PyTypeObject *)type)
-#define __Pyx_PyErr_GivenExceptionMatches(err, type) PyErr_GivenExceptionMatches(err, type)
-#define __Pyx_PyErr_GivenExceptionMatches2(err, type1, type2) (PyErr_GivenExceptionMatches(err, type1) || PyErr_GivenExceptionMatches(err, type2))
-#endif
-#define __Pyx_PyException_Check(obj) __Pyx_TypeCheck(obj, PyExc_Exception)
-
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
 
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_schedule(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule *__pyx_optional_args); /* proto*/
+static int __pyx_f_5acide_7asyncop_9Scheduler_add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED int __pyx_skip_dispatch); /* proto*/
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_add(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add *__pyx_optional_args); /* proto*/
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_control(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority); /* proto*/
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_clear(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto*/
 
 /* Module declarations from 'cython' */
 
 /* Module declarations from 'acide.asyncop' */
+static PyTypeObject *__pyx_ptype_5acide_7asyncop_PriorityQueue = 0;
 static PyTypeObject *__pyx_ptype_5acide_7asyncop_Scheduler = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct___scheduled = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__runner = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_2__task = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_3__scheduler = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_once = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_5_run_completed = 0;
-static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_6_run_forever = 0;
+static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct__wait = 0;
+static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__scheduled = 0;
+static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_2_run_forever = 0;
+static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_3_run_once = 0;
+static PyTypeObject *__pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_until_complete = 0;
+static int __pyx_v_5acide_7asyncop__id[1];
 static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_5acide_7asyncop__sched_singleton = 0;
+static int __pyx_f_5acide_7asyncop__unique_id(void); /*proto*/
 static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_f_5acide_7asyncop_get_singleton(void); /*proto*/
-static PyObject *__pyx_f_5acide_7asyncop_set_singleton(struct __pyx_obj_5acide_7asyncop_Scheduler *); /*proto*/
+static void __pyx_f_5acide_7asyncop_set_singleton(struct __pyx_obj_5acide_7asyncop_Scheduler *); /*proto*/
 #define __Pyx_MODULE_NAME "acide.asyncop"
 extern int __pyx_module_is_main_acide__asyncop;
 int __pyx_module_is_main_acide__asyncop = 0;
 
 /* Implementation of 'acide.asyncop' */
 static PyObject *__pyx_builtin_staticmethod;
+static PyObject *__pyx_builtin_TypeError;
+static PyObject *__pyx_builtin_sum;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_print;
-static PyObject *__pyx_builtin_enumerate;
-static PyObject *__pyx_builtin_TypeError;
-static const char __pyx_k__2[] = "_";
-static const char __pyx_k__4[] = "";
-static const char __pyx_k__5[] = "#";
-static const char __pyx_k__6[] = "[ ";
-static const char __pyx_k__7[] = ", ";
-static const char __pyx_k__8[] = "], ";
-static const char __pyx_k__9[] = ")";
+static const char __pyx_k_[] = ")";
+static const char __pyx_k_q[] = " q(";
+static const char __pyx_k__4[] = "_";
+static const char __pyx_k__6[] = " ...";
+static const char __pyx_k_at[] = " at ";
 static const char __pyx_k_co[] = "co";
+static const char __pyx_k_id[] = "id";
+static const char __pyx_k_in[] = " in ";
 static const char __pyx_k_Any[] = "Any";
 static const char __pyx_k_Gio[] = "Gio";
+static const char __pyx_k_LOW[] = "LOW";
+static const char __pyx_k_Run[] = "Run";
+static const char __pyx_k__12[] = "";
+static const char __pyx_k__13[] = "[ ";
+static const char __pyx_k__14[] = ", ";
+static const char __pyx_k__15[] = "], ";
 static const char __pyx_k_add[] = "add";
 static const char __pyx_k_awt[] = "awt";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_new[] = "new";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_sch[] = "sch";
+static const char __pyx_k_sec[] = " sec.";
 static const char __pyx_k_set[] = "set";
+static const char __pyx_k_sum[] = "sum";
 static const char __pyx_k_Enum[] = "Enum";
+static const char __pyx_k_HIGH[] = "HIGH";
+static const char __pyx_k_LAST[] = "LAST";
 static const char __pyx_k_NEXT[] = "NEXT";
+static const char __pyx_k_None[] = "None";
+static const char __pyx_k_ONCE[] = "ONCE";
 static const char __pyx_k_Task[] = "Task";
 static const char __pyx_k_args[] = "args";
+static const char __pyx_k_auto[] = "auto";
 static const char __pyx_k_copy[] = "copy";
+static const char __pyx_k_done[] = "done";
 static const char __pyx_k_enum[] = "enum";
+static const char __pyx_k_feed[] = "feed";
 static const char __pyx_k_loop[] = "loop";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_send[] = "send";
-static const char __pyx_k_task[] = "_task";
+static const char __pyx_k_stop[] = "stop";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_time[] = "time";
 static const char __pyx_k_wait[] = "wait";
 static const char __pyx_k_Event[] = "Event";
 static const char __pyx_k_await[] = "__await__";
+static const char __pyx_k_check[] = "check";
 static const char __pyx_k_clear[] = "clear";
 static const char __pyx_k_close[] = "close";
 static const char __pyx_k_dones[] = ") | dones(";
+static const char __pyx_k_index[] = "index";
 static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_sleep[] = "sleep";
+static const char __pyx_k_start[] = "start";
 static const char __pyx_k_throw[] = "throw";
-static const char __pyx_k_union[] = "union";
 static const char __pyx_k_unset[] = " unset";
-static const char __pyx_k_LOWEST[] = "LOWEST";
-static const char __pyx_k_gather[] = "gather";
+static const char __pyx_k_cancel[] = "cancel";
 static const char __pyx_k_import[] = "__import__";
+static const char __pyx_k_is_set[] = "is_set";
+static const char __pyx_k_levels[] = ") | levels(";
 static const char __pyx_k_module[] = "__module__";
 static const char __pyx_k_name_2[] = "name";
-static const char __pyx_k_policy[] = "policy";
 static const char __pyx_k_reduce[] = "__reduce__";
+static const char __pyx_k_remove[] = "remove";
 static const char __pyx_k_result[] = "result";
-static const char __pyx_k_runner[] = "_runner";
 static const char __pyx_k_typing[] = "typing";
 static const char __pyx_k_unique[] = "unique";
-static const char __pyx_k_HIGHEST[] = "HIGHEST";
+static const char __pyx_k_FOREVER[] = "FOREVER";
+static const char __pyx_k_IntEnum[] = "IntEnum";
 static const char __pyx_k_asyncio[] = "asyncio";
-static const char __pyx_k_forever[] = "forever";
+static const char __pyx_k_dones_2[] = "dones";
 static const char __pyx_k_inspect[] = "inspect";
 static const char __pyx_k_prepare[] = "__prepare__";
-static const char __pyx_k_timeout[] = "timeout";
 static const char __pyx_k_Callable[] = "Callable";
 static const char __pyx_k_Optional[] = "Optional";
 static const char __pyx_k_Priority[] = "Priority";
 static const char __pyx_k_callback[] = "callback";
+static const char __pyx_k_done_for[] = " done for #";
 static const char __pyx_k_get_name[] = "get_name";
 static const char __pyx_k_getstate[] = "__getstate__";
-static const char __pyx_k_pendings[] = "pendings";
-static const char __pyx_k_priority[] = "priority";
+static const char __pyx_k_pendings[] = ": pendings(";
+static const char __pyx_k_priority[] = "priority #";
 static const char __pyx_k_qualname[] = "__qualname__";
 static const char __pyx_k_run_once[] = "run_once";
-static const char __pyx_k_runner_2[] = "runner";
 static const char __pyx_k_set_name[] = "set_name";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_Awaitable[] = "Awaitable";
 static const char __pyx_k_Coroutine[] = "Coroutine";
 static const char __pyx_k_Scheduler[] = "Scheduler";
 static const char __pyx_k_TypeError[] = "TypeError";
+static const char __pyx_k_cancelled[] = " cancelled";
 static const char __pyx_k_completed[] = "completed";
-static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_functools[] = "functools";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_scheduled[] = "_scheduled";
-static const char __pyx_k_scheduler[] = "_scheduler";
 static const char __pyx_k_ValueError[] = "ValueError";
-static const char __pyx_k_priority_2[] = "priority #";
+static const char __pyx_k_is_running[] = "is_running";
+static const char __pyx_k_pendings_2[] = "pendings";
+static const char __pyx_k_priority_2[] = "priority";
+static const char __pyx_k_properties[] = "properties";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
-static const char __pyx_k_set_result[] = "set_result";
+static const char __pyx_k_clear_dones[] = "clear_dones";
 static const char __pyx_k_create_task[] = "create_task";
-static const char __pyx_k_priority_id[] = "priority_id";
-static const char __pyx_k_return_when[] = "return_when";
 static const char __pyx_k_run_forever[] = "run_forever";
+static const char __pyx_k_scheduled_2[] = "scheduled ";
 static const char __pyx_k_staticmethod[] = "staticmethod";
-static const char __pyx_k_ALL_COMPLETED[] = "ALL_COMPLETED";
+static const char __pyx_k_PriorityQueue[] = "PriorityQueue #";
 static const char __pyx_k_acide_asyncop[] = "acide.asyncop";
 static const char __pyx_k_asyncio_tasks[] = "asyncio.tasks";
-static const char __pyx_k_create_future[] = "create_future";
 static const char __pyx_k_ensure_future[] = "ensure_future";
 static const char __pyx_k_gi_repository[] = "gi.repository";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
-static const char __pyx_k_run_completed[] = "run_completed";
-static const char __pyx_k_FIRST_COMPLETED[] = "FIRST_COMPLETED";
-static const char __pyx_k_Scheduler__task[] = "Scheduler._task";
+static const char __pyx_k_scheduled_for[] = " scheduled for #";
+static const char __pyx_k_CancelledError[] = "CancelledError";
+static const char __pyx_k_UNTIL_COMPLETE[] = "UNTIL_COMPLETE";
+static const char __pyx_k_PriorityQueue_2[] = "PriorityQueue";
+static const char __pyx_k_Scheduler_state[] = "Scheduler state ";
+static const char __pyx_k_priority_levels[] = "priority_levels";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_Unavailable_mode[] = "Unavailable mode ";
 static const char __pyx_k_get_running_loop[] = "get_running_loop";
-static const char __pyx_k_Scheduler__runner[] = "Scheduler._runner";
+static const char __pyx_k_runner_cancelled[] = "runner cancelled";
 static const char __pyx_k_acide_asyncop_pyx[] = "acide/asyncop.pyx";
-static const char __pyx_k_scheduler_stopped[] = "scheduler stopped ";
 static const char __pyx_k_AsyncReadyCallback[] = "AsyncReadyCallback";
+static const char __pyx_k_PriorityQueue_wait[] = "PriorityQueue.wait";
 static const char __pyx_k_Scheduler_run_once[] = "Scheduler.run_once";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_scheduler_completed[] = "scheduler completed ";
+static const char __pyx_k_run_until_complete[] = "run_until_complete";
 static const char __pyx_k_Scheduler__scheduled[] = "Scheduler._scheduled";
-static const char __pyx_k_Scheduler__scheduler[] = "Scheduler._scheduler";
 static const char __pyx_k_Scheduler_run_forever[] = "Scheduler.run_forever";
-static const char __pyx_k_Scheduler_run_completed[] = "Scheduler.run_completed";
 static const char __pyx_k_Scheduler_state_pendings[] = "Scheduler state: pendings(";
+static const char __pyx_k_scheduler_already_running[] = "scheduler already running";
+static const char __pyx_k_Scheduler_run_until_complete[] = "Scheduler.run_until_complete";
+static const char __pyx_k_This_module_provides_utilities[] = "\nThis module provides utilities to manage *Asynchronous Operations* (coroutines\nand tasks) inside the context of a *main event loop* application. It was designed\nto work with the `glib event loop <https://docs.gtk.org/glib/main-loop.html>`_\nin mind and tested using the `Gbulb python package <https://github.com/beeware/gbulb>`_\nas an interface with glib.\n";
+static const char __pyx_k_Enumeration_of_running_mode_for[] = "Enumeration of running mode for the :class:`Scheduler`'s loop.\n    ";
+static const char __pyx_k_Enumeration_of_level_of_priority[] = "Enumeration of level of priority for scheuled task.\n    ";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
-static PyObject *__pyx_n_s_ALL_COMPLETED;
+static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_Any;
 static PyObject *__pyx_n_s_AsyncReadyCallback;
 static PyObject *__pyx_n_s_Awaitable;
 static PyObject *__pyx_n_s_Callable;
+static PyObject *__pyx_n_s_CancelledError;
 static PyObject *__pyx_n_s_Coroutine;
 static PyObject *__pyx_n_s_Enum;
+static PyObject *__pyx_kp_s_Enumeration_of_level_of_priority;
+static PyObject *__pyx_kp_s_Enumeration_of_running_mode_for;
 static PyObject *__pyx_n_s_Event;
-static PyObject *__pyx_n_s_FIRST_COMPLETED;
+static PyObject *__pyx_n_s_FOREVER;
 static PyObject *__pyx_n_s_Gio;
-static PyObject *__pyx_n_s_HIGHEST;
-static PyObject *__pyx_n_s_LOWEST;
+static PyObject *__pyx_n_s_HIGH;
+static PyObject *__pyx_n_s_IntEnum;
+static PyObject *__pyx_n_s_LAST;
+static PyObject *__pyx_n_s_LOW;
 static PyObject *__pyx_n_s_NEXT;
+static PyObject *__pyx_kp_u_None;
+static PyObject *__pyx_n_s_ONCE;
 static PyObject *__pyx_n_s_Optional;
 static PyObject *__pyx_n_s_Priority;
+static PyObject *__pyx_kp_u_PriorityQueue;
+static PyObject *__pyx_n_s_PriorityQueue_2;
+static PyObject *__pyx_n_s_PriorityQueue_wait;
+static PyObject *__pyx_n_s_Run;
 static PyObject *__pyx_n_s_Scheduler;
-static PyObject *__pyx_n_s_Scheduler__runner;
 static PyObject *__pyx_n_s_Scheduler__scheduled;
-static PyObject *__pyx_n_s_Scheduler__scheduler;
-static PyObject *__pyx_n_s_Scheduler__task;
-static PyObject *__pyx_n_s_Scheduler_run_completed;
 static PyObject *__pyx_n_s_Scheduler_run_forever;
 static PyObject *__pyx_n_s_Scheduler_run_once;
+static PyObject *__pyx_n_s_Scheduler_run_until_complete;
+static PyObject *__pyx_kp_u_Scheduler_state;
 static PyObject *__pyx_kp_u_Scheduler_state_pendings;
 static PyObject *__pyx_n_s_Task;
 static PyObject *__pyx_n_s_TypeError;
+static PyObject *__pyx_n_s_UNTIL_COMPLETE;
 static PyObject *__pyx_kp_u_Unavailable_mode;
 static PyObject *__pyx_n_s_ValueError;
-static PyObject *__pyx_n_u__2;
-static PyObject *__pyx_kp_u__4;
-static PyObject *__pyx_kp_u__5;
+static PyObject *__pyx_kp_u__12;
+static PyObject *__pyx_kp_u__13;
+static PyObject *__pyx_kp_u__14;
+static PyObject *__pyx_kp_u__15;
+static PyObject *__pyx_n_u__4;
 static PyObject *__pyx_kp_u__6;
-static PyObject *__pyx_kp_u__7;
-static PyObject *__pyx_kp_u__8;
-static PyObject *__pyx_kp_u__9;
 static PyObject *__pyx_n_s_acide_asyncop;
 static PyObject *__pyx_kp_s_acide_asyncop_pyx;
 static PyObject *__pyx_n_s_add;
@@ -1926,31 +2035,43 @@ static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_asyncio;
 static PyObject *__pyx_n_s_asyncio_coroutines;
 static PyObject *__pyx_n_s_asyncio_tasks;
+static PyObject *__pyx_kp_u_at;
+static PyObject *__pyx_n_s_auto;
 static PyObject *__pyx_n_s_await;
 static PyObject *__pyx_n_s_awt;
 static PyObject *__pyx_n_s_callback;
+static PyObject *__pyx_n_s_cancel;
+static PyObject *__pyx_kp_u_cancelled;
+static PyObject *__pyx_n_s_check;
 static PyObject *__pyx_n_s_clear;
+static PyObject *__pyx_n_s_clear_dones;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_co;
-static PyObject *__pyx_n_u_completed;
+static PyObject *__pyx_n_s_completed;
 static PyObject *__pyx_n_s_copy;
-static PyObject *__pyx_n_s_create_future;
 static PyObject *__pyx_n_s_create_task;
 static PyObject *__pyx_n_s_doc;
+static PyObject *__pyx_n_s_done;
+static PyObject *__pyx_kp_u_done_for;
 static PyObject *__pyx_kp_u_dones;
+static PyObject *__pyx_n_s_dones_2;
 static PyObject *__pyx_n_s_ensure_future;
 static PyObject *__pyx_n_s_enum;
-static PyObject *__pyx_n_s_enumerate;
-static PyObject *__pyx_n_u_forever;
+static PyObject *__pyx_n_s_feed;
 static PyObject *__pyx_n_s_functools;
-static PyObject *__pyx_n_s_gather;
 static PyObject *__pyx_n_s_get_name;
 static PyObject *__pyx_n_s_get_running_loop;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_gi_repository;
+static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_kp_u_in;
+static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_inspect;
+static PyObject *__pyx_n_s_is_running;
+static PyObject *__pyx_n_s_is_set;
+static PyObject *__pyx_kp_u_levels;
 static PyObject *__pyx_n_s_loop;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_metaclass;
@@ -1960,92 +2081,1789 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
-static PyObject *__pyx_n_s_pendings;
-static PyObject *__pyx_n_s_policy;
+static PyObject *__pyx_kp_u_pendings;
+static PyObject *__pyx_n_s_pendings_2;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_print;
-static PyObject *__pyx_n_s_priority;
-static PyObject *__pyx_kp_u_priority_2;
-static PyObject *__pyx_n_s_priority_id;
+static PyObject *__pyx_kp_u_priority;
+static PyObject *__pyx_n_s_priority_2;
+static PyObject *__pyx_n_s_priority_levels;
+static PyObject *__pyx_n_s_properties;
 static PyObject *__pyx_n_s_pyx_vtable;
+static PyObject *__pyx_kp_u_q;
 static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
+static PyObject *__pyx_n_s_remove;
 static PyObject *__pyx_n_s_result;
-static PyObject *__pyx_n_s_return_when;
-static PyObject *__pyx_n_s_run_completed;
 static PyObject *__pyx_n_s_run_forever;
 static PyObject *__pyx_n_s_run_once;
-static PyObject *__pyx_n_s_runner;
-static PyObject *__pyx_n_s_runner_2;
+static PyObject *__pyx_n_u_run_once;
+static PyObject *__pyx_n_s_run_until_complete;
+static PyObject *__pyx_n_u_run_until_complete;
+static PyObject *__pyx_kp_u_runner_cancelled;
 static PyObject *__pyx_n_s_sch;
 static PyObject *__pyx_n_s_scheduled;
-static PyObject *__pyx_n_s_scheduler;
-static PyObject *__pyx_kp_u_scheduler_completed;
-static PyObject *__pyx_kp_u_scheduler_stopped;
+static PyObject *__pyx_kp_u_scheduled_2;
+static PyObject *__pyx_kp_u_scheduled_for;
+static PyObject *__pyx_kp_u_scheduler_already_running;
+static PyObject *__pyx_kp_u_sec;
 static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_s_set;
 static PyObject *__pyx_n_s_set_name;
-static PyObject *__pyx_n_s_set_result;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_sleep;
+static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_staticmethod;
-static PyObject *__pyx_n_s_task;
+static PyObject *__pyx_n_s_stop;
+static PyObject *__pyx_n_s_sum;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
-static PyObject *__pyx_n_s_timeout;
+static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_typing;
-static PyObject *__pyx_n_s_union;
 static PyObject *__pyx_n_s_unique;
 static PyObject *__pyx_kp_u_unset;
 static PyObject *__pyx_n_s_wait;
+static int __pyx_pf_5acide_7asyncop_13PriorityQueue___cinit__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, PyObject *__pyx_v_id); /* proto */
+static Py_ssize_t __pyx_pf_5acide_7asyncop_13PriorityQueue_2__len__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static int __pyx_pf_5acide_7asyncop_13PriorityQueue_4__nonzero__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_9completed___get__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_6add(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, PyObject *__pyx_v_task); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_8feed(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_10clear_queue(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_12clear_dones(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_14set(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_16clear(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_18is_set(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_20check(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_22wait(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_25__repr__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_27__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_29__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5acide_7asyncop_9Scheduler___cinit__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_pf_5acide_7asyncop_9Scheduler_2new(void); /* proto */
+static Py_ssize_t __pyx_pf_5acide_7asyncop_9Scheduler_4__len__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_15priority_levels___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_8pendings___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_5dones___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4_scheduled(PyObject *__pyx_v_awt, PyObject *__pyx_v_result, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_7schedule(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_9_runner(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_priority_id, PyObject *__pyx_v_policy); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_12_task(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_runner, PyObject *__pyx_v_priority_id); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_15_scheduler(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_priority_id, PyObject *__pyx_v_policy); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_18run_once(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_21run_completed(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24run_forever(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_27run(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_mode); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_29__str__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_31__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_33__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10is_running___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4rate___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static int __pyx_pf_5acide_7asyncop_9Scheduler_4rate_2__set__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_6add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_8add(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_13run_forever(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_16run_once(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_19run_until_complete(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_22run(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_mode); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24stop(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_26_short_dump(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_30__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_32__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_tp_new_5acide_7asyncop_PriorityQueue(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5acide_7asyncop_Scheduler(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct___scheduled(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__runner(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2__task(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3__scheduler(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_once(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_5_run_completed(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_6_run_forever(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct__wait(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__scheduled(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2_run_forever(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3_run_once(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_until_complete(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
-static PyObject *__pyx_int_888;
-static PyObject *__pyx_int_999;
-static PyObject *__pyx_k__3;
-static PyObject *__pyx_codeobj_;
-static PyObject *__pyx_tuple__10;
+static PyObject *__pyx_int_neg_1;
+static PyObject *__pyx_k__10;
+static PyObject *__pyx_tuple__2;
+static PyObject *__pyx_tuple__3;
+static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__8;
+static PyObject *__pyx_tuple__9;
 static PyObject *__pyx_tuple__11;
-static PyObject *__pyx_tuple__12;
-static PyObject *__pyx_tuple__14;
-static PyObject *__pyx_codeobj__13;
+static PyObject *__pyx_tuple__16;
+static PyObject *__pyx_tuple__17;
+static PyObject *__pyx_tuple__18;
+static PyObject *__pyx_tuple__20;
+static PyObject *__pyx_codeobj__5;
+static PyObject *__pyx_codeobj__19;
 /* Late includes */
 
-/* "acide/asyncop.pyx":39
+/* "acide/asyncop.pyx":59
+ * cdef int _id[1]
+ * _id[0] = 0
+ * cdef int _unique_id():             # <<<<<<<<<<<<<<
+ *     _id[0] += 1
+ *     return _id[0]
+ */
+
+static int __pyx_f_5acide_7asyncop__unique_id(void) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  long __pyx_t_1;
+  int __pyx_t_2;
+  long __pyx_t_3;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_unique_id", 0);
+
+  /* "acide/asyncop.pyx":60
+ * _id[0] = 0
+ * cdef int _unique_id():
+ *     _id[0] += 1             # <<<<<<<<<<<<<<
+ *     return _id[0]
+ * 
+ */
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_add_const_long_checking_overflow((__pyx_v_5acide_7asyncop__id[__pyx_t_1]), 1, &__pyx_t_2);
+  if (unlikely(__pyx_t_2)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 60, __pyx_L1_error)
+  }
+  (__pyx_v_5acide_7asyncop__id[__pyx_t_1]) = __pyx_t_3;
+
+  /* "acide/asyncop.pyx":61
+ * cdef int _unique_id():
+ *     _id[0] += 1
+ *     return _id[0]             # <<<<<<<<<<<<<<
+ * 
+ * @cython.final
+ */
+  __pyx_r = (__pyx_v_5acide_7asyncop__id[0]);
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":59
+ * cdef int _id[1]
+ * _id[0] = 0
+ * cdef int _unique_id():             # <<<<<<<<<<<<<<
+ *     _id[0] += 1
+ *     return _id[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("acide.asyncop._unique_id", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":66
+ * cdef class PriorityQueue():
+ * 
+ *     def __cinit__(self, id = None):             # <<<<<<<<<<<<<<
+ *         if id is None:
+ *             self.id = _unique_id()
+ */
+
+/* Python wrapper */
+static int __pyx_pw_5acide_7asyncop_13PriorityQueue_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5acide_7asyncop_13PriorityQueue_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_id = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_id,0};
+    PyObject* values[1] = {0};
+    values[0] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_id);
+          if (value) { values[0] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 66, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_id = values[0];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 66, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return -1;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue___cinit__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self), __pyx_v_id);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_5acide_7asyncop_13PriorityQueue___cinit__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, PyObject *__pyx_v_id) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "acide/asyncop.pyx":67
+ * 
+ *     def __cinit__(self, id = None):
+ *         if id is None:             # <<<<<<<<<<<<<<
+ *             self.id = _unique_id()
+ *         else:
+ */
+  __pyx_t_1 = (__pyx_v_id == Py_None);
+  __pyx_t_2 = (__pyx_t_1 != 0);
+  if (__pyx_t_2) {
+
+    /* "acide/asyncop.pyx":68
+ *     def __cinit__(self, id = None):
+ *         if id is None:
+ *             self.id = _unique_id()             # <<<<<<<<<<<<<<
+ *         else:
+ *             self.id = int(id)
+ */
+    __pyx_v_self->id = __pyx_f_5acide_7asyncop__unique_id();
+
+    /* "acide/asyncop.pyx":67
+ * 
+ *     def __cinit__(self, id = None):
+ *         if id is None:             # <<<<<<<<<<<<<<
+ *             self.id = _unique_id()
+ *         else:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "acide/asyncop.pyx":70
+ *             self.id = _unique_id()
+ *         else:
+ *             self.id = int(id)             # <<<<<<<<<<<<<<
+ *         self.queue = set()
+ *         self.pendings = set()
+ */
+  /*else*/ {
+    __pyx_t_3 = __Pyx_PyNumber_Int(__pyx_v_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_v_self->id = __pyx_t_4;
+  }
+  __pyx_L3:;
+
+  /* "acide/asyncop.pyx":71
+ *         else:
+ *             self.id = int(id)
+ *         self.queue = set()             # <<<<<<<<<<<<<<
+ *         self.pendings = set()
+ *         self.dones = set()
+ */
+  __pyx_t_3 = PySet_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  __Pyx_GOTREF(__pyx_v_self->queue);
+  __Pyx_DECREF(__pyx_v_self->queue);
+  __pyx_v_self->queue = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "acide/asyncop.pyx":72
+ *             self.id = int(id)
+ *         self.queue = set()
+ *         self.pendings = set()             # <<<<<<<<<<<<<<
+ *         self.dones = set()
+ *         self.event = asyncio.Event()
+ */
+  __pyx_t_3 = PySet_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  __Pyx_GOTREF(__pyx_v_self->pendings);
+  __Pyx_DECREF(__pyx_v_self->pendings);
+  __pyx_v_self->pendings = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "acide/asyncop.pyx":73
+ *         self.queue = set()
+ *         self.pendings = set()
+ *         self.dones = set()             # <<<<<<<<<<<<<<
+ *         self.event = asyncio.Event()
+ * 
+ */
+  __pyx_t_3 = PySet_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  __Pyx_GOTREF(__pyx_v_self->dones);
+  __Pyx_DECREF(__pyx_v_self->dones);
+  __pyx_v_self->dones = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "acide/asyncop.pyx":74
+ *         self.pendings = set()
+ *         self.dones = set()
+ *         self.event = asyncio.Event()             # <<<<<<<<<<<<<<
+ * 
+ *     def __len__(self):
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_Event); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_6, function);
+    }
+  }
+  __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_GIVEREF(__pyx_t_3);
+  __Pyx_GOTREF(__pyx_v_self->event);
+  __Pyx_DECREF(__pyx_v_self->event);
+  __pyx_v_self->event = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "acide/asyncop.pyx":66
+ * cdef class PriorityQueue():
+ * 
+ *     def __cinit__(self, id = None):             # <<<<<<<<<<<<<<
+ *         if id is None:
+ *             self.id = _unique_id()
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":76
+ *         self.event = asyncio.Event()
+ * 
+ *     def __len__(self):             # <<<<<<<<<<<<<<
+ *         return len(self.queue)
+ * 
+ */
+
+/* Python wrapper */
+static Py_ssize_t __pyx_pw_5acide_7asyncop_13PriorityQueue_3__len__(PyObject *__pyx_v_self); /*proto*/
+static Py_ssize_t __pyx_pw_5acide_7asyncop_13PriorityQueue_3__len__(PyObject *__pyx_v_self) {
+  Py_ssize_t __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__len__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_2__len__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static Py_ssize_t __pyx_pf_5acide_7asyncop_13PriorityQueue_2__len__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  Py_ssize_t __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__len__", 0);
+
+  /* "acide/asyncop.pyx":77
+ * 
+ *     def __len__(self):
+ *         return len(self.queue)             # <<<<<<<<<<<<<<
+ * 
+ *     def __nonzero__(self):
+ */
+  __pyx_t_1 = __pyx_v_self->queue;
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":76
+ *         self.event = asyncio.Event()
+ * 
+ *     def __len__(self):             # <<<<<<<<<<<<<<
+ *         return len(self.queue)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__len__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":79
+ *         return len(self.queue)
+ * 
+ *     def __nonzero__(self):             # <<<<<<<<<<<<<<
+ *         return <bint> len(self.queue)
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_5acide_7asyncop_13PriorityQueue_5__nonzero__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_5acide_7asyncop_13PriorityQueue_5__nonzero__(PyObject *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__nonzero__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_4__nonzero__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_5acide_7asyncop_13PriorityQueue_4__nonzero__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__nonzero__", 0);
+
+  /* "acide/asyncop.pyx":80
+ * 
+ *     def __nonzero__(self):
+ *         return <bint> len(self.queue)             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  __pyx_t_1 = __pyx_v_self->queue;
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 80, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = (__pyx_t_2 != 0);
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":79
+ *         return len(self.queue)
+ * 
+ *     def __nonzero__(self):             # <<<<<<<<<<<<<<
+ *         return <bint> len(self.queue)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__nonzero__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":83
+ * 
+ *     @property
+ *     def completed(self):             # <<<<<<<<<<<<<<
+ *         return (len(self.pendings) == 0)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_9completed_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_9completed_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_9completed___get__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_9completed___get__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "acide/asyncop.pyx":84
+ *     @property
+ *     def completed(self):
+ *         return (len(self.pendings) == 0)             # <<<<<<<<<<<<<<
+ * 
+ *     def add(self, task):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_v_self->pendings;
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyBool_FromLong((__pyx_t_2 == 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":83
+ * 
+ *     @property
+ *     def completed(self):             # <<<<<<<<<<<<<<
+ *         return (len(self.pendings) == 0)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.completed.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":86
+ *         return (len(self.pendings) == 0)
+ * 
+ *     def add(self, task):             # <<<<<<<<<<<<<<
+ *         self.queue.add(task)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_7add(PyObject *__pyx_v_self, PyObject *__pyx_v_task); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_6add[] = "PriorityQueue.add(self, task)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_7add(PyObject *__pyx_v_self, PyObject *__pyx_v_task) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("add (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_6add(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self), ((PyObject *)__pyx_v_task));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_6add(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, PyObject *__pyx_v_task) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("add", 0);
+
+  /* "acide/asyncop.pyx":87
+ * 
+ *     def add(self, task):
+ *         self.queue.add(task)             # <<<<<<<<<<<<<<
+ * 
+ *     def feed(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->queue, __pyx_n_s_add); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_task) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_task);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":86
+ *         return (len(self.pendings) == 0)
+ * 
+ *     def add(self, task):             # <<<<<<<<<<<<<<
+ *         self.queue.add(task)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.add", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":89
+ *         self.queue.add(task)
+ * 
+ *     def feed(self):             # <<<<<<<<<<<<<<
+ *         self.pendings |= self.queue
+ *         self.queue.clear()
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_9feed(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_8feed[] = "PriorityQueue.feed(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_9feed(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("feed (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_8feed(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_8feed(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("feed", 0);
+
+  /* "acide/asyncop.pyx":90
+ * 
+ *     def feed(self):
+ *         self.pendings |= self.queue             # <<<<<<<<<<<<<<
+ *         self.queue.clear()
+ * 
+ */
+  __pyx_t_1 = PyNumber_InPlaceOr(__pyx_v_self->pendings, __pyx_v_self->queue); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->pendings);
+  __Pyx_DECREF(__pyx_v_self->pendings);
+  __pyx_v_self->pendings = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":91
+ *     def feed(self):
+ *         self.pendings |= self.queue
+ *         self.queue.clear()             # <<<<<<<<<<<<<<
+ * 
+ *     def clear_queue(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->queue, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":89
+ *         self.queue.add(task)
+ * 
+ *     def feed(self):             # <<<<<<<<<<<<<<
+ *         self.pendings |= self.queue
+ *         self.queue.clear()
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.feed", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":93
+ *         self.queue.clear()
+ * 
+ *     def clear_queue(self):             # <<<<<<<<<<<<<<
+ *          self.queue.clear()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_11clear_queue(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_10clear_queue[] = "PriorityQueue.clear_queue(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_11clear_queue(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("clear_queue (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_10clear_queue(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_10clear_queue(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("clear_queue", 0);
+
+  /* "acide/asyncop.pyx":94
+ * 
+ *     def clear_queue(self):
+ *          self.queue.clear()             # <<<<<<<<<<<<<<
+ * 
+ *     def clear_dones(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->queue, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":93
+ *         self.queue.clear()
+ * 
+ *     def clear_queue(self):             # <<<<<<<<<<<<<<
+ *          self.queue.clear()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.clear_queue", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":96
+ *          self.queue.clear()
+ * 
+ *     def clear_dones(self):             # <<<<<<<<<<<<<<
+ *          self.dones.clear()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_13clear_dones(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_12clear_dones[] = "PriorityQueue.clear_dones(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_13clear_dones(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("clear_dones (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_12clear_dones(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_12clear_dones(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("clear_dones", 0);
+
+  /* "acide/asyncop.pyx":97
+ * 
+ *     def clear_dones(self):
+ *          self.dones.clear()             # <<<<<<<<<<<<<<
+ * 
+ *     def set(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->dones, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":96
+ *          self.queue.clear()
+ * 
+ *     def clear_dones(self):             # <<<<<<<<<<<<<<
+ *          self.dones.clear()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.clear_dones", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":99
+ *          self.dones.clear()
+ * 
+ *     def set(self):             # <<<<<<<<<<<<<<
+ *         self.event.set()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_15set(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_14set[] = "PriorityQueue.set(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_15set(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("set (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_14set(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_14set(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("set", 0);
+
+  /* "acide/asyncop.pyx":100
+ * 
+ *     def set(self):
+ *         self.event.set()             # <<<<<<<<<<<<<<
+ * 
+ *     def clear(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->event, __pyx_n_s_set); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":99
+ *          self.dones.clear()
+ * 
+ *     def set(self):             # <<<<<<<<<<<<<<
+ *         self.event.set()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.set", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":102
+ *         self.event.set()
+ * 
+ *     def clear(self):             # <<<<<<<<<<<<<<
+ *         self.event.clear()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_17clear(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_16clear[] = "PriorityQueue.clear(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_17clear(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("clear (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_16clear(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_16clear(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("clear", 0);
+
+  /* "acide/asyncop.pyx":103
+ * 
+ *     def clear(self):
+ *         self.event.clear()             # <<<<<<<<<<<<<<
+ * 
+ *     def is_set(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->event, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":102
+ *         self.event.set()
+ * 
+ *     def clear(self):             # <<<<<<<<<<<<<<
+ *         self.event.clear()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.clear", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":105
+ *         self.event.clear()
+ * 
+ *     def is_set(self):             # <<<<<<<<<<<<<<
+ *         return self.event.is_set()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_19is_set(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_18is_set[] = "PriorityQueue.is_set(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_19is_set(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("is_set (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_18is_set(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_18is_set(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("is_set", 0);
+
+  /* "acide/asyncop.pyx":106
+ * 
+ *     def is_set(self):
+ *         return self.event.is_set()             # <<<<<<<<<<<<<<
+ * 
+ *     def check(self):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->event, __pyx_n_s_is_set); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":105
+ *         self.event.clear()
+ * 
+ *     def is_set(self):             # <<<<<<<<<<<<<<
+ *         return self.event.is_set()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.is_set", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":108
+ *         return self.event.is_set()
+ * 
+ *     def check(self):             # <<<<<<<<<<<<<<
+ *         for task in self.pendings.copy():
+ *             if task.done():
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_21check(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_20check[] = "PriorityQueue.check(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_21check(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("check (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_20check(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_20check(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_v_task = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("check", 0);
+
+  /* "acide/asyncop.pyx":109
+ * 
+ *     def check(self):
+ *         for task in self.pendings.copy():             # <<<<<<<<<<<<<<
+ *             if task.done():
+ *                 self.dones.add(task)
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pendings, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+  } else {
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 109, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      }
+    } else {
+      __pyx_t_1 = __pyx_t_5(__pyx_t_2);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 109, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "acide/asyncop.pyx":110
+ *     def check(self):
+ *         for task in self.pendings.copy():
+ *             if task.done():             # <<<<<<<<<<<<<<
+ *                 self.dones.add(task)
+ *                 self.pendings.remove(task)
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_done); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_6 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_6);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (__pyx_t_7) {
+
+      /* "acide/asyncop.pyx":111
+ *         for task in self.pendings.copy():
+ *             if task.done():
+ *                 self.dones.add(task)             # <<<<<<<<<<<<<<
+ *                 self.pendings.remove(task)
+ * 
+ */
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->dones, __pyx_n_s_add); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_v_task) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_task);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "acide/asyncop.pyx":112
+ *             if task.done():
+ *                 self.dones.add(task)
+ *                 self.pendings.remove(task)             # <<<<<<<<<<<<<<
+ * 
+ *     async def wait(self):
+ */
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pendings, __pyx_n_s_remove); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_v_task) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_task);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "acide/asyncop.pyx":110
+ *     def check(self):
+ *         for task in self.pendings.copy():
+ *             if task.done():             # <<<<<<<<<<<<<<
+ *                 self.dones.add(task)
+ *                 self.pendings.remove(task)
+ */
+    }
+
+    /* "acide/asyncop.pyx":109
+ * 
+ *     def check(self):
+ *         for task in self.pendings.copy():             # <<<<<<<<<<<<<<
+ *             if task.done():
+ *                 self.dones.add(task)
+ */
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "acide/asyncop.pyx":108
+ *         return self.event.is_set()
+ * 
+ *     def check(self):             # <<<<<<<<<<<<<<
+ *         for task in self.pendings.copy():
+ *             if task.done():
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.check", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_task);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+static PyObject *__pyx_gb_5acide_7asyncop_13PriorityQueue_24generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+
+/* "acide/asyncop.pyx":114
+ *                 self.pendings.remove(task)
+ * 
+ *     async def wait(self):             # <<<<<<<<<<<<<<
+ *         await self.event.wait()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_23wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_22wait[] = "PriorityQueue.wait(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_23wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("wait (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_22wait(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_22wait(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *__pyx_cur_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("wait", 0);
+  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct__wait(__pyx_ptype_5acide_7asyncop___pyx_scope_struct__wait, __pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)Py_None);
+    __Pyx_INCREF(Py_None);
+    __PYX_ERR(0, 114, __pyx_L1_error)
+  } else {
+    __Pyx_GOTREF(__pyx_cur_scope);
+  }
+  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  {
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_13PriorityQueue_24generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_wait, __pyx_n_s_PriorityQueue_wait, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_cur_scope);
+    __Pyx_RefNannyFinishContext();
+    return (PyObject *) gen;
+  }
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.wait", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_gb_5acide_7asyncop_13PriorityQueue_24generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+{
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)__pyx_generator->closure);
+  PyObject *__pyx_r = NULL;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("wait", 0);
+  switch (__pyx_generator->resume_label) {
+    case 0: goto __pyx_L3_first_run;
+    case 1: goto __pyx_L4_resume_from_await;
+    default: /* CPython raises the right error here */
+    __Pyx_RefNannyFinishContext();
+    return NULL;
+  }
+  __pyx_L3_first_run:;
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 114, __pyx_L1_error)
+
+  /* "acide/asyncop.pyx":115
+ * 
+ *     async def wait(self):
+ *         await self.event.wait()             # <<<<<<<<<<<<<<
+ * 
+ *     def __repr__(self):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->event, __pyx_n_s_wait); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_XGOTREF(__pyx_r);
+  if (likely(__pyx_r)) {
+    __Pyx_XGIVEREF(__pyx_r);
+    __Pyx_RefNannyFinishContext();
+    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+    /* return from generator, awaiting value */
+    __pyx_generator->resume_label = 1;
+    return __pyx_r;
+    __pyx_L4_resume_from_await:;
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 115, __pyx_L1_error)
+  } else {
+    PyObject* exc_type = __Pyx_PyErr_Occurred();
+    if (exc_type) {
+      if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
+      else __PYX_ERR(0, 115, __pyx_L1_error)
+    }
+  }
+  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+
+  /* "acide/asyncop.pyx":114
+ *                 self.pendings.remove(task)
+ * 
+ *     async def wait(self):             # <<<<<<<<<<<<<<
+ *         await self.event.wait()
+ * 
+ */
+
+  /* function exit code */
+  PyErr_SetNone(PyExc_StopIteration);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("wait", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
+  #if !CYTHON_USE_EXC_INFO_STACK
+  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+  #endif
+  __pyx_generator->resume_label = -1;
+  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":117
+ *         await self.event.wait()
+ * 
+ *     def __repr__(self):             # <<<<<<<<<<<<<<
+ *         return f"PriorityQueue #{self.id} q({len(self)})"
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_26__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_26__repr__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_25__repr__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_25__repr__(struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  Py_UCS4 __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__repr__", 0);
+
+  /* "acide/asyncop.pyx":118
+ * 
+ *     def __repr__(self):
+ *         return f"PriorityQueue #{self.id} q({len(self)})"             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 127;
+  __Pyx_INCREF(__pyx_kp_u_PriorityQueue);
+  __pyx_t_2 += 15;
+  __Pyx_GIVEREF(__pyx_kp_u_PriorityQueue);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_PriorityQueue);
+  __pyx_t_4 = __Pyx_PyUnicode_From_int(__pyx_v_self->id, 0, ' ', 'd'); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_q);
+  __pyx_t_2 += 3;
+  __Pyx_GIVEREF(__pyx_kp_u_q);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_q);
+  __pyx_t_5 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_5, 0, ' ', 'd'); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_);
+  __pyx_t_2 += 1;
+  __Pyx_GIVEREF(__pyx_kp_u_);
+  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_);
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":117
+ *         await self.event.wait()
+ * 
+ *     def __repr__(self):             # <<<<<<<<<<<<<<
+ *         return f"PriorityQueue #{self.id} q({len(self)})"
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__repr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_28__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_27__reduce_cython__[] = "PriorityQueue.__reduce_cython__(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_28__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_27__reduce_cython__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_27__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__reduce_cython__", 0);
+
+  /* "(tree fragment)":2
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_ERR(1, 2, __pyx_L1_error)
+
+  /* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":3
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_30__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_5acide_7asyncop_13PriorityQueue_29__setstate_cython__[] = "PriorityQueue.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_5acide_7asyncop_13PriorityQueue_30__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_13PriorityQueue_29__setstate_cython__(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_13PriorityQueue_29__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__setstate_cython__", 0);
+
+  /* "(tree fragment)":4
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_ERR(1, 4, __pyx_L1_error)
+
+  /* "(tree fragment)":3
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.PriorityQueue.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":122
  * 
  * cdef Scheduler _sched_singleton = None
  * cdef Scheduler get_singleton():             # <<<<<<<<<<<<<<
  *     return _sched_singleton
- * 
+ * cdef void set_singleton(Scheduler sched):
  */
 
 static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_f_5acide_7asyncop_get_singleton(void) {
@@ -2053,24 +3871,24 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_f_5acide_7asyncop_get_s
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_singleton", 0);
 
-  /* "acide/asyncop.pyx":40
+  /* "acide/asyncop.pyx":123
  * cdef Scheduler _sched_singleton = None
  * cdef Scheduler get_singleton():
  *     return _sched_singleton             # <<<<<<<<<<<<<<
- * 
- * cdef set_singleton(Scheduler sched):
+ * cdef void set_singleton(Scheduler sched):
+ *     _sched_singleton = sched
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_5acide_7asyncop__sched_singleton));
   __pyx_r = __pyx_v_5acide_7asyncop__sched_singleton;
   goto __pyx_L0;
 
-  /* "acide/asyncop.pyx":39
+  /* "acide/asyncop.pyx":122
  * 
  * cdef Scheduler _sched_singleton = None
  * cdef Scheduler get_singleton():             # <<<<<<<<<<<<<<
  *     return _sched_singleton
- * 
+ * cdef void set_singleton(Scheduler sched):
  */
 
   /* function exit code */
@@ -2080,52 +3898,48 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_f_5acide_7asyncop_get_s
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":42
+/* "acide/asyncop.pyx":124
+ * cdef Scheduler get_singleton():
  *     return _sched_singleton
- * 
- * cdef set_singleton(Scheduler sched):             # <<<<<<<<<<<<<<
+ * cdef void set_singleton(Scheduler sched):             # <<<<<<<<<<<<<<
  *     _sched_singleton = sched
  * 
  */
 
-static PyObject *__pyx_f_5acide_7asyncop_set_singleton(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_sched) {
+static void __pyx_f_5acide_7asyncop_set_singleton(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_sched) {
   CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v__sched_singleton = NULL;
-  PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_singleton", 0);
 
-  /* "acide/asyncop.pyx":43
- * 
- * cdef set_singleton(Scheduler sched):
+  /* "acide/asyncop.pyx":125
+ *     return _sched_singleton
+ * cdef void set_singleton(Scheduler sched):
  *     _sched_singleton = sched             # <<<<<<<<<<<<<<
  * 
- * 
+ * @cython.final
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_sched));
   __pyx_v__sched_singleton = __pyx_v_sched;
 
-  /* "acide/asyncop.pyx":42
+  /* "acide/asyncop.pyx":124
+ * cdef Scheduler get_singleton():
  *     return _sched_singleton
- * 
- * cdef set_singleton(Scheduler sched):             # <<<<<<<<<<<<<<
+ * cdef void set_singleton(Scheduler sched):             # <<<<<<<<<<<<<<
  *     _sched_singleton = sched
  * 
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_XDECREF((PyObject *)__pyx_v__sched_singleton);
-  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
-  return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":48
- * @cython.final
- * cdef class Scheduler():
+/* "acide/asyncop.pyx":132
+ * 
+ *     """
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
- *         self.queues = [set(), set()]
- *         self.priorities = [asyncio.Event(), asyncio.Event()]
+ *         self.priorities = [PriorityQueue(Priority.HIGH),
+ *                            PriorityQueue(Priority.LOW)]
  */
 
 /* Python wrapper */
@@ -2150,24 +3964,51 @@ static int __pyx_pf_5acide_7asyncop_9Scheduler___cinit__(struct __pyx_obj_5acide
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "acide/asyncop.pyx":49
- * cdef class Scheduler():
+  /* "acide/asyncop.pyx":133
+ *     """
  *     def __cinit__(self):
- *         self.queues = [set(), set()]             # <<<<<<<<<<<<<<
- *         self.priorities = [asyncio.Event(), asyncio.Event()]
- *         #self.priorities[0].set()  # priority 0 is always ready to start
+ *         self.priorities = [PriorityQueue(Priority.HIGH),             # <<<<<<<<<<<<<<
+ *                            PriorityQueue(Priority.LOW)]
+ *         self.task_id = 0
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Priority); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySet_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_HIGH); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyList_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5acide_7asyncop_PriorityQueue), __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "acide/asyncop.pyx":134
+ *     def __cinit__(self):
+ *         self.priorities = [PriorityQueue(Priority.HIGH),
+ *                            PriorityQueue(Priority.LOW)]             # <<<<<<<<<<<<<<
+ *         self.task_id = 0
+ *         self.rate = 0.001
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_LOW); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5acide_7asyncop_PriorityQueue), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "acide/asyncop.pyx":133
+ *     """
+ *     def __cinit__(self):
+ *         self.priorities = [PriorityQueue(Priority.HIGH),             # <<<<<<<<<<<<<<
+ *                            PriorityQueue(Priority.LOW)]
+ *         self.task_id = 0
+ */
+  __pyx_t_3 = PyList_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -2176,120 +4017,62 @@ static int __pyx_pf_5acide_7asyncop_9Scheduler___cinit__(struct __pyx_obj_5acide
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __Pyx_GIVEREF(__pyx_t_3);
-  __Pyx_GOTREF(__pyx_v_self->queues);
-  __Pyx_DECREF(__pyx_v_self->queues);
-  __pyx_v_self->queues = ((PyObject*)__pyx_t_3);
-  __pyx_t_3 = 0;
-
-  /* "acide/asyncop.pyx":50
- *     def __cinit__(self):
- *         self.queues = [set(), set()]
- *         self.priorities = [asyncio.Event(), asyncio.Event()]             # <<<<<<<<<<<<<<
- *         #self.priorities[0].set()  # priority 0 is always ready to start
- *         self.lowest = 1
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_Event); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_Event); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyList_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
-  __pyx_t_3 = 0;
-  __pyx_t_1 = 0;
-  __Pyx_GIVEREF(__pyx_t_4);
   __Pyx_GOTREF(__pyx_v_self->priorities);
   __Pyx_DECREF(__pyx_v_self->priorities);
-  __pyx_v_self->priorities = ((PyObject*)__pyx_t_4);
-  __pyx_t_4 = 0;
+  __pyx_v_self->priorities = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "acide/asyncop.pyx":52
- *         self.priorities = [asyncio.Event(), asyncio.Event()]
- *         #self.priorities[0].set()  # priority 0 is always ready to start
- *         self.lowest = 1             # <<<<<<<<<<<<<<
- *         self.dones = set()
- *         self.task_id = 0
- */
-  __pyx_v_self->lowest = 1;
-
-  /* "acide/asyncop.pyx":53
- *         #self.priorities[0].set()  # priority 0 is always ready to start
- *         self.lowest = 1
- *         self.dones = set()             # <<<<<<<<<<<<<<
- *         self.task_id = 0
- *         self.rate = 0.001
- */
-  __pyx_t_4 = PySet_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_4);
-  __Pyx_GOTREF(__pyx_v_self->dones);
-  __Pyx_DECREF(__pyx_v_self->dones);
-  __pyx_v_self->dones = __pyx_t_4;
-  __pyx_t_4 = 0;
-
-  /* "acide/asyncop.pyx":54
- *         self.lowest = 1
- *         self.dones = set()
+  /* "acide/asyncop.pyx":135
+ *         self.priorities = [PriorityQueue(Priority.HIGH),
+ *                            PriorityQueue(Priority.LOW)]
  *         self.task_id = 0             # <<<<<<<<<<<<<<
  *         self.rate = 0.001
- * 
+ *         self.last_mode = Run.ONCE
  */
   __pyx_v_self->task_id = 0;
 
-  /* "acide/asyncop.pyx":55
- *         self.dones = set()
+  /* "acide/asyncop.pyx":136
+ *                            PriorityQueue(Priority.LOW)]
  *         self.task_id = 0
  *         self.rate = 0.001             # <<<<<<<<<<<<<<
- * 
- *     @staticmethod
+ *         self.last_mode = Run.ONCE
+ *         self.loop_run = False
  */
   __pyx_v_self->rate = 0.001;
 
-  /* "acide/asyncop.pyx":48
- * @cython.final
- * cdef class Scheduler():
+  /* "acide/asyncop.pyx":137
+ *         self.task_id = 0
+ *         self.rate = 0.001
+ *         self.last_mode = Run.ONCE             # <<<<<<<<<<<<<<
+ *         self.loop_run = False
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ONCE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GIVEREF(__pyx_t_2);
+  __Pyx_GOTREF(__pyx_v_self->last_mode);
+  __Pyx_DECREF(__pyx_v_self->last_mode);
+  __pyx_v_self->last_mode = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "acide/asyncop.pyx":138
+ *         self.rate = 0.001
+ *         self.last_mode = Run.ONCE
+ *         self.loop_run = False             # <<<<<<<<<<<<<<
+ * 
+ *     @staticmethod
+ */
+  __pyx_v_self->loop_run = 0;
+
+  /* "acide/asyncop.pyx":132
+ * 
+ *     """
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
- *         self.queues = [set(), set()]
- *         self.priorities = [asyncio.Event(), asyncio.Event()]
+ *         self.priorities = [PriorityQueue(Priority.HIGH),
+ *                            PriorityQueue(Priority.LOW)]
  */
 
   /* function exit code */
@@ -2299,7 +4082,6 @@ static int __pyx_pf_5acide_7asyncop_9Scheduler___cinit__(struct __pyx_obj_5acide
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("acide.asyncop.Scheduler.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -2307,7 +4089,7 @@ static int __pyx_pf_5acide_7asyncop_9Scheduler___cinit__(struct __pyx_obj_5acide
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":58
+/* "acide/asyncop.pyx":141
  * 
  *     @staticmethod
  *     def new() -> 'Scheduler':             # <<<<<<<<<<<<<<
@@ -2345,19 +4127,19 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_pf_5acide_7asyncop_9Sch
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("new", 0);
 
-  /* "acide/asyncop.pyx":60
+  /* "acide/asyncop.pyx":143
  *     def new() -> 'Scheduler':
  *         cdef Scheduler sch
  *         sch = get_singleton()             # <<<<<<<<<<<<<<
  *         if sch is None:
  *             sch = Scheduler.__new__(Scheduler)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_5acide_7asyncop_get_singleton()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_5acide_7asyncop_get_singleton()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_sch = ((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "acide/asyncop.pyx":61
+  /* "acide/asyncop.pyx":144
  *         cdef Scheduler sch
  *         sch = get_singleton()
  *         if sch is None:             # <<<<<<<<<<<<<<
@@ -2368,30 +4150,28 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_pf_5acide_7asyncop_9Sch
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "acide/asyncop.pyx":62
+    /* "acide/asyncop.pyx":145
  *         sch = get_singleton()
  *         if sch is None:
  *             sch = Scheduler.__new__(Scheduler)             # <<<<<<<<<<<<<<
  *             set_singleton(sch)
  *         return sch
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_5acide_7asyncop_Scheduler(((PyTypeObject *)__pyx_ptype_5acide_7asyncop_Scheduler), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __pyx_t_1 = ((PyObject *)__pyx_tp_new_5acide_7asyncop_Scheduler(((PyTypeObject *)__pyx_ptype_5acide_7asyncop_Scheduler), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_GOTREF(((PyObject *)__pyx_t_1));
     __Pyx_DECREF_SET(__pyx_v_sch, ((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "acide/asyncop.pyx":63
+    /* "acide/asyncop.pyx":146
  *         if sch is None:
  *             sch = Scheduler.__new__(Scheduler)
  *             set_singleton(sch)             # <<<<<<<<<<<<<<
  *         return sch
  * 
  */
-    __pyx_t_1 = __pyx_f_5acide_7asyncop_set_singleton(__pyx_v_sch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_f_5acide_7asyncop_set_singleton(__pyx_v_sch);
 
-    /* "acide/asyncop.pyx":61
+    /* "acide/asyncop.pyx":144
  *         cdef Scheduler sch
  *         sch = get_singleton()
  *         if sch is None:             # <<<<<<<<<<<<<<
@@ -2400,19 +4180,19 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_pf_5acide_7asyncop_9Sch
  */
   }
 
-  /* "acide/asyncop.pyx":64
+  /* "acide/asyncop.pyx":147
  *             sch = Scheduler.__new__(Scheduler)
  *             set_singleton(sch)
  *         return sch             # <<<<<<<<<<<<<<
  * 
- *     @property
+ *     def __len__(self):
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_sch));
   __pyx_r = __pyx_v_sch;
   goto __pyx_L0;
 
-  /* "acide/asyncop.pyx":58
+  /* "acide/asyncop.pyx":141
  * 
  *     @staticmethod
  *     def new() -> 'Scheduler':             # <<<<<<<<<<<<<<
@@ -2432,12 +4212,217 @@ static struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_pf_5acide_7asyncop_9Sch
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":67
+/* "acide/asyncop.pyx":149
+ *         return sch
+ * 
+ *     def __len__(self):             # <<<<<<<<<<<<<<
+ *         return sum([len(p) for p in self.properties])
+ * 
+ */
+
+/* Python wrapper */
+static Py_ssize_t __pyx_pw_5acide_7asyncop_9Scheduler_5__len__(PyObject *__pyx_v_self); /*proto*/
+static Py_ssize_t __pyx_pw_5acide_7asyncop_9Scheduler_5__len__(PyObject *__pyx_v_self) {
+  Py_ssize_t __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__len__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_4__len__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static Py_ssize_t __pyx_pf_5acide_7asyncop_9Scheduler_4__len__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_7genexpr__pyx_v_p = NULL;
+  Py_ssize_t __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  Py_ssize_t __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__len__", 0);
+
+  /* "acide/asyncop.pyx":150
+ * 
+ *     def __len__(self):
+ *         return sum([len(p) for p in self.properties])             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  { /* enter inner scope */
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_properties); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+      __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
+      __pyx_t_5 = NULL;
+    } else {
+      __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L5_error)
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_5)) {
+        if (likely(PyList_CheckExact(__pyx_t_3))) {
+          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 150, __pyx_L5_error)
+          #else
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          #endif
+        } else {
+          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 150, __pyx_L5_error)
+          #else
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          #endif
+        }
+      } else {
+        __pyx_t_2 = __pyx_t_5(__pyx_t_3);
+        if (unlikely(!__pyx_t_2)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 150, __pyx_L5_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_2);
+      }
+      __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_p, __pyx_t_2);
+      __pyx_t_2 = 0;
+      __pyx_t_6 = PyObject_Length(__pyx_7genexpr__pyx_v_p); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 150, __pyx_L5_error)
+      __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 150, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_p); __pyx_7genexpr__pyx_v_p = 0;
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_p); __pyx_7genexpr__pyx_v_p = 0;
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_r = __pyx_t_4;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":149
+ *         return sch
+ * 
+ *     def __len__(self):             # <<<<<<<<<<<<<<
+ *         return sum([len(p) for p in self.properties])
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.__len__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_7genexpr__pyx_v_p);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":153
+ * 
+ *     @property
+ *     def priority_levels(self):             # <<<<<<<<<<<<<<
+ *         """A :class:`int` as the actual level of priority in this
+ *         :class:`Scheduler` (read only)."""
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_15priority_levels_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_15priority_levels_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_15priority_levels___get__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_15priority_levels___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "acide/asyncop.pyx":156
+ *         """A :class:`int` as the actual level of priority in this
+ *         :class:`Scheduler` (read only)."""
+ *         return len(self.priorities)             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_v_self->priorities;
+  __Pyx_INCREF(__pyx_t_1);
+  if (unlikely(__pyx_t_1 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 156, __pyx_L1_error)
+  }
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":153
+ * 
+ *     @property
+ *     def priority_levels(self):             # <<<<<<<<<<<<<<
+ *         """A :class:`int` as the actual level of priority in this
+ *         :class:`Scheduler` (read only)."""
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.priority_levels.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":159
  * 
  *     @property
  *     def pendings(self):             # <<<<<<<<<<<<<<
- *         return set().union(*self.queues)
- * 
+ *         """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+ *         pendings = set()
  */
 
 /* Python wrapper */
@@ -2454,66 +4439,115 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_8pendings_1__get__(PyObject
 }
 
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_8pendings___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_v_pendings = NULL;
+  PyObject *__pyx_v_p = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "acide/asyncop.pyx":68
- *     @property
+  /* "acide/asyncop.pyx":161
  *     def pendings(self):
- *         return set().union(*self.queues)             # <<<<<<<<<<<<<<
+ *         """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+ *         pendings = set()             # <<<<<<<<<<<<<<
+ *         for p in self.priorities:
+ *            pendings |= (<PriorityQueue>p).queue
+ */
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_pendings = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":162
+ *         """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+ *         pendings = set()
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *            pendings |= (<PriorityQueue>p).queue
+ *         return pendings
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(0, 162, __pyx_L1_error)
+  }
+  __pyx_t_1 = __pyx_v_self->priorities; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+  for (;;) {
+    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+    #else
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":163
+ *         pendings = set()
+ *         for p in self.priorities:
+ *            pendings |= (<PriorityQueue>p).queue             # <<<<<<<<<<<<<<
+ *         return pendings
+ * 
+ */
+    __pyx_t_3 = PyNumber_InPlaceOr(__pyx_v_pendings, ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->queue); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF_SET(__pyx_v_pendings, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":162
+ *         """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+ *         pendings = set()
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *            pendings |= (<PriorityQueue>p).queue
+ *         return pendings
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":164
+ *         for p in self.priorities:
+ *            pendings |= (<PriorityQueue>p).queue
+ *         return pendings             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_union); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PySequence_Tuple(__pyx_v_self->queues); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
+  __Pyx_INCREF(__pyx_v_pendings);
+  __pyx_r = __pyx_v_pendings;
   goto __pyx_L0;
 
-  /* "acide/asyncop.pyx":67
+  /* "acide/asyncop.pyx":159
  * 
  *     @property
  *     def pendings(self):             # <<<<<<<<<<<<<<
- *         return set().union(*self.queues)
- * 
+ *         """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+ *         pendings = set()
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("acide.asyncop.Scheduler.pendings.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_pendings);
+  __Pyx_XDECREF(__pyx_v_p);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":71
+/* "acide/asyncop.pyx":167
  * 
  *     @property
  *     def dones(self):             # <<<<<<<<<<<<<<
- *         return self.dones.copy()
- * 
+ *         """A :class:`set` of scheduled and completed :class:`Task` (read only).
+ *         Note that this set is clened at the begining of each :class:`Scheduler`
  */
 
 /* Python wrapper */
@@ -2530,25 +4564,350 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5dones_1__get__(PyObject *_
 }
 
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_5dones___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_v_dones = NULL;
+  PyObject *__pyx_v_p = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "acide/asyncop.pyx":72
- *     @property
- *     def dones(self):
- *         return self.dones.copy()             # <<<<<<<<<<<<<<
+  /* "acide/asyncop.pyx":172
+ *         loop iteraton.
+ *         """
+ *         dones = set()             # <<<<<<<<<<<<<<
+ *         for p in self.priorities:
+ *            dones |= (<PriorityQueue>p).dones
+ */
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_dones = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":173
+ *         """
+ *         dones = set()
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *            dones |= (<PriorityQueue>p).dones
+ *         return dones
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(0, 173, __pyx_L1_error)
+  }
+  __pyx_t_1 = __pyx_v_self->priorities; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+  for (;;) {
+    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 173, __pyx_L1_error)
+    #else
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":174
+ *         dones = set()
+ *         for p in self.priorities:
+ *            dones |= (<PriorityQueue>p).dones             # <<<<<<<<<<<<<<
+ *         return dones
  * 
- *     @staticmethod
+ */
+    __pyx_t_3 = PyNumber_InPlaceOr(__pyx_v_dones, ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->dones); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF_SET(__pyx_v_dones, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":173
+ *         """
+ *         dones = set()
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *            dones |= (<PriorityQueue>p).dones
+ *         return dones
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":175
+ *         for p in self.priorities:
+ *            dones |= (<PriorityQueue>p).dones
+ *         return dones             # <<<<<<<<<<<<<<
+ * 
+ *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->dones, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_v_dones);
+  __pyx_r = __pyx_v_dones;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":167
+ * 
+ *     @property
+ *     def dones(self):             # <<<<<<<<<<<<<<
+ *         """A :class:`set` of scheduled and completed :class:`Task` (read only).
+ *         Note that this set is clened at the begining of each :class:`Scheduler`
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.dones.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_dones);
+  __Pyx_XDECREF(__pyx_v_p);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":178
+ * 
+ *     @property
+ *     def is_running(self):             # <<<<<<<<<<<<<<
+ *         """A boolean indicating if the :class:`Scheduler` loop is running (read only).
+ *         """
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_10is_running_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_10is_running_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_10is_running___get__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10is_running___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "acide/asyncop.pyx":181
+ *         """A boolean indicating if the :class:`Scheduler` loop is running (read only).
+ *         """
+ *         return self.loop_run             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->loop_run); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":178
+ * 
+ *     @property
+ *     def is_running(self):             # <<<<<<<<<<<<<<
+ *         """A boolean indicating if the :class:`Scheduler` loop is running (read only).
+ *         """
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.is_running.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":184
+ * 
+ *     @property
+ *     def rate(self):             # <<<<<<<<<<<<<<
+ *         """A :class:`float` as the time in second between each :class:`Scheduler`
+ *         loop iteraton (default to 0.001sec.).
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_4rate_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_4rate_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_4rate___get__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4rate___get__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "acide/asyncop.pyx":188
+ *         loop iteraton (default to 0.001sec.).
+ *         """
+ *         return self.rate             # <<<<<<<<<<<<<<
+ * 
+ *     @rate.setter
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":184
+ * 
+ *     @property
+ *     def rate(self):             # <<<<<<<<<<<<<<
+ *         """A :class:`float` as the time in second between each :class:`Scheduler`
+ *         loop iteraton (default to 0.001sec.).
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.rate.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":191
+ * 
+ *     @rate.setter
+ *     def rate(self, value):             # <<<<<<<<<<<<<<
+ *         if value > 0:
+ *             self.rate = float(value)
+ */
+
+/* Python wrapper */
+static int __pyx_pw_5acide_7asyncop_9Scheduler_4rate_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_5acide_7asyncop_9Scheduler_4rate_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_4rate_2__set__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_5acide_7asyncop_9Scheduler_4rate_2__set__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  double __pyx_t_3;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__set__", 0);
+
+  /* "acide/asyncop.pyx":192
+ *     @rate.setter
+ *     def rate(self, value):
+ *         if value > 0:             # <<<<<<<<<<<<<<
+ *             self.rate = float(value)
+ * 
+ */
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_value, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "acide/asyncop.pyx":193
+ *     def rate(self, value):
+ *         if value > 0:
+ *             self.rate = float(value)             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef int add_priority(self):
+ */
+    __pyx_t_3 = __Pyx_PyObject_AsDouble(__pyx_v_value); if (unlikely(__pyx_t_3 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+    __pyx_v_self->rate = __pyx_t_3;
+
+    /* "acide/asyncop.pyx":192
+ *     @rate.setter
+ *     def rate(self, value):
+ *         if value > 0:             # <<<<<<<<<<<<<<
+ *             self.rate = float(value)
+ * 
+ */
+  }
+
+  /* "acide/asyncop.pyx":191
+ * 
+ *     @rate.setter
+ *     def rate(self, value):             # <<<<<<<<<<<<<<
+ *         if value > 0:
+ *             self.rate = float(value)
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.rate.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":195
+ *             self.rate = float(value)
+ * 
+ *     cpdef int add_priority(self):             # <<<<<<<<<<<<<<
+ *         """Add a priority level to the :class:`Scheduler`.
+ * 
+ */
+
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_7add_priority(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static int __pyx_f_5acide_7asyncop_9Scheduler_add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("add_priority", 0);
+
+  /* "acide/asyncop.pyx":214
+ *             index of the added Priority
+ *         """
+ *         self.stop()             # <<<<<<<<<<<<<<
+ *         self.priorities.insert(-1, PriorityQueue())
+ *         return len(self.priorities) - 2
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_stop); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2562,18 +4921,56 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_5dones___get__(struct __pyx
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":215
+ *         """
+ *         self.stop()
+ *         self.priorities.insert(-1, PriorityQueue())             # <<<<<<<<<<<<<<
+ *         return len(self.priorities) - 2
+ * 
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "insert");
+    __PYX_ERR(0, 215, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5acide_7asyncop_PriorityQueue)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = PyList_Insert(__pyx_v_self->priorities, -1L, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 215, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":216
+ *         self.stop()
+ *         self.priorities.insert(-1, PriorityQueue())
+ *         return len(self.priorities) - 2             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef object add(
+ */
+  __pyx_t_5 = 0;
+  __pyx_t_1 = __pyx_v_self->priorities;
+  __Pyx_INCREF(__pyx_t_1);
+  if (unlikely(__pyx_t_1 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 216, __pyx_L1_error)
+  }
+  __pyx_t_6 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 216, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_7 = __Pyx_sub_const_Py_ssize_t_checking_overflow(__pyx_t_6, 2, &__pyx_t_5);
+  if (unlikely(__pyx_t_5)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 216, __pyx_L1_error)
+  }
+  __pyx_r = __pyx_t_7;
   goto __pyx_L0;
 
-  /* "acide/asyncop.pyx":71
+  /* "acide/asyncop.pyx":195
+ *             self.rate = float(value)
  * 
- *     @property
- *     def dones(self):             # <<<<<<<<<<<<<<
- *         return self.dones.copy()
+ *     cpdef int add_priority(self):             # <<<<<<<<<<<<<<
+ *         """Add a priority level to the :class:`Scheduler`.
  * 
  */
 
@@ -2582,32 +4979,930 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_5dones___get__(struct __pyx
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.dones.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_WriteUnraisable("acide.asyncop.Scheduler.add_priority", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_7add_priority(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_6add_priority[] = "Scheduler.add_priority(self) -> int\nAdd a priority level to the :class:`Scheduler`.\n\n        The new priority will be inserted just before :attr:`Priority.LOW`\n        and should be referred in :meth:`Scheduler.add` with the value\n        returned by this method.\n\n        Caution:\n            This method will stop the :class:`Scheduler` running loop\n            and it should be restarted after scheduling new coroutines\n            with the :meth:`Scheduler.add` method. Restarting could\n            be done with scheduler.run(Run.LAST).\n            Validity of the index value returned by this method is tight\n            to the scheduler pause and should not be used after calling\n            scheduler.run(Run.LAST).\n\n        Returns:\n            index of the added Priority\n        ";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_7add_priority(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("add_priority (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_6add_priority(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_6add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("add_priority", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_5acide_7asyncop_9Scheduler_add_priority(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.add_priority", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_6generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "acide/asyncop.pyx":75
+/* "acide/asyncop.pyx":218
+ *         return len(self.priorities) - 2
+ * 
+ *     cpdef object add(             # <<<<<<<<<<<<<<
+ *         self,
+ *         co: Coroutine,
+ */
+
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_9add(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_add(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add *__pyx_optional_args) {
+
+  /* "acide/asyncop.pyx":222
+ *         co: Coroutine,
+ *         priority: int,
+ *         callback: Optional[Callable] = None,             # <<<<<<<<<<<<<<
+ *         name: Optional[str] = None,
+ *     ):
+ */
+  PyObject *__pyx_v_callback = ((PyObject *)Py_None);
+
+  /* "acide/asyncop.pyx":223
+ *         priority: int,
+ *         callback: Optional[Callable] = None,
+ *         name: Optional[str] = None,             # <<<<<<<<<<<<<<
+ *     ):
+ *         """Add coroutine :obj:`co` as a scheduled :class:`asyncio.Task`
+ */
+  PyObject *__pyx_v_name = ((PyObject *)Py_None);
+  int __pyx_v_i;
+  int __pyx_v__prio;
+  int __pyx_v_lowest;
+  PyObject *__pyx_v_task = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  long __pyx_t_9;
+  Py_UCS4 __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
+  PyObject *__pyx_t_15 = NULL;
+  long __pyx_t_16;
+  long __pyx_t_17;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("add", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_callback = __pyx_optional_args->callback;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_name = __pyx_optional_args->name;
+      }
+    }
+  }
+  __Pyx_INCREF(__pyx_v_name);
+
+  /* "acide/asyncop.pyx":240
+ *         """
+ *         cdef int i, _prio, lowest
+ *         lowest = len(self.priorities) - 1             # <<<<<<<<<<<<<<
+ *         if priority is Priority.LOW:
+ *             _prio = lowest
+ */
+  __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_v_self->priorities;
+  __Pyx_INCREF(__pyx_t_2);
+  if (unlikely(__pyx_t_2 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 240, __pyx_L1_error)
+  }
+  __pyx_t_3 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 240, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_sub_const_Py_ssize_t_checking_overflow(__pyx_t_3, 1, &__pyx_t_1);
+  if (unlikely(__pyx_t_1)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 240, __pyx_L1_error)
+  }
+  __pyx_v_lowest = __pyx_t_4;
+
+  /* "acide/asyncop.pyx":241
+ *         cdef int i, _prio, lowest
+ *         lowest = len(self.priorities) - 1
+ *         if priority is Priority.LOW:             # <<<<<<<<<<<<<<
+ *             _prio = lowest
+ *         elif priority is Priority.NEXT:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_LOW); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_6 = (__pyx_v_priority == __pyx_t_5);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_7 = (__pyx_t_6 != 0);
+  if (__pyx_t_7) {
+
+    /* "acide/asyncop.pyx":242
+ *         lowest = len(self.priorities) - 1
+ *         if priority is Priority.LOW:
+ *             _prio = lowest             # <<<<<<<<<<<<<<
+ *         elif priority is Priority.NEXT:
+ *             _prio = lowest
+ */
+    __pyx_v__prio = __pyx_v_lowest;
+
+    /* "acide/asyncop.pyx":241
+ *         cdef int i, _prio, lowest
+ *         lowest = len(self.priorities) - 1
+ *         if priority is Priority.LOW:             # <<<<<<<<<<<<<<
+ *             _prio = lowest
+ *         elif priority is Priority.NEXT:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "acide/asyncop.pyx":243
+ *         if priority is Priority.LOW:
+ *             _prio = lowest
+ *         elif priority is Priority.NEXT:             # <<<<<<<<<<<<<<
+ *             _prio = lowest
+ *             self.priorities.insert(-1, PriorityQueue())
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Priority); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_7 = (__pyx_v_priority == __pyx_t_2);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_6 = (__pyx_t_7 != 0);
+  if (__pyx_t_6) {
+
+    /* "acide/asyncop.pyx":244
+ *             _prio = lowest
+ *         elif priority is Priority.NEXT:
+ *             _prio = lowest             # <<<<<<<<<<<<<<
+ *             self.priorities.insert(-1, PriorityQueue())
+ *             lowest += 1
+ */
+    __pyx_v__prio = __pyx_v_lowest;
+
+    /* "acide/asyncop.pyx":245
+ *         elif priority is Priority.NEXT:
+ *             _prio = lowest
+ *             self.priorities.insert(-1, PriorityQueue())             # <<<<<<<<<<<<<<
+ *             lowest += 1
+ *         elif priority is Priority.HIGH:
+ */
+    if (unlikely(__pyx_v_self->priorities == Py_None)) {
+      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "insert");
+      __PYX_ERR(0, 245, __pyx_L1_error)
+    }
+    __pyx_t_2 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5acide_7asyncop_PriorityQueue)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_8 = PyList_Insert(__pyx_v_self->priorities, -1L, __pyx_t_2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 245, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "acide/asyncop.pyx":246
+ *             _prio = lowest
+ *             self.priorities.insert(-1, PriorityQueue())
+ *             lowest += 1             # <<<<<<<<<<<<<<
+ *         elif priority is Priority.HIGH:
+ *             _prio = 0
+ */
+    __pyx_t_1 = 0;
+    __pyx_t_9 = __Pyx_add_const_long_checking_overflow(__pyx_v_lowest, 1, &__pyx_t_1);
+    if (unlikely(__pyx_t_1)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(0, 246, __pyx_L1_error)
+    }
+    __pyx_v_lowest = __pyx_t_9;
+
+    /* "acide/asyncop.pyx":243
+ *         if priority is Priority.LOW:
+ *             _prio = lowest
+ *         elif priority is Priority.NEXT:             # <<<<<<<<<<<<<<
+ *             _prio = lowest
+ *             self.priorities.insert(-1, PriorityQueue())
+ */
+    goto __pyx_L3;
+  }
+
+  /* "acide/asyncop.pyx":247
+ *             self.priorities.insert(-1, PriorityQueue())
+ *             lowest += 1
+ *         elif priority is Priority.HIGH:             # <<<<<<<<<<<<<<
+ *             _prio = 0
+ *         elif priority > lowest or priority < 0:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_HIGH); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_6 = (__pyx_v_priority == __pyx_t_5);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_7 = (__pyx_t_6 != 0);
+  if (__pyx_t_7) {
+
+    /* "acide/asyncop.pyx":248
+ *             lowest += 1
+ *         elif priority is Priority.HIGH:
+ *             _prio = 0             # <<<<<<<<<<<<<<
+ *         elif priority > lowest or priority < 0:
+ *             raise ValueError(f"priority #{priority} unset")
+ */
+    __pyx_v__prio = 0;
+
+    /* "acide/asyncop.pyx":247
+ *             self.priorities.insert(-1, PriorityQueue())
+ *             lowest += 1
+ *         elif priority is Priority.HIGH:             # <<<<<<<<<<<<<<
+ *             _prio = 0
+ *         elif priority > lowest or priority < 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "acide/asyncop.pyx":249
+ *         elif priority is Priority.HIGH:
+ *             _prio = 0
+ *         elif priority > lowest or priority < 0:             # <<<<<<<<<<<<<<
+ *             raise ValueError(f"priority #{priority} unset")
+ *         else:
+ */
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_lowest); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_priority, __pyx_t_5, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!__pyx_t_6) {
+  } else {
+    __pyx_t_7 = __pyx_t_6;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_priority, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_7 = __pyx_t_6;
+  __pyx_L4_bool_binop_done:;
+  if (unlikely(__pyx_t_7)) {
+
+    /* "acide/asyncop.pyx":250
+ *             _prio = 0
+ *         elif priority > lowest or priority < 0:
+ *             raise ValueError(f"priority #{priority} unset")             # <<<<<<<<<<<<<<
+ *         else:
+ *             _prio = priority
+ */
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = 0;
+    __pyx_t_10 = 127;
+    __Pyx_INCREF(__pyx_kp_u_priority);
+    __pyx_t_4 += 10;
+    __Pyx_GIVEREF(__pyx_kp_u_priority);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_u_priority);
+    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_priority, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_10;
+    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __Pyx_INCREF(__pyx_kp_u_unset);
+    __pyx_t_4 += 6;
+    __Pyx_GIVEREF(__pyx_kp_u_unset);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_kp_u_unset);
+    __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_2, 3, __pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __PYX_ERR(0, 250, __pyx_L1_error)
+
+    /* "acide/asyncop.pyx":249
+ *         elif priority is Priority.HIGH:
+ *             _prio = 0
+ *         elif priority > lowest or priority < 0:             # <<<<<<<<<<<<<<
+ *             raise ValueError(f"priority #{priority} unset")
+ *         else:
+ */
+  }
+
+  /* "acide/asyncop.pyx":252
+ *             raise ValueError(f"priority #{priority} unset")
+ *         else:
+ *             _prio = priority             # <<<<<<<<<<<<<<
+ *         name = name
+ *         if name is not None:
+ */
+  /*else*/ {
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_priority); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L1_error)
+    __pyx_v__prio = __pyx_t_1;
+  }
+  __pyx_L3:;
+
+  /* "acide/asyncop.pyx":253
+ *         else:
+ *             _prio = priority
+ *         name = name             # <<<<<<<<<<<<<<
+ *         if name is not None:
+ *             name = f"{name}_{self.task_id}"
+ */
+  __Pyx_INCREF(__pyx_v_name);
+  __Pyx_DECREF_SET(__pyx_v_name, __pyx_v_name);
+
+  /* "acide/asyncop.pyx":254
+ *             _prio = priority
+ *         name = name
+ *         if name is not None:             # <<<<<<<<<<<<<<
+ *             name = f"{name}_{self.task_id}"
+ *         else:
+ */
+  __pyx_t_7 = (__pyx_v_name != Py_None);
+  __pyx_t_6 = (__pyx_t_7 != 0);
+  if (__pyx_t_6) {
+
+    /* "acide/asyncop.pyx":255
+ *         name = name
+ *         if name is not None:
+ *             name = f"{name}_{self.task_id}"             # <<<<<<<<<<<<<<
+ *         else:
+ *             name = f"{co.__name__}_{self.task_id}"
+ */
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = 0;
+    __pyx_t_10 = 127;
+    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_name, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_10;
+    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __Pyx_INCREF(__pyx_n_u__4);
+    __pyx_t_4 += 1;
+    __Pyx_GIVEREF(__pyx_n_u__4);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_n_u__4);
+    __pyx_t_5 = __Pyx_PyUnicode_From_int(__pyx_v_self->task_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_2, 3, __pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF_SET(__pyx_v_name, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "acide/asyncop.pyx":254
+ *             _prio = priority
+ *         name = name
+ *         if name is not None:             # <<<<<<<<<<<<<<
+ *             name = f"{name}_{self.task_id}"
+ *         else:
+ */
+    goto __pyx_L6;
+  }
+
+  /* "acide/asyncop.pyx":257
+ *             name = f"{name}_{self.task_id}"
+ *         else:
+ *             name = f"{co.__name__}_{self.task_id}"             # <<<<<<<<<<<<<<
+ *         task = asyncio.create_task(
+ *             Scheduler._scheduled(
+ */
+  /*else*/ {
+    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 = 0;
+    __pyx_t_10 = 127;
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_co, __pyx_n_s_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_11 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) : __pyx_t_10;
+    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_11);
+    __Pyx_GIVEREF(__pyx_t_11);
+    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_11);
+    __pyx_t_11 = 0;
+    __Pyx_INCREF(__pyx_n_u__4);
+    __pyx_t_4 += 1;
+    __Pyx_GIVEREF(__pyx_n_u__4);
+    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_n_u__4);
+    __pyx_t_11 = __Pyx_PyUnicode_From_int(__pyx_v_self->task_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_11);
+    __Pyx_GIVEREF(__pyx_t_11);
+    PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_t_11);
+    __pyx_t_11 = 0;
+    __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_5, 3, __pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF_SET(__pyx_v_name, __pyx_t_11);
+    __pyx_t_11 = 0;
+  }
+  __pyx_L6:;
+
+  /* "acide/asyncop.pyx":258
+ *         else:
+ *             name = f"{co.__name__}_{self.task_id}"
+ *         task = asyncio.create_task(             # <<<<<<<<<<<<<<
+ *             Scheduler._scheduled(
+ *                 co, self.priorities[_prio], callback, name
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_create_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "acide/asyncop.pyx":259
+ *             name = f"{co.__name__}_{self.task_id}"
+ *         task = asyncio.create_task(
+ *             Scheduler._scheduled(             # <<<<<<<<<<<<<<
+ *                 co, self.priorities[_prio], callback, name
+ *             )
+ */
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler), __pyx_n_s_scheduled); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+
+  /* "acide/asyncop.pyx":260
+ *         task = asyncio.create_task(
+ *             Scheduler._scheduled(
+ *                 co, self.priorities[_prio], callback, name             # <<<<<<<<<<<<<<
+ *             )
+ *         )
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 260, __pyx_L1_error)
+  }
+  __pyx_t_13 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_v__prio, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __pyx_t_14 = NULL;
+  __pyx_t_1 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_12))) {
+    __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_12);
+    if (likely(__pyx_t_14)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_12);
+      __Pyx_INCREF(__pyx_t_14);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_12, function);
+      __pyx_t_1 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_12)) {
+    PyObject *__pyx_temp[5] = {__pyx_t_14, __pyx_v_co, __pyx_t_13, __pyx_v_callback, __pyx_v_name};
+    __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_1, 4+__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_12)) {
+    PyObject *__pyx_temp[5] = {__pyx_t_14, __pyx_v_co, __pyx_t_13, __pyx_v_callback, __pyx_v_name};
+    __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_1, 4+__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_15 = PyTuple_New(4+__pyx_t_1); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_15);
+    if (__pyx_t_14) {
+      __Pyx_GIVEREF(__pyx_t_14); PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_14); __pyx_t_14 = NULL;
+    }
+    __Pyx_INCREF(__pyx_v_co);
+    __Pyx_GIVEREF(__pyx_v_co);
+    PyTuple_SET_ITEM(__pyx_t_15, 0+__pyx_t_1, __pyx_v_co);
+    __Pyx_GIVEREF(__pyx_t_13);
+    PyTuple_SET_ITEM(__pyx_t_15, 1+__pyx_t_1, __pyx_t_13);
+    __Pyx_INCREF(__pyx_v_callback);
+    __Pyx_GIVEREF(__pyx_v_callback);
+    PyTuple_SET_ITEM(__pyx_t_15, 2+__pyx_t_1, __pyx_v_callback);
+    __Pyx_INCREF(__pyx_v_name);
+    __Pyx_GIVEREF(__pyx_v_name);
+    PyTuple_SET_ITEM(__pyx_t_15, 3+__pyx_t_1, __pyx_v_name);
+    __pyx_t_13 = 0;
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_15, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+  __pyx_t_12 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_12)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_12);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_11 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_12, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_task = __pyx_t_11;
+  __pyx_t_11 = 0;
+
+  /* "acide/asyncop.pyx":263
+ *             )
+ *         )
+ *         task.set_name(name)             # <<<<<<<<<<<<<<
+ *         self.task_id += 1
+ *         if _prio < lowest:
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_set_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_11 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_v_name) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_name);
+  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+  /* "acide/asyncop.pyx":264
+ *         )
+ *         task.set_name(name)
+ *         self.task_id += 1             # <<<<<<<<<<<<<<
+ *         if _prio < lowest:
+ *             for i in range(_prio + 1, lowest + 1):
+ */
+  __pyx_t_1 = 0;
+  __pyx_t_9 = __Pyx_add_const_long_checking_overflow(__pyx_v_self->task_id, 1, &__pyx_t_1);
+  if (unlikely(__pyx_t_1)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 264, __pyx_L1_error)
+  }
+  __pyx_v_self->task_id = __pyx_t_9;
+
+  /* "acide/asyncop.pyx":265
+ *         task.set_name(name)
+ *         self.task_id += 1
+ *         if _prio < lowest:             # <<<<<<<<<<<<<<
+ *             for i in range(_prio + 1, lowest + 1):
+ *                 self.priorities[i].clear()
+ */
+  __pyx_t_6 = ((__pyx_v__prio < __pyx_v_lowest) != 0);
+  if (__pyx_t_6) {
+
+    /* "acide/asyncop.pyx":266
+ *         self.task_id += 1
+ *         if _prio < lowest:
+ *             for i in range(_prio + 1, lowest + 1):             # <<<<<<<<<<<<<<
+ *                 self.priorities[i].clear()
+ *         self.priorities[_prio].add(task)
+ */
+    __pyx_t_1 = 0;
+    __pyx_t_9 = __Pyx_add_const_long_checking_overflow(__pyx_v_lowest, 1, &__pyx_t_1);
+    if (unlikely(__pyx_t_1)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(0, 266, __pyx_L1_error)
+    }
+    __pyx_t_1 = 0;
+    __pyx_t_16 = __Pyx_add_const_long_checking_overflow(__pyx_v__prio, 1, &__pyx_t_1);
+    if (unlikely(__pyx_t_1)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(0, 266, __pyx_L1_error)
+    }
+    __pyx_t_17 = __pyx_t_9;
+    for (__pyx_t_1 = __pyx_t_16; __pyx_t_1 < __pyx_t_17; __pyx_t_1+=1) {
+      __pyx_v_i = __pyx_t_1;
+
+      /* "acide/asyncop.pyx":267
+ *         if _prio < lowest:
+ *             for i in range(_prio + 1, lowest + 1):
+ *                 self.priorities[i].clear()             # <<<<<<<<<<<<<<
+ *         self.priorities[_prio].add(task)
+ *         return task
+ */
+      if (unlikely(__pyx_v_self->priorities == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 267, __pyx_L1_error)
+      }
+      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 267, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_clear); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 267, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_2)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+        }
+      }
+      __pyx_t_11 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 267, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    }
+
+    /* "acide/asyncop.pyx":265
+ *         task.set_name(name)
+ *         self.task_id += 1
+ *         if _prio < lowest:             # <<<<<<<<<<<<<<
+ *             for i in range(_prio + 1, lowest + 1):
+ *                 self.priorities[i].clear()
+ */
+  }
+
+  /* "acide/asyncop.pyx":268
+ *             for i in range(_prio + 1, lowest + 1):
+ *                 self.priorities[i].clear()
+ *         self.priorities[_prio].add(task)             # <<<<<<<<<<<<<<
+ *         return task
+ * 
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 268, __pyx_L1_error)
+  }
+  __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_v__prio, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_add); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_11 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_v_task) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_task);
+  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+  /* "acide/asyncop.pyx":269
+ *                 self.priorities[i].clear()
+ *         self.priorities[_prio].add(task)
+ *         return task             # <<<<<<<<<<<<<<
+ * 
+ *     @staticmethod
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_task);
+  __pyx_r = __pyx_v_task;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":218
+ *         return len(self.priorities) - 2
+ * 
+ *     cpdef object add(             # <<<<<<<<<<<<<<
+ *         self,
+ *         co: Coroutine,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.add", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_task);
+  __Pyx_XDECREF(__pyx_v_name);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_9add(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_8add[] = "Scheduler.add(self, co: Coroutine, priority: int, callback: Optional[Callable] = None, name: Optional[str] = None)\nAdd coroutine :obj:`co` as a scheduled :class:`asyncio.Task`\n        with :obj:`priority`.\n\n        Args:\n            co: The coroutine or awaitable to schedule.\n            priority: A member of enum :class:`Priority` or an int as\n                      the priority of completion for the task.\n            callback: Any function to call after the task complete.\n            name: A string to explicitly name the :class:`asyncio.Task`\n                  if :obj:`None` name will be build around coroutine.__name__\n\n        Returns:\n            an :class:`asyncio.Task` as the scheduled coroutine.\n        ";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_9add(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_co = 0;
+  PyObject *__pyx_v_priority = 0;
+  PyObject *__pyx_v_callback = 0;
+  PyObject *__pyx_v_name = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("add (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_co,&__pyx_n_s_priority_2,&__pyx_n_s_callback,&__pyx_n_s_name_2,0};
+    PyObject* values[4] = {0,0,0,0};
+
+    /* "acide/asyncop.pyx":222
+ *         co: Coroutine,
+ *         priority: int,
+ *         callback: Optional[Callable] = None,             # <<<<<<<<<<<<<<
+ *         name: Optional[str] = None,
+ *     ):
+ */
+    values[2] = ((PyObject *)Py_None);
+
+    /* "acide/asyncop.pyx":223
+ *         priority: int,
+ *         callback: Optional[Callable] = None,
+ *         name: Optional[str] = None,             # <<<<<<<<<<<<<<
+ *     ):
+ *         """Add coroutine :obj:`co` as a scheduled :class:`asyncio.Task`
+ */
+    values[3] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_co)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority_2)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("add", 0, 2, 4, 1); __PYX_ERR(0, 218, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_callback);
+          if (value) { values[2] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name_2);
+          if (value) { values[3] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add") < 0)) __PYX_ERR(0, 218, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_co = values[0];
+    __pyx_v_priority = values[1];
+    __pyx_v_callback = values[2];
+    __pyx_v_name = values[3];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("add", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 218, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.add", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_8add(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_co, __pyx_v_priority, __pyx_v_callback, __pyx_v_name);
+
+  /* "acide/asyncop.pyx":218
+ *         return len(self.priorities) - 2
+ * 
+ *     cpdef object add(             # <<<<<<<<<<<<<<
+ *         self,
+ *         co: Coroutine,
+ */
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_8add(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("add", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2.__pyx_n = 2;
+  __pyx_t_2.callback = __pyx_v_callback;
+  __pyx_t_2.name = __pyx_v_name;
+  __pyx_t_1 = __pyx_vtabptr_5acide_7asyncop_Scheduler->add(__pyx_v_self, __pyx_v_co, __pyx_v_priority, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.add", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+
+/* "acide/asyncop.pyx":272
  * 
  *     @staticmethod
  *     async def _scheduled(             # <<<<<<<<<<<<<<
  *         awt: Awaitable,
- *         result: asyncio.Future,
+ *         priority: PriorityQueue,
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_4_scheduled[] = "Scheduler._scheduled(awt: Awaitable, result: asyncio.Future, priority: asyncio.Event, callback: Callable) -> Coroutine";
-static PyMethodDef __pyx_mdef_5acide_7asyncop_9Scheduler_5_scheduled = {"_scheduled", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_4_scheduled};
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_10_scheduled[] = "Scheduler._scheduled(awt: Awaitable, PriorityQueue priority: PriorityQueue, callback: Callable, unicode name: str) -> Coroutine";
+static PyMethodDef __pyx_mdef_5acide_7asyncop_9Scheduler_11_scheduled = {"_scheduled", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_10_scheduled};
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_awt = 0;
-  PyObject *__pyx_v_result = 0;
-  PyObject *__pyx_v_priority = 0;
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority = 0;
   PyObject *__pyx_v_callback = 0;
+  PyObject *__pyx_v_name = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2615,7 +5910,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled(CYTHON_UNUSED P
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_scheduled (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_awt,&__pyx_n_s_result,&__pyx_n_s_priority,&__pyx_n_s_callback,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_awt,&__pyx_n_s_priority_2,&__pyx_n_s_callback,&__pyx_n_s_name_2,0};
     PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -2639,25 +5934,25 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled(CYTHON_UNUSED P
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority_2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 1); __PYX_ERR(0, 75, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 1); __PYX_ERR(0, 272, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority)) != 0)) kw_args--;
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_callback)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 2); __PYX_ERR(0, 75, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 2); __PYX_ERR(0, 272, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_callback)) != 0)) kw_args--;
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name_2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 3); __PYX_ERR(0, 75, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, 3); __PYX_ERR(0, 272, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_scheduled") < 0)) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_scheduled") < 0)) __PYX_ERR(0, 272, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -2668,55 +5963,61 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled(CYTHON_UNUSED P
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_awt = values[0];
-    __pyx_v_result = values[1];
-    __pyx_v_priority = values[2];
-    __pyx_v_callback = values[3];
+    __pyx_v_priority = ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)values[1]);
+    __pyx_v_callback = values[2];
+    __pyx_v_name = ((PyObject*)values[3]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 75, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_scheduled", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 272, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("acide.asyncop.Scheduler._scheduled", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_4_scheduled(__pyx_v_awt, __pyx_v_result, __pyx_v_priority, __pyx_v_callback);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_priority), __pyx_ptype_5acide_7asyncop_PriorityQueue, 1, "priority", 0))) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_name), (&PyUnicode_Type), 1, "name", 1))) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(__pyx_v_awt, __pyx_v_priority, __pyx_v_callback, __pyx_v_name);
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4_scheduled(PyObject *__pyx_v_awt, PyObject *__pyx_v_result, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *__pyx_cur_scope;
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_scheduled", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct___scheduled(__pyx_ptype_5acide_7asyncop___pyx_scope_struct___scheduled, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__scheduled(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__scheduled, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 75, __pyx_L1_error)
+    __PYX_ERR(0, 272, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
   __pyx_cur_scope->__pyx_v_awt = __pyx_v_awt;
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_awt);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_awt);
-  __pyx_cur_scope->__pyx_v_result = __pyx_v_result;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_result);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_result);
   __pyx_cur_scope->__pyx_v_priority = __pyx_v_priority;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority);
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_priority);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_priority);
   __pyx_cur_scope->__pyx_v_callback = __pyx_v_callback;
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_callback);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_callback);
+  __pyx_cur_scope->__pyx_v_name = __pyx_v_name;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_name);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_name);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_6generator, __pyx_codeobj_, (PyObject *) __pyx_cur_scope, __pyx_n_s_scheduled, __pyx_n_s_Scheduler__scheduled, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 75, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_12generator1, __pyx_codeobj__5, (PyObject *) __pyx_cur_scope, __pyx_n_s_scheduled, __pyx_n_s_Scheduler__scheduled, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2732,15 +6033,28 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4_scheduled(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_6generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)__pyx_generator->closure);
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  Py_ssize_t __pyx_t_7;
+  Py_UCS4 __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_t_12;
+  int __pyx_t_13;
+  char const *__pyx_t_14;
+  PyObject *__pyx_t_15 = NULL;
+  PyObject *__pyx_t_16 = NULL;
+  PyObject *__pyx_t_17 = NULL;
+  PyObject *__pyx_t_18 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2748,218 +6062,568 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_6generator(__pyx_CoroutineO
   __Pyx_RefNannySetupContext("_scheduled", 0);
   switch (__pyx_generator->resume_label) {
     case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L4_resume_from_await;
-    case 2: goto __pyx_L5_resume_from_await;
+    case 1: goto __pyx_L13_resume_from_await;
+    case 2: goto __pyx_L14_resume_from_await;
     default: /* CPython raises the right error here */
     __Pyx_RefNannyFinishContext();
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 272, __pyx_L1_error)
 
-  /* "acide/asyncop.pyx":81
- *         callback: Callable
+  /* "acide/asyncop.pyx":278
+ *         name: str
  *     ) -> Coroutine:
- *         name = awt.__name__             # <<<<<<<<<<<<<<
- *         loop = asyncio.get_running_loop()
- *         # print(f"{name} scheduled at {loop.time()} ...")
+ *         try:             # <<<<<<<<<<<<<<
+ *             loop = asyncio.get_running_loop()
+ *             start = loop.time()
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_awt, __pyx_n_s_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_name = __pyx_t_1;
-  __pyx_t_1 = 0;
+  /*try:*/ {
+    {
+      __Pyx_ExceptionSave(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
+      __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_2);
+      __Pyx_XGOTREF(__pyx_t_3);
+      /*try:*/ {
 
-  /* "acide/asyncop.pyx":82
+        /* "acide/asyncop.pyx":279
  *     ) -> Coroutine:
- *         name = awt.__name__
- *         loop = asyncio.get_running_loop()             # <<<<<<<<<<<<<<
- *         # print(f"{name} scheduled at {loop.time()} ...")
- *         await priority.wait()
+ *         try:
+ *             loop = asyncio.get_running_loop()             # <<<<<<<<<<<<<<
+ *             start = loop.time()
+ *             print(f"{name} scheduled for #{priority.id} at {start} ...")
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_running_loop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_loop = __pyx_t_1;
-  __pyx_t_1 = 0;
+        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 279, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_get_running_loop); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 279, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+          if (likely(__pyx_t_5)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+            __Pyx_INCREF(__pyx_t_5);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_6, function);
+          }
+        }
+        __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 279, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GIVEREF(__pyx_t_4);
+        __pyx_cur_scope->__pyx_v_loop = __pyx_t_4;
+        __pyx_t_4 = 0;
 
-  /* "acide/asyncop.pyx":84
- *         loop = asyncio.get_running_loop()
- *         # print(f"{name} scheduled at {loop.time()} ...")
- *         await priority.wait()             # <<<<<<<<<<<<<<
- *         result.set_result(await awt)
- *         #print(f"{name} done at {loop.time()}")
+        /* "acide/asyncop.pyx":280
+ *         try:
+ *             loop = asyncio.get_running_loop()
+ *             start = loop.time()             # <<<<<<<<<<<<<<
+ *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             await priority.wait()
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_priority, __pyx_n_s_wait); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_XGOTREF(__pyx_r);
-  if (likely(__pyx_r)) {
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, awaiting value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L4_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 84, __pyx_L1_error)
-  } else {
-    PyObject* exc_type = __Pyx_PyErr_Occurred();
-    if (exc_type) {
-      if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-      else __PYX_ERR(0, 84, __pyx_L1_error)
-    }
-  }
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_time); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 280, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_5 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+          if (likely(__pyx_t_5)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+            __Pyx_INCREF(__pyx_t_5);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_6, function);
+          }
+        }
+        __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GIVEREF(__pyx_t_4);
+        __pyx_cur_scope->__pyx_v_start = __pyx_t_4;
+        __pyx_t_4 = 0;
 
-  /* "acide/asyncop.pyx":85
- *         # print(f"{name} scheduled at {loop.time()} ...")
- *         await priority.wait()
- *         result.set_result(await awt)             # <<<<<<<<<<<<<<
- *         #print(f"{name} done at {loop.time()}")
- *         if callback:
+        /* "acide/asyncop.pyx":281
+ *             loop = asyncio.get_running_loop()
+ *             start = loop.time()
+ *             print(f"{name} scheduled for #{priority.id} at {start} ...")             # <<<<<<<<<<<<<<
+ *             await priority.wait()
+ *             result = await awt
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_result, __pyx_n_s_set_result); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_cur_scope->__pyx_v_awt);
-  __Pyx_XGOTREF(__pyx_r);
-  if (likely(__pyx_r)) {
-    __Pyx_XGIVEREF(__pyx_t_1);
-    __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-    __Pyx_XGIVEREF(__pyx_t_3);
-    __pyx_cur_scope->__pyx_t_1 = __pyx_t_3;
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, awaiting value */
-    __pyx_generator->resume_label = 2;
-    return __pyx_r;
-    __pyx_L5_resume_from_await:;
-    __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-    __pyx_cur_scope->__pyx_t_0 = 0;
-    __Pyx_XGOTREF(__pyx_t_1);
-    __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
-    __pyx_cur_scope->__pyx_t_1 = 0;
-    __Pyx_XGOTREF(__pyx_t_3);
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 85, __pyx_L1_error)
-    __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
-  } else {
-    __pyx_t_2 = NULL;
-    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-  }
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_7 = 0;
+        __pyx_t_8 = 127;
+        __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_scheduled_for);
+        __pyx_t_7 += 16;
+        __Pyx_GIVEREF(__pyx_kp_u_scheduled_for);
+        PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_kp_u_scheduled_for);
+        __pyx_t_6 = __Pyx_PyUnicode_From_int(__pyx_cur_scope->__pyx_v_priority->id, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_at);
+        __pyx_t_7 += 4;
+        __Pyx_GIVEREF(__pyx_kp_u_at);
+        PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_kp_u_at);
+        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_start, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 4, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u__6);
+        __pyx_t_7 += 4;
+        __Pyx_GIVEREF(__pyx_kp_u__6);
+        PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_kp_u__6);
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_4, 6, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/asyncop.pyx":87
- *         result.set_result(await awt)
- *         #print(f"{name} done at {loop.time()}")
- *         if callback:             # <<<<<<<<<<<<<<
- *             callback()
- * 
+        /* "acide/asyncop.pyx":282
+ *             start = loop.time()
+ *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             await priority.wait()             # <<<<<<<<<<<<<<
+ *             result = await awt
+ *         except asyncio.CancelledError:
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_callback); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
-  if (__pyx_t_5) {
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_priority), __pyx_n_s_wait); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 282, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_5 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+          if (likely(__pyx_t_5)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+            __Pyx_INCREF(__pyx_t_5);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_6, function);
+          }
+        }
+        __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_4);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __Pyx_XGOTREF(__pyx_r);
+        if (likely(__pyx_r)) {
+          __Pyx_XGIVEREF(__pyx_t_1);
+          __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
+          __Pyx_XGIVEREF(__pyx_t_2);
+          __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
+          __Pyx_XGIVEREF(__pyx_t_3);
+          __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
+          __Pyx_XGIVEREF(__pyx_r);
+          __Pyx_RefNannyFinishContext();
+          __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+          /* return from generator, awaiting value */
+          __pyx_generator->resume_label = 1;
+          return __pyx_r;
+          __pyx_L13_resume_from_await:;
+          __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
+          __pyx_cur_scope->__pyx_t_0 = 0;
+          __Pyx_XGOTREF(__pyx_t_1);
+          __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
+          __pyx_cur_scope->__pyx_t_1 = 0;
+          __Pyx_XGOTREF(__pyx_t_2);
+          __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
+          __pyx_cur_scope->__pyx_t_2 = 0;
+          __Pyx_XGOTREF(__pyx_t_3);
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 282, __pyx_L7_error)
+        } else {
+          PyObject* exc_type = __Pyx_PyErr_Occurred();
+          if (exc_type) {
+            if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
+            else __PYX_ERR(0, 282, __pyx_L7_error)
+          }
+        }
 
-    /* "acide/asyncop.pyx":88
- *         #print(f"{name} done at {loop.time()}")
- *         if callback:
- *             callback()             # <<<<<<<<<<<<<<
- * 
- *     cpdef object schedule(
+        /* "acide/asyncop.pyx":283
+ *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             await priority.wait()
+ *             result = await awt             # <<<<<<<<<<<<<<
+ *         except asyncio.CancelledError:
+ *             print(f"scheduled {name} cancelled")
  */
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_callback);
-    __pyx_t_3 = __pyx_cur_scope->__pyx_v_callback; __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
+        __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_cur_scope->__pyx_v_awt);
+        __Pyx_XGOTREF(__pyx_r);
+        if (likely(__pyx_r)) {
+          __Pyx_XGIVEREF(__pyx_t_1);
+          __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
+          __Pyx_XGIVEREF(__pyx_t_2);
+          __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
+          __Pyx_XGIVEREF(__pyx_t_3);
+          __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
+          __Pyx_XGIVEREF(__pyx_r);
+          __Pyx_RefNannyFinishContext();
+          __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+          /* return from generator, awaiting value */
+          __pyx_generator->resume_label = 2;
+          return __pyx_r;
+          __pyx_L14_resume_from_await:;
+          __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
+          __pyx_cur_scope->__pyx_t_0 = 0;
+          __Pyx_XGOTREF(__pyx_t_1);
+          __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
+          __pyx_cur_scope->__pyx_t_1 = 0;
+          __Pyx_XGOTREF(__pyx_t_2);
+          __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
+          __pyx_cur_scope->__pyx_t_2 = 0;
+          __Pyx_XGOTREF(__pyx_t_3);
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 283, __pyx_L7_error)
+          __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
+        } else {
+          __pyx_t_4 = NULL;
+          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 283, __pyx_L7_error)
+          __Pyx_GOTREF(__pyx_t_4);
+        }
+        __Pyx_GIVEREF(__pyx_t_4);
+        __pyx_cur_scope->__pyx_v_result = __pyx_t_4;
+        __pyx_t_4 = 0;
+
+        /* "acide/asyncop.pyx":278
+ *         name: str
+ *     ) -> Coroutine:
+ *         try:             # <<<<<<<<<<<<<<
+ *             loop = asyncio.get_running_loop()
+ *             start = loop.time()
+ */
       }
-    }
-    __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "acide/asyncop.pyx":87
- *         result.set_result(await awt)
- *         #print(f"{name} done at {loop.time()}")
- *         if callback:             # <<<<<<<<<<<<<<
- *             callback()
- * 
+      /* "acide/asyncop.pyx":288
+ *             raise
+ *         else:
+ *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")             # <<<<<<<<<<<<<<
+ *             if callback:
+ *                 callback()
  */
+      /*else:*/ {
+        __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_7 = 0;
+        __pyx_t_8 = 127;
+        __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_done_for);
+        __pyx_t_7 += 11;
+        __Pyx_GIVEREF(__pyx_kp_u_done_for);
+        PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_kp_u_done_for);
+        __pyx_t_6 = __Pyx_PyUnicode_From_int(__pyx_cur_scope->__pyx_v_priority->id, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_in);
+        __pyx_t_7 += 4;
+        __Pyx_GIVEREF(__pyx_kp_u_in);
+        PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_kp_u_in);
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_time); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_9 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+          __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_5);
+          if (likely(__pyx_t_9)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+            __Pyx_INCREF(__pyx_t_9);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_5, function);
+          }
+        }
+        __pyx_t_6 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+        if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = PyNumber_Subtract(__pyx_t_6, __pyx_cur_scope->__pyx_v_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_4, 4, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_sec);
+        __pyx_t_7 += 5;
+        __Pyx_GIVEREF(__pyx_kp_u_sec);
+        PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_kp_u_sec);
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_4, 6, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+        /* "acide/asyncop.pyx":289
+ *         else:
+ *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             if callback:             # <<<<<<<<<<<<<<
+ *                 callback()
+ *             return result
+ */
+        __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_callback); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 289, __pyx_L9_except_error)
+        if (__pyx_t_10) {
+
+          /* "acide/asyncop.pyx":290
+ *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             if callback:
+ *                 callback()             # <<<<<<<<<<<<<<
+ *             return result
+ *         finally:
+ */
+          __Pyx_INCREF(__pyx_cur_scope->__pyx_v_callback);
+          __pyx_t_6 = __pyx_cur_scope->__pyx_v_callback; __pyx_t_5 = NULL;
+          if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+            __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+            if (likely(__pyx_t_5)) {
+              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+              __Pyx_INCREF(__pyx_t_5);
+              __Pyx_INCREF(function);
+              __Pyx_DECREF_SET(__pyx_t_6, function);
+            }
+          }
+          __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+          __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L9_except_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+          /* "acide/asyncop.pyx":289
+ *         else:
+ *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             if callback:             # <<<<<<<<<<<<<<
+ *                 callback()
+ *             return result
+ */
+        }
+
+        /* "acide/asyncop.pyx":291
+ *             if callback:
+ *                 callback()
+ *             return result             # <<<<<<<<<<<<<<
+ *         finally:
+ *             pass
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_cur_scope->__pyx_v_result);
+        goto __pyx_L10_except_return;
+      }
+      __pyx_L7_error:;
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+      /* "acide/asyncop.pyx":284
+ *             await priority.wait()
+ *             result = await awt
+ *         except asyncio.CancelledError:             # <<<<<<<<<<<<<<
+ *             print(f"scheduled {name} cancelled")
+ *             raise
+ */
+      __Pyx_ErrFetch(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5);
+      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 284, __pyx_L9_except_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 284, __pyx_L9_except_error)
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __pyx_t_12 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_4, __pyx_t_11);
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_ErrRestore(__pyx_t_4, __pyx_t_6, __pyx_t_5);
+      __pyx_t_4 = 0; __pyx_t_6 = 0; __pyx_t_5 = 0;
+      if (__pyx_t_12) {
+        __Pyx_AddTraceback("acide.asyncop.Scheduler._scheduled", __pyx_clineno, __pyx_lineno, __pyx_filename);
+        if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_6, &__pyx_t_4) < 0) __PYX_ERR(0, 284, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_GOTREF(__pyx_t_4);
+
+        /* "acide/asyncop.pyx":285
+ *             result = await awt
+ *         except asyncio.CancelledError:
+ *             print(f"scheduled {name} cancelled")             # <<<<<<<<<<<<<<
+ *             raise
+ *         else:
+ */
+        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 285, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_7 = 0;
+        __pyx_t_8 = 127;
+        __Pyx_INCREF(__pyx_kp_u_scheduled_2);
+        __pyx_t_7 += 10;
+        __Pyx_GIVEREF(__pyx_kp_u_scheduled_2);
+        PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_kp_u_scheduled_2);
+        __pyx_t_9 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 285, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) : __pyx_t_8;
+        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
+        __Pyx_GIVEREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_9);
+        __pyx_t_9 = 0;
+        __Pyx_INCREF(__pyx_kp_u_cancelled);
+        __pyx_t_7 += 10;
+        __Pyx_GIVEREF(__pyx_kp_u_cancelled);
+        PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_kp_u_cancelled);
+        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 285, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_11 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_9); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 285, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+        /* "acide/asyncop.pyx":286
+ *         except asyncio.CancelledError:
+ *             print(f"scheduled {name} cancelled")
+ *             raise             # <<<<<<<<<<<<<<
+ *         else:
+ *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ */
+        __Pyx_GIVEREF(__pyx_t_5);
+        __Pyx_GIVEREF(__pyx_t_6);
+        __Pyx_XGIVEREF(__pyx_t_4);
+        __Pyx_ErrRestoreWithState(__pyx_t_5, __pyx_t_6, __pyx_t_4);
+        __pyx_t_5 = 0; __pyx_t_6 = 0; __pyx_t_4 = 0; 
+        __PYX_ERR(0, 286, __pyx_L9_except_error)
+      }
+      goto __pyx_L9_except_error;
+      __pyx_L9_except_error:;
+
+      /* "acide/asyncop.pyx":278
+ *         name: str
+ *     ) -> Coroutine:
+ *         try:             # <<<<<<<<<<<<<<
+ *             loop = asyncio.get_running_loop()
+ *             start = loop.time()
+ */
+      __Pyx_XGIVEREF(__pyx_t_1);
+      __Pyx_XGIVEREF(__pyx_t_2);
+      __Pyx_XGIVEREF(__pyx_t_3);
+      __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+      goto __pyx_L5_error;
+      __pyx_L10_except_return:;
+      __Pyx_XGIVEREF(__pyx_t_1);
+      __Pyx_XGIVEREF(__pyx_t_2);
+      __Pyx_XGIVEREF(__pyx_t_3);
+      __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+      goto __pyx_L4_return;
+    }
+  }
+
+  /* "acide/asyncop.pyx":293
+ *             return result
+ *         finally:
+ *             pass             # <<<<<<<<<<<<<<
+ * 
+ *     cdef control(self, PriorityQueue priority):
+ */
+  /*finally:*/ {
+    __pyx_L5_error:;
+    /*exception exit:*/{
+      __Pyx_PyThreadState_assign
+      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0; __pyx_t_17 = 0;
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_15, &__pyx_t_16, &__pyx_t_17);
+      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1) < 0)) __Pyx_ErrFetch(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_3);
+      __Pyx_XGOTREF(__pyx_t_2);
+      __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_15);
+      __Pyx_XGOTREF(__pyx_t_16);
+      __Pyx_XGOTREF(__pyx_t_17);
+      __pyx_t_12 = __pyx_lineno; __pyx_t_13 = __pyx_clineno; __pyx_t_14 = __pyx_filename;
+      {
+      }
+      if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_15);
+        __Pyx_XGIVEREF(__pyx_t_16);
+        __Pyx_XGIVEREF(__pyx_t_17);
+        __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
+      }
+      __Pyx_XGIVEREF(__pyx_t_3);
+      __Pyx_XGIVEREF(__pyx_t_2);
+      __Pyx_XGIVEREF(__pyx_t_1);
+      __Pyx_ErrRestore(__pyx_t_3, __pyx_t_2, __pyx_t_1);
+      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0; __pyx_t_17 = 0;
+      __pyx_lineno = __pyx_t_12; __pyx_clineno = __pyx_t_13; __pyx_filename = __pyx_t_14;
+      goto __pyx_L1_error;
+    }
+    __pyx_L4_return: {
+      __Pyx_PyThreadState_assign
+      __pyx_t_17 = 0; __pyx_t_16 = 0; __pyx_t_15 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
+      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
+      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_17, &__pyx_t_16, &__pyx_t_15) < 0)) __Pyx_ErrFetch(&__pyx_t_17, &__pyx_t_16, &__pyx_t_15);
+      __Pyx_XGOTREF(__pyx_t_17);
+      __Pyx_XGOTREF(__pyx_t_16);
+      __Pyx_XGOTREF(__pyx_t_15);
+      __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_2);
+      __Pyx_XGOTREF(__pyx_t_3);
+      __pyx_t_18 = __pyx_r;
+      __pyx_r = 0;
+      __pyx_r = __pyx_t_18;
+      __pyx_t_18 = 0;
+      if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_1);
+        __Pyx_XGIVEREF(__pyx_t_2);
+        __Pyx_XGIVEREF(__pyx_t_3);
+        __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+      }
+      __Pyx_XGIVEREF(__pyx_t_17);
+      __Pyx_XGIVEREF(__pyx_t_16);
+      __Pyx_XGIVEREF(__pyx_t_15);
+      __Pyx_ErrRestore(__pyx_t_17, __pyx_t_16, __pyx_t_15);
+      __pyx_t_17 = 0; __pyx_t_16 = 0; __pyx_t_15 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
+      goto __pyx_L0;
+    }
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "acide/asyncop.pyx":75
+  /* "acide/asyncop.pyx":272
  * 
  *     @staticmethod
  *     async def _scheduled(             # <<<<<<<<<<<<<<
  *         awt: Awaitable,
- *         result: asyncio.Future,
+ *         priority: PriorityQueue,
  */
 
   /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("_scheduled", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
@@ -2972,2023 +6636,36 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_6generator(__pyx_CoroutineO
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":90
- *             callback()
+/* "acide/asyncop.pyx":295
+ *             pass
  * 
- *     cpdef object schedule(             # <<<<<<<<<<<<<<
- *         self, co: Coroutine, priority: int, callback: Callable=None
- *     ):
+ *     cdef control(self, PriorityQueue priority):             # <<<<<<<<<<<<<<
+ *         priority.check() # put pending tasks done in dones
+ *         if priority.is_set():
  */
 
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_8schedule(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_schedule(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule *__pyx_optional_args) {
-
-  /* "acide/asyncop.pyx":91
- * 
- *     cpdef object schedule(
- *         self, co: Coroutine, priority: int, callback: Callable=None             # <<<<<<<<<<<<<<
- *     ):
- *         cdef int i, _prio
- */
-  PyObject *__pyx_v_callback = ((PyObject *)Py_None);
-  int __pyx_v_i;
-  int __pyx_v__prio;
-  PyObject *__pyx_v_future = NULL;
-  PyObject *__pyx_v_task = NULL;
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_control(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority) {
+  PyObject *__pyx_v__next = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
+  PyObject *__pyx_t_3 = NULL;
   int __pyx_t_4;
   int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  int __pyx_t_7;
-  long __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
-  Py_UCS4 __pyx_t_10;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
-  long __pyx_t_15;
-  long __pyx_t_16;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("schedule", 0);
-  if (__pyx_optional_args) {
-    if (__pyx_optional_args->__pyx_n > 0) {
-      __pyx_v_callback = __pyx_optional_args->callback;
-    }
-  }
+  __Pyx_RefNannySetupContext("control", 0);
 
-  /* "acide/asyncop.pyx":94
- *     ):
- *         cdef int i, _prio
- *         if priority is Priority.LOWEST:             # <<<<<<<<<<<<<<
- *             _prio = self.lowest
- *         elif priority is Priority.NEXT:
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Priority); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_LOWEST); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = (__pyx_v_priority == __pyx_t_2);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = (__pyx_t_3 != 0);
-  if (__pyx_t_4) {
-
-    /* "acide/asyncop.pyx":95
- *         cdef int i, _prio
- *         if priority is Priority.LOWEST:
- *             _prio = self.lowest             # <<<<<<<<<<<<<<
- *         elif priority is Priority.NEXT:
- *             _prio = self.lowest
- */
-    __pyx_t_5 = __pyx_v_self->lowest;
-    __pyx_v__prio = __pyx_t_5;
-
-    /* "acide/asyncop.pyx":94
- *     ):
- *         cdef int i, _prio
- *         if priority is Priority.LOWEST:             # <<<<<<<<<<<<<<
- *             _prio = self.lowest
- *         elif priority is Priority.NEXT:
- */
-    goto __pyx_L3;
-  }
-
-  /* "acide/asyncop.pyx":96
- *         if priority is Priority.LOWEST:
- *             _prio = self.lowest
- *         elif priority is Priority.NEXT:             # <<<<<<<<<<<<<<
- *             _prio = self.lowest
- *             self.priorities.insert(-1, asyncio.Event())
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = (__pyx_v_priority == __pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = (__pyx_t_4 != 0);
-  if (__pyx_t_3) {
-
-    /* "acide/asyncop.pyx":97
- *             _prio = self.lowest
- *         elif priority is Priority.NEXT:
- *             _prio = self.lowest             # <<<<<<<<<<<<<<
- *             self.priorities.insert(-1, asyncio.Event())
- *             self.queues.insert(-1, set())
- */
-    __pyx_t_5 = __pyx_v_self->lowest;
-    __pyx_v__prio = __pyx_t_5;
-
-    /* "acide/asyncop.pyx":98
- *         elif priority is Priority.NEXT:
- *             _prio = self.lowest
- *             self.priorities.insert(-1, asyncio.Event())             # <<<<<<<<<<<<<<
- *             self.queues.insert(-1, set())
- *             self.lowest += 1
- */
-    if (unlikely(__pyx_v_self->priorities == Py_None)) {
-      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "insert");
-      __PYX_ERR(0, 98, __pyx_L1_error)
-    }
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_Event); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 98, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = PyList_Insert(__pyx_v_self->priorities, -1L, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 98, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "acide/asyncop.pyx":99
- *             _prio = self.lowest
- *             self.priorities.insert(-1, asyncio.Event())
- *             self.queues.insert(-1, set())             # <<<<<<<<<<<<<<
- *             self.lowest += 1
- *         elif priority is Priority.HIGHEST:
- */
-    if (unlikely(__pyx_v_self->queues == Py_None)) {
-      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "insert");
-      __PYX_ERR(0, 99, __pyx_L1_error)
-    }
-    __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyList_Insert(__pyx_v_self->queues, -1L, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 99, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "acide/asyncop.pyx":100
- *             self.priorities.insert(-1, asyncio.Event())
- *             self.queues.insert(-1, set())
- *             self.lowest += 1             # <<<<<<<<<<<<<<
- *         elif priority is Priority.HIGHEST:
- *             _prio = 0
- */
-    __pyx_t_5 = 0;
-    __pyx_t_8 = __Pyx_add_const_long_checking_overflow(__pyx_v_self->lowest, 1, &__pyx_t_5);
-    if (unlikely(__pyx_t_5)) {
-      PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 100, __pyx_L1_error)
-    }
-    __pyx_v_self->lowest = __pyx_t_8;
-
-    /* "acide/asyncop.pyx":96
- *         if priority is Priority.LOWEST:
- *             _prio = self.lowest
- *         elif priority is Priority.NEXT:             # <<<<<<<<<<<<<<
- *             _prio = self.lowest
- *             self.priorities.insert(-1, asyncio.Event())
- */
-    goto __pyx_L3;
-  }
-
-  /* "acide/asyncop.pyx":101
- *             self.queues.insert(-1, set())
- *             self.lowest += 1
- *         elif priority is Priority.HIGHEST:             # <<<<<<<<<<<<<<
- *             _prio = 0
- *         elif priority > self.lowest:
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Priority); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_HIGHEST); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 101, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = (__pyx_v_priority == __pyx_t_6);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_4 = (__pyx_t_3 != 0);
-  if (__pyx_t_4) {
-
-    /* "acide/asyncop.pyx":102
- *             self.lowest += 1
- *         elif priority is Priority.HIGHEST:
- *             _prio = 0             # <<<<<<<<<<<<<<
- *         elif priority > self.lowest:
- *             raise ValueError(f"priority #{priority} unset")
- */
-    __pyx_v__prio = 0;
-
-    /* "acide/asyncop.pyx":101
- *             self.queues.insert(-1, set())
- *             self.lowest += 1
- *         elif priority is Priority.HIGHEST:             # <<<<<<<<<<<<<<
- *             _prio = 0
- *         elif priority > self.lowest:
- */
-    goto __pyx_L3;
-  }
-
-  /* "acide/asyncop.pyx":103
- *         elif priority is Priority.HIGHEST:
- *             _prio = 0
- *         elif priority > self.lowest:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"priority #{priority} unset")
- *         else:
- */
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_self->lowest); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 103, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_priority, __pyx_t_6, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 103, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(__pyx_t_4)) {
-
-    /* "acide/asyncop.pyx":104
- *             _prio = 0
- *         elif priority > self.lowest:
- *             raise ValueError(f"priority #{priority} unset")             # <<<<<<<<<<<<<<
- *         else:
- *             _prio = priority
- */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = 0;
-    __pyx_t_10 = 127;
-    __Pyx_INCREF(__pyx_kp_u_priority_2);
-    __pyx_t_9 += 10;
-    __Pyx_GIVEREF(__pyx_kp_u_priority_2);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_priority_2);
-    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_priority, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_10;
-    __pyx_t_9 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_6);
-    __pyx_t_6 = 0;
-    __Pyx_INCREF(__pyx_kp_u_unset);
-    __pyx_t_9 += 6;
-    __Pyx_GIVEREF(__pyx_kp_u_unset);
-    PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_unset);
-    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 104, __pyx_L1_error)
-
-    /* "acide/asyncop.pyx":103
- *         elif priority is Priority.HIGHEST:
- *             _prio = 0
- *         elif priority > self.lowest:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"priority #{priority} unset")
- *         else:
- */
-  }
-
-  /* "acide/asyncop.pyx":106
- *             raise ValueError(f"priority #{priority} unset")
- *         else:
- *             _prio = priority             # <<<<<<<<<<<<<<
- *         future = asyncio.get_running_loop().create_future()
- *         task = asyncio.create_task(
- */
-  /*else*/ {
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_priority); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L1_error)
-    __pyx_v__prio = __pyx_t_5;
-  }
-  __pyx_L3:;
-
-  /* "acide/asyncop.pyx":107
- *         else:
- *             _prio = priority
- *         future = asyncio.get_running_loop().create_future()             # <<<<<<<<<<<<<<
- *         task = asyncio.create_task(
- *             Scheduler._scheduled(
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_running_loop); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_11))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_11);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_11, function);
-    }
-  }
-  __pyx_t_6 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_create_future); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_11))) {
-    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_11);
-    if (likely(__pyx_t_6)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
-      __Pyx_INCREF(__pyx_t_6);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_11, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __pyx_v_future = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":108
- *             _prio = priority
- *         future = asyncio.get_running_loop().create_future()
- *         task = asyncio.create_task(             # <<<<<<<<<<<<<<
- *             Scheduler._scheduled(
- *                 co, future, self.priorities[_prio], callback
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 108, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_n_s_create_task); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 108, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-
-  /* "acide/asyncop.pyx":109
- *         future = asyncio.get_running_loop().create_future()
- *         task = asyncio.create_task(
- *             Scheduler._scheduled(             # <<<<<<<<<<<<<<
- *                 co, future, self.priorities[_prio], callback
- *             )
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler), __pyx_n_s_scheduled); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "acide/asyncop.pyx":110
- *         task = asyncio.create_task(
- *             Scheduler._scheduled(
- *                 co, future, self.priorities[_prio], callback             # <<<<<<<<<<<<<<
- *             )
- *         )
- */
-  if (unlikely(__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 110, __pyx_L1_error)
-  }
-  __pyx_t_12 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_v__prio, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = NULL;
-  __pyx_t_5 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_13)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_13);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_5 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[5] = {__pyx_t_13, __pyx_v_co, __pyx_v_future, __pyx_t_12, __pyx_v_callback};
-    __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 109, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[5] = {__pyx_t_13, __pyx_v_co, __pyx_v_future, __pyx_t_12, __pyx_v_callback};
-    __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 109, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_14 = PyTuple_New(4+__pyx_t_5); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 109, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_14);
-    if (__pyx_t_13) {
-      __Pyx_GIVEREF(__pyx_t_13); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_13); __pyx_t_13 = NULL;
-    }
-    __Pyx_INCREF(__pyx_v_co);
-    __Pyx_GIVEREF(__pyx_v_co);
-    PyTuple_SET_ITEM(__pyx_t_14, 0+__pyx_t_5, __pyx_v_co);
-    __Pyx_INCREF(__pyx_v_future);
-    __Pyx_GIVEREF(__pyx_v_future);
-    PyTuple_SET_ITEM(__pyx_t_14, 1+__pyx_t_5, __pyx_v_future);
-    __Pyx_GIVEREF(__pyx_t_12);
-    PyTuple_SET_ITEM(__pyx_t_14, 2+__pyx_t_5, __pyx_t_12);
-    __Pyx_INCREF(__pyx_v_callback);
-    __Pyx_GIVEREF(__pyx_v_callback);
-    PyTuple_SET_ITEM(__pyx_t_14, 3+__pyx_t_5, __pyx_v_callback);
-    __pyx_t_12 = 0;
-    __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_14, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 109, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_2, __pyx_t_11) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_v_task = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":113
- *             )
- *         )
- *         task.set_name(f"{co.__name__}_{self.task_id}")             # <<<<<<<<<<<<<<
- *         self.task_id += 1
- *         if _prio < self.lowest:
- */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_set_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_9 = 0;
-  __pyx_t_10 = 127;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_co, __pyx_n_s_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_10;
-  __pyx_t_9 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_14);
-  __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_14);
-  __pyx_t_14 = 0;
-  __Pyx_INCREF(__pyx_n_u__2);
-  __pyx_t_9 += 1;
-  __Pyx_GIVEREF(__pyx_n_u__2);
-  PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_n_u__2);
-  __pyx_t_14 = __Pyx_PyUnicode_From_int(__pyx_v_self->task_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_9 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_14);
-  __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_t_14);
-  __pyx_t_14 = 0;
-  __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __pyx_t_11 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_11)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_11);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_11, __pyx_t_14) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_14);
-  __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":114
- *         )
- *         task.set_name(f"{co.__name__}_{self.task_id}")
- *         self.task_id += 1             # <<<<<<<<<<<<<<
- *         if _prio < self.lowest:
- *             for i in range(_prio + 1, self.lowest + 1):
- */
-  __pyx_t_5 = 0;
-  __pyx_t_8 = __Pyx_add_const_long_checking_overflow(__pyx_v_self->task_id, 1, &__pyx_t_5);
-  if (unlikely(__pyx_t_5)) {
-    PyErr_SetString(PyExc_OverflowError, "value too large");
-    __PYX_ERR(0, 114, __pyx_L1_error)
-  }
-  __pyx_v_self->task_id = __pyx_t_8;
-
-  /* "acide/asyncop.pyx":115
- *         task.set_name(f"{co.__name__}_{self.task_id}")
- *         self.task_id += 1
- *         if _prio < self.lowest:             # <<<<<<<<<<<<<<
- *             for i in range(_prio + 1, self.lowest + 1):
- *                 self.priorities[i].clear()
- */
-  __pyx_t_4 = ((__pyx_v__prio < __pyx_v_self->lowest) != 0);
-  if (__pyx_t_4) {
-
-    /* "acide/asyncop.pyx":116
- *         self.task_id += 1
- *         if _prio < self.lowest:
- *             for i in range(_prio + 1, self.lowest + 1):             # <<<<<<<<<<<<<<
- *                 self.priorities[i].clear()
- *         self.queues[_prio].add(task)
- */
-    __pyx_t_5 = 0;
-    __pyx_t_8 = __Pyx_add_const_long_checking_overflow(__pyx_v_self->lowest, 1, &__pyx_t_5);
-    if (unlikely(__pyx_t_5)) {
-      PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 116, __pyx_L1_error)
-    }
-    __pyx_t_5 = 0;
-    __pyx_t_15 = __Pyx_add_const_long_checking_overflow(__pyx_v__prio, 1, &__pyx_t_5);
-    if (unlikely(__pyx_t_5)) {
-      PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 116, __pyx_L1_error)
-    }
-    __pyx_t_16 = __pyx_t_8;
-    for (__pyx_t_5 = __pyx_t_15; __pyx_t_5 < __pyx_t_16; __pyx_t_5+=1) {
-      __pyx_v_i = __pyx_t_5;
-
-      /* "acide/asyncop.pyx":117
- *         if _prio < self.lowest:
- *             for i in range(_prio + 1, self.lowest + 1):
- *                 self.priorities[i].clear()             # <<<<<<<<<<<<<<
- *         self.queues[_prio].add(task)
- *         return task
- */
-      if (unlikely(__pyx_v_self->priorities == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 117, __pyx_L1_error)
-      }
-      __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 117, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_clear); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 117, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_14);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_14))) {
-        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_14);
-        if (likely(__pyx_t_6)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_14);
-          __Pyx_INCREF(__pyx_t_6);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_14, function);
-        }
-      }
-      __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_14, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_14);
-      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    }
-
-    /* "acide/asyncop.pyx":115
- *         task.set_name(f"{co.__name__}_{self.task_id}")
- *         self.task_id += 1
- *         if _prio < self.lowest:             # <<<<<<<<<<<<<<
- *             for i in range(_prio + 1, self.lowest + 1):
- *                 self.priorities[i].clear()
- */
-  }
-
-  /* "acide/asyncop.pyx":118
- *             for i in range(_prio + 1, self.lowest + 1):
- *                 self.priorities[i].clear()
- *         self.queues[_prio].add(task)             # <<<<<<<<<<<<<<
- *         return task
+  /* "acide/asyncop.pyx":296
  * 
+ *     cdef control(self, PriorityQueue priority):
+ *         priority.check() # put pending tasks done in dones             # <<<<<<<<<<<<<<
+ *         if priority.is_set():
+ *             priority.feed() # put tasks from queue to pendings
  */
-  if (unlikely(__pyx_v_self->queues == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 118, __pyx_L1_error)
-  }
-  __pyx_t_14 = __Pyx_GetItemInt_List(__pyx_v_self->queues, __pyx_v__prio, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 118, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_14, __pyx_n_s_add); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 118, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  __pyx_t_14 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_14)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_14);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_14, __pyx_v_task) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_task);
-  __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":119
- *                 self.priorities[i].clear()
- *         self.queues[_prio].add(task)
- *         return task             # <<<<<<<<<<<<<<
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_task);
-  __pyx_r = __pyx_v_task;
-  goto __pyx_L0;
-
-  /* "acide/asyncop.pyx":90
- *             callback()
- * 
- *     cpdef object schedule(             # <<<<<<<<<<<<<<
- *         self, co: Coroutine, priority: int, callback: Callable=None
- *     ):
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.schedule", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_future);
-  __Pyx_XDECREF(__pyx_v_task);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_8schedule(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_7schedule[] = "Scheduler.schedule(self, co: Coroutine, priority: int, callback: Callable = None)";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_8schedule(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_co = 0;
-  PyObject *__pyx_v_priority = 0;
-  PyObject *__pyx_v_callback = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("schedule (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_co,&__pyx_n_s_priority,&__pyx_n_s_callback,0};
-    PyObject* values[3] = {0,0,0};
-
-    /* "acide/asyncop.pyx":91
- * 
- *     cpdef object schedule(
- *         self, co: Coroutine, priority: int, callback: Callable=None             # <<<<<<<<<<<<<<
- *     ):
- *         cdef int i, _prio
- */
-    values[2] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_co)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("schedule", 0, 2, 3, 1); __PYX_ERR(0, 90, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_callback);
-          if (value) { values[2] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "schedule") < 0)) __PYX_ERR(0, 90, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_co = values[0];
-    __pyx_v_priority = values[1];
-    __pyx_v_callback = values[2];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("schedule", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 90, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.schedule", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_7schedule(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_co, __pyx_v_priority, __pyx_v_callback);
-
-  /* "acide/asyncop.pyx":90
- *             callback()
- * 
- *     cpdef object schedule(             # <<<<<<<<<<<<<<
- *         self, co: Coroutine, priority: int, callback: Callable=None
- *     ):
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_7schedule(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule __pyx_t_2;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("schedule", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2.__pyx_n = 1;
-  __pyx_t_2.callback = __pyx_v_callback;
-  __pyx_t_1 = __pyx_vtabptr_5acide_7asyncop_Scheduler->schedule(__pyx_v_self, __pyx_v_co, __pyx_v_priority, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.schedule", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_11generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "acide/asyncop.pyx":121
- *         return task
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:             # <<<<<<<<<<<<<<
- *         if self.queues[priority_id]:
- *             if priority_id == 0:
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_10_runner(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_9_runner[] = "Scheduler._runner(self, priority_id: int, policy) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_10_runner(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_priority_id = 0;
-  PyObject *__pyx_v_policy = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_runner (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_priority_id,&__pyx_n_s_policy,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority_id)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_policy)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("_runner", 1, 2, 2, 1); __PYX_ERR(0, 121, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_runner") < 0)) __PYX_ERR(0, 121, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_priority_id = values[0];
-    __pyx_v_policy = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_runner", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 121, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._runner", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_9_runner(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_priority_id, __pyx_v_policy);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_9_runner(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_priority_id, PyObject *__pyx_v_policy) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_runner", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__runner(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__runner, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 121, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __pyx_cur_scope->__pyx_v_priority_id = __pyx_v_priority_id;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority_id);
-  __pyx_cur_scope->__pyx_v_policy = __pyx_v_policy;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_policy);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_policy);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_11generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_runner, __pyx_n_s_Scheduler__runner, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 121, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._runner", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_11generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *(*__pyx_t_6)(PyObject *);
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_runner", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L6_resume_from_await;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 121, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":122
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:
- *         if self.queues[priority_id]:             # <<<<<<<<<<<<<<
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED
- */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->queues == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 122, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_self->queues, __pyx_cur_scope->__pyx_v_priority_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 122, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "acide/asyncop.pyx":123
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:
- *         if self.queues[priority_id]:
- *             if priority_id == 0:             # <<<<<<<<<<<<<<
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(
- */
-    __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_cur_scope->__pyx_v_priority_id, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (__pyx_t_2) {
-
-      /* "acide/asyncop.pyx":124
- *         if self.queues[priority_id]:
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED             # <<<<<<<<<<<<<<
- *             done, pending = await asyncio.wait(
- *                 self.queues[priority_id],
- */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ALL_COMPLETED); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_policy);
-      __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_policy, __pyx_t_3);
-      __Pyx_GIVEREF(__pyx_t_3);
-      __pyx_t_3 = 0;
-
-      /* "acide/asyncop.pyx":123
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:
- *         if self.queues[priority_id]:
- *             if priority_id == 0:             # <<<<<<<<<<<<<<
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(
- */
-    }
-
-    /* "acide/asyncop.pyx":125
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(             # <<<<<<<<<<<<<<
- *                 self.queues[priority_id],
- *                 timeout = 0,
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_wait); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "acide/asyncop.pyx":126
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(
- *                 self.queues[priority_id],             # <<<<<<<<<<<<<<
- *                 timeout = 0,
- *                 return_when = policy
- */
-    if (unlikely(__pyx_cur_scope->__pyx_v_self->queues == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 126, __pyx_L1_error)
-    }
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_self->queues, __pyx_cur_scope->__pyx_v_priority_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-
-    /* "acide/asyncop.pyx":125
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(             # <<<<<<<<<<<<<<
- *                 self.queues[priority_id],
- *                 timeout = 0,
- */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-    __pyx_t_3 = 0;
-
-    /* "acide/asyncop.pyx":127
- *             done, pending = await asyncio.wait(
- *                 self.queues[priority_id],
- *                 timeout = 0,             # <<<<<<<<<<<<<<
- *                 return_when = policy
- *             )
- */
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_timeout, __pyx_int_0) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
-
-    /* "acide/asyncop.pyx":128
- *                 self.queues[priority_id],
- *                 timeout = 0,
- *                 return_when = policy             # <<<<<<<<<<<<<<
- *             )
- *             self.queues[priority_id] -= done
- */
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_return_when, __pyx_cur_scope->__pyx_v_policy) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
-
-    /* "acide/asyncop.pyx":125
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED
- *             done, pending = await asyncio.wait(             # <<<<<<<<<<<<<<
- *                 self.queues[priority_id],
- *                 timeout = 0,
- */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_5);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 1;
-      return __pyx_r;
-      __pyx_L6_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 125, __pyx_L1_error)
-      __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
-    } else {
-      __pyx_t_5 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-    }
-    if ((likely(PyTuple_CheckExact(__pyx_t_5))) || (PyList_CheckExact(__pyx_t_5))) {
-      PyObject* sequence = __pyx_t_5;
-      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-      if (unlikely(size != 2)) {
-        if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 125, __pyx_L1_error)
-      }
-      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_4 = PyTuple_GET_ITEM(sequence, 1); 
-      } else {
-        __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_4 = PyList_GET_ITEM(sequence, 1); 
-      }
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      #else
-      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      #endif
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    } else {
-      Py_ssize_t index = -1;
-      __pyx_t_1 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext;
-      index = 0; __pyx_t_3 = __pyx_t_6(__pyx_t_1); if (unlikely(!__pyx_t_3)) goto __pyx_L7_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_3);
-      index = 1; __pyx_t_4 = __pyx_t_6(__pyx_t_1); if (unlikely(!__pyx_t_4)) goto __pyx_L7_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_4);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_1), 2) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
-      __pyx_t_6 = NULL;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      goto __pyx_L8_unpacking_done;
-      __pyx_L7_unpacking_failed:;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_6 = NULL;
-      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 125, __pyx_L1_error)
-      __pyx_L8_unpacking_done:;
-    }
-    __Pyx_GIVEREF(__pyx_t_3);
-    __pyx_cur_scope->__pyx_v_done = __pyx_t_3;
-    __pyx_t_3 = 0;
-    __Pyx_GIVEREF(__pyx_t_4);
-    __pyx_cur_scope->__pyx_v_pending = __pyx_t_4;
-    __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":130
- *                 return_when = policy
- *             )
- *             self.queues[priority_id] -= done             # <<<<<<<<<<<<<<
- *             self.dones |= done
- * 
- */
-    if (unlikely(__pyx_cur_scope->__pyx_v_self->queues == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 130, __pyx_L1_error)
-    }
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_self->queues);
-    __pyx_t_7 = __pyx_cur_scope->__pyx_v_self->queues;
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-    __pyx_t_5 = __pyx_cur_scope->__pyx_v_priority_id;
-    if (unlikely(__pyx_t_7 == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 130, __pyx_L1_error)
-    }
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_7, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 130, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyNumber_InPlaceSubtract(__pyx_t_4, __pyx_cur_scope->__pyx_v_done); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 130, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(__pyx_t_7 == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 130, __pyx_L1_error)
-    }
-    if (unlikely(PyObject_SetItem(__pyx_t_7, __pyx_t_5, __pyx_t_3) < 0)) __PYX_ERR(0, 130, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-
-    /* "acide/asyncop.pyx":131
- *             )
- *             self.queues[priority_id] -= done
- *             self.dones |= done             # <<<<<<<<<<<<<<
- * 
- *     async def _task(
- */
-    __pyx_t_5 = PyNumber_InPlaceOr(__pyx_cur_scope->__pyx_v_self->dones, __pyx_cur_scope->__pyx_v_done); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 131, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_self->dones);
-    __Pyx_DECREF(__pyx_cur_scope->__pyx_v_self->dones);
-    __pyx_cur_scope->__pyx_v_self->dones = __pyx_t_5;
-    __pyx_t_5 = 0;
-
-    /* "acide/asyncop.pyx":122
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:
- *         if self.queues[priority_id]:             # <<<<<<<<<<<<<<
- *             if priority_id == 0:
- *                 policy = asyncio.ALL_COMPLETED
- */
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "acide/asyncop.pyx":121
- *         return task
- * 
- *     async def _runner(self, priority_id: int, policy) -> Coroutine:             # <<<<<<<<<<<<<<
- *         if self.queues[priority_id]:
- *             if priority_id == 0:
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("_runner", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_14generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "acide/asyncop.pyx":133
- *             self.dones |= done
- * 
- *     async def _task(             # <<<<<<<<<<<<<<
- *         self,
- *         runner: Coroutine,
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_13_task(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_12_task[] = "Scheduler._task(self, runner: Coroutine, priority_id: int) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_13_task(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_runner = 0;
-  PyObject *__pyx_v_priority_id = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_task (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_runner_2,&__pyx_n_s_priority_id,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_runner_2)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority_id)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("_task", 1, 2, 2, 1); __PYX_ERR(0, 133, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_task") < 0)) __PYX_ERR(0, 133, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_runner = values[0];
-    __pyx_v_priority_id = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 133, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_12_task(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_runner, __pyx_v_priority_id);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_12_task(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_runner, PyObject *__pyx_v_priority_id) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_task", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2__task(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_2__task, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 133, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __pyx_cur_scope->__pyx_v_runner = __pyx_v_runner;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_runner);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_runner);
-  __pyx_cur_scope->__pyx_v_priority_id = __pyx_v_priority_id;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority_id);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_14generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_task, __pyx_n_s_Scheduler__task, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 133, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_14generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-  int __pyx_t_5;
-  long __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_task", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L4_resume_from_await;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 133, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":138
- *         priority_id: int
- *     )  -> Coroutine:
- *         await runner             # <<<<<<<<<<<<<<
- *         if priority_id < self.lowest:
- *             if len(self.queues[priority_id]) == 0:
- */
-  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_cur_scope->__pyx_v_runner);
-  __Pyx_XGOTREF(__pyx_r);
-  if (likely(__pyx_r)) {
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, awaiting value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L4_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 138, __pyx_L1_error)
-  } else {
-    PyObject* exc_type = __Pyx_PyErr_Occurred();
-    if (exc_type) {
-      if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-      else __PYX_ERR(0, 138, __pyx_L1_error)
-    }
-  }
-
-  /* "acide/asyncop.pyx":139
- *     )  -> Coroutine:
- *         await runner
- *         if priority_id < self.lowest:             # <<<<<<<<<<<<<<
- *             if len(self.queues[priority_id]) == 0:
- *                 # print(f"set priority to {priority_id + 1}")
- */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_self->lowest); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_priority_id, __pyx_t_1, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_3) {
-
-    /* "acide/asyncop.pyx":140
- *         await runner
- *         if priority_id < self.lowest:
- *             if len(self.queues[priority_id]) == 0:             # <<<<<<<<<<<<<<
- *                 # print(f"set priority to {priority_id + 1}")
- *                 if priority_id != 0:
- */
-    if (unlikely(__pyx_cur_scope->__pyx_v_self->queues == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 140, __pyx_L1_error)
-    }
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_self->queues, __pyx_cur_scope->__pyx_v_priority_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyObject_Length(__pyx_t_2); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_3 = ((__pyx_t_4 == 0) != 0);
-    if (__pyx_t_3) {
-
-      /* "acide/asyncop.pyx":142
- *             if len(self.queues[priority_id]) == 0:
- *                 # print(f"set priority to {priority_id + 1}")
- *                 if priority_id != 0:             # <<<<<<<<<<<<<<
- *                     self.queues.pop(priority_id)
- *                     self.priorities.pop(priority_id)
- */
-      __pyx_t_2 = __Pyx_PyInt_NeObjC(__pyx_cur_scope->__pyx_v_priority_id, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 142, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (__pyx_t_3) {
-
-        /* "acide/asyncop.pyx":143
- *                 # print(f"set priority to {priority_id + 1}")
- *                 if priority_id != 0:
- *                     self.queues.pop(priority_id)             # <<<<<<<<<<<<<<
- *                     self.priorities.pop(priority_id)
- *                     self.lowest -= 1
- */
-        if (unlikely(__pyx_cur_scope->__pyx_v_self->queues == Py_None)) {
-          PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "pop");
-          __PYX_ERR(0, 143, __pyx_L1_error)
-        }
-        __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_cur_scope->__pyx_v_priority_id); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
-        __pyx_t_2 = __Pyx_PyList_PopIndex(__pyx_cur_scope->__pyx_v_self->queues, __pyx_cur_scope->__pyx_v_priority_id, __pyx_t_4, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-        /* "acide/asyncop.pyx":144
- *                 if priority_id != 0:
- *                     self.queues.pop(priority_id)
- *                     self.priorities.pop(priority_id)             # <<<<<<<<<<<<<<
- *                     self.lowest -= 1
- *                     self.priorities[priority_id].set()
- */
-        if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-          PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "pop");
-          __PYX_ERR(0, 144, __pyx_L1_error)
-        }
-        __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_cur_scope->__pyx_v_priority_id); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
-        __pyx_t_2 = __Pyx_PyList_PopIndex(__pyx_cur_scope->__pyx_v_self->priorities, __pyx_cur_scope->__pyx_v_priority_id, __pyx_t_4, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-        /* "acide/asyncop.pyx":145
- *                     self.queues.pop(priority_id)
- *                     self.priorities.pop(priority_id)
- *                     self.lowest -= 1             # <<<<<<<<<<<<<<
- *                     self.priorities[priority_id].set()
- *                 else:
- */
-        __pyx_t_5 = 0;
-        __pyx_t_6 = __Pyx_sub_const_long_checking_overflow(__pyx_cur_scope->__pyx_v_self->lowest, 1, &__pyx_t_5);
-        if (unlikely(__pyx_t_5)) {
-          PyErr_SetString(PyExc_OverflowError, "value too large");
-          __PYX_ERR(0, 145, __pyx_L1_error)
-        }
-        __pyx_cur_scope->__pyx_v_self->lowest = __pyx_t_6;
-
-        /* "acide/asyncop.pyx":146
- *                     self.priorities.pop(priority_id)
- *                     self.lowest -= 1
- *                     self.priorities[priority_id].set()             # <<<<<<<<<<<<<<
- *                 else:
- *                     self.priorities[priority_id + 1].set()
- */
-        if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 146, __pyx_L1_error)
-        }
-        __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_self->priorities, __pyx_cur_scope->__pyx_v_priority_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_set); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 146, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-          __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_7);
-          if (likely(__pyx_t_1)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-            __Pyx_INCREF(__pyx_t_1);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_7, function);
-          }
-        }
-        __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
-        __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-        /* "acide/asyncop.pyx":142
- *             if len(self.queues[priority_id]) == 0:
- *                 # print(f"set priority to {priority_id + 1}")
- *                 if priority_id != 0:             # <<<<<<<<<<<<<<
- *                     self.queues.pop(priority_id)
- *                     self.priorities.pop(priority_id)
- */
-        goto __pyx_L7;
-      }
-
-      /* "acide/asyncop.pyx":148
- *                     self.priorities[priority_id].set()
- *                 else:
- *                     self.priorities[priority_id + 1].set()             # <<<<<<<<<<<<<<
- * 
- *     async def _scheduler(
- */
-      /*else*/ {
-        if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 148, __pyx_L1_error)
-        }
-        __pyx_t_7 = __Pyx_PyInt_AddObjC(__pyx_cur_scope->__pyx_v_priority_id, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 148, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_self->priorities, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_set); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 148, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-          __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_7);
-          if (likely(__pyx_t_1)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-            __Pyx_INCREF(__pyx_t_1);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_7, function);
-          }
-        }
-        __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
-        __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      }
-      __pyx_L7:;
-
-      /* "acide/asyncop.pyx":140
- *         await runner
- *         if priority_id < self.lowest:
- *             if len(self.queues[priority_id]) == 0:             # <<<<<<<<<<<<<<
- *                 # print(f"set priority to {priority_id + 1}")
- *                 if priority_id != 0:
- */
-    }
-
-    /* "acide/asyncop.pyx":139
- *     )  -> Coroutine:
- *         await runner
- *         if priority_id < self.lowest:             # <<<<<<<<<<<<<<
- *             if len(self.queues[priority_id]) == 0:
- *                 # print(f"set priority to {priority_id + 1}")
- */
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "acide/asyncop.pyx":133
- *             self.dones |= done
- * 
- *     async def _task(             # <<<<<<<<<<<<<<
- *         self,
- *         runner: Coroutine,
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_17generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "acide/asyncop.pyx":150
- *                     self.priorities[priority_id + 1].set()
- * 
- *     async def _scheduler(             # <<<<<<<<<<<<<<
- *         self,
- *         priority_id: int,
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_16_scheduler(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_15_scheduler[] = "Scheduler._scheduler(self, priority_id: int, policy=asyncio.FIRST_COMPLETED) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_16_scheduler(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_priority_id = 0;
-  PyObject *__pyx_v_policy = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_scheduler (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_priority_id,&__pyx_n_s_policy,0};
-    PyObject* values[2] = {0,0};
-    values[1] = __pyx_k__3;
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_priority_id)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_policy);
-          if (value) { values[1] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_scheduler") < 0)) __PYX_ERR(0, 150, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_priority_id = values[0];
-    __pyx_v_policy = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_scheduler", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 150, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._scheduler", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_15_scheduler(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_priority_id, __pyx_v_policy);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_15_scheduler(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_priority_id, PyObject *__pyx_v_policy) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_scheduler", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3__scheduler(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_3__scheduler, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 150, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __pyx_cur_scope->__pyx_v_priority_id = __pyx_v_priority_id;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority_id);
-  __pyx_cur_scope->__pyx_v_policy = __pyx_v_policy;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_policy);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_policy);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_17generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_scheduler, __pyx_n_s_Scheduler__scheduler, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 150, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler._scheduler", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_17generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_scheduler", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L4_resume_from_await;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 150, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":155
- *         policy=asyncio.FIRST_COMPLETED
- *     )  -> Coroutine:
- *         await self._task(             # <<<<<<<<<<<<<<
- *             self._runner(priority_id, policy), priority_id
- *         )
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "acide/asyncop.pyx":156
- *     )  -> Coroutine:
- *         await self._task(
- *             self._runner(priority_id, policy), priority_id             # <<<<<<<<<<<<<<
- *         )
- * 
- */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_runner); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_5);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_6 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_cur_scope->__pyx_v_priority_id, __pyx_cur_scope->__pyx_v_policy};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_3);
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_cur_scope->__pyx_v_priority_id, __pyx_cur_scope->__pyx_v_policy};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_3);
-  } else
-  #endif
-  {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 156, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
-    }
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority_id);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_cur_scope->__pyx_v_priority_id);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_policy);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_policy);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_cur_scope->__pyx_v_policy);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  __pyx_t_6 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_6 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_cur_scope->__pyx_v_priority_id};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_cur_scope->__pyx_v_priority_id};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 155, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_4) {
-      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4); __pyx_t_4 = NULL;
-    }
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_priority_id);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_priority_id);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_cur_scope->__pyx_v_priority_id);
-    __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_XGOTREF(__pyx_r);
-  if (likely(__pyx_r)) {
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, awaiting value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L4_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 155, __pyx_L1_error)
-  } else {
-    PyObject* exc_type = __Pyx_PyErr_Occurred();
-    if (exc_type) {
-      if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-      else __PYX_ERR(0, 155, __pyx_L1_error)
-    }
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "acide/asyncop.pyx":150
- *                     self.priorities[priority_id + 1].set()
- * 
- *     async def _scheduler(             # <<<<<<<<<<<<<<
- *         self,
- *         priority_id: int,
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("_scheduler", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_20generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "acide/asyncop.pyx":159
- *         )
- * 
- *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_19run_once(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_18run_once[] = "Scheduler.run_once(self) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_19run_once(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("run_once (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_18run_once(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_18run_once(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("run_once", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_once(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_once, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 159, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_20generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_once, __pyx_n_s_Scheduler_run_once, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 159, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.run_once", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_20generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("run_once", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L6_resume_from_await;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 159, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":160
- * 
- *     async def run_once(self)  -> Coroutine:
- *         self.dones.clear()             # <<<<<<<<<<<<<<
- *         self.priorities[0].set()
- *         for i in range(len(self.queues)):
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->dones, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_priority), __pyx_n_s_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5002,662 +6679,446 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_20generator4(__pyx_Coroutin
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/asyncop.pyx":161
- *     async def run_once(self)  -> Coroutine:
- *         self.dones.clear()
- *         self.priorities[0].set()             # <<<<<<<<<<<<<<
- *         for i in range(len(self.queues)):
- *             asyncio.create_task(self._scheduler(i))
+  /* "acide/asyncop.pyx":297
+ *     cdef control(self, PriorityQueue priority):
+ *         priority.check() # put pending tasks done in dones
+ *         if priority.is_set():             # <<<<<<<<<<<<<<
+ *             priority.feed() # put tasks from queue to pendings
+ *             if priority.id != Priority.LOW and priority.completed:
  */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 161, __pyx_L1_error)
-  }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_priority), __pyx_n_s_is_set); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_set); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_4) {
 
-  /* "acide/asyncop.pyx":162
- *         self.dones.clear()
- *         self.priorities[0].set()
- *         for i in range(len(self.queues)):             # <<<<<<<<<<<<<<
- *             asyncio.create_task(self._scheduler(i))
- *         await asyncio.sleep(self.rate)
+    /* "acide/asyncop.pyx":298
+ *         priority.check() # put pending tasks done in dones
+ *         if priority.is_set():
+ *             priority.feed() # put tasks from queue to pendings             # <<<<<<<<<<<<<<
+ *             if priority.id != Priority.LOW and priority.completed:
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
  */
-  __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->queues;
-  __Pyx_INCREF(__pyx_t_1);
-  if (unlikely(__pyx_t_1 == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 162, __pyx_L1_error)
-  }
-  __pyx_t_4 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 162, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __pyx_t_4;
-  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
-    __pyx_cur_scope->__pyx_v_i = __pyx_t_6;
-
-    /* "acide/asyncop.pyx":163
- *         self.priorities[0].set()
- *         for i in range(len(self.queues)):
- *             asyncio.create_task(self._scheduler(i))             # <<<<<<<<<<<<<<
- *         await asyncio.sleep(self.rate)
- *         self.priorities[0].clear()
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_create_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_priority), __pyx_n_s_feed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_scheduler); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 163, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = PyInt_FromSsize_t(__pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 163, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_9)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_9);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_9, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_8);
-    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_7)) {
+    __pyx_t_3 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_3)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_3);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_2, function);
       }
     }
-    __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_7, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  }
 
-  /* "acide/asyncop.pyx":164
- *         for i in range(len(self.queues)):
- *             asyncio.create_task(self._scheduler(i))
- *         await asyncio.sleep(self.rate)             # <<<<<<<<<<<<<<
- *         self.priorities[0].clear()
- *         print(f"scheduler completed {self}")
+    /* "acide/asyncop.pyx":299
+ *         if priority.is_set():
+ *             priority.feed() # put tasks from queue to pendings
+ *             if priority.id != Priority.LOW and priority.completed:             # <<<<<<<<<<<<<<
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
+ *                 _next.set()
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_sleep); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->rate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_7)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_7);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_priority->id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_LOW); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (__pyx_t_5) {
+    } else {
+      __pyx_t_4 = __pyx_t_5;
+      goto __pyx_L5_bool_binop_done;
     }
-  }
-  __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_7, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_XGOTREF(__pyx_r);
-  if (likely(__pyx_r)) {
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, awaiting value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L6_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 164, __pyx_L1_error)
-  } else {
-    PyObject* exc_type = __Pyx_PyErr_Occurred();
-    if (exc_type) {
-      if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-      else __PYX_ERR(0, 164, __pyx_L1_error)
-    }
-  }
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_priority), __pyx_n_s_completed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_4 = __pyx_t_5;
+    __pyx_L5_bool_binop_done:;
+    if (__pyx_t_4) {
 
-  /* "acide/asyncop.pyx":165
- *             asyncio.create_task(self._scheduler(i))
- *         await asyncio.sleep(self.rate)
- *         self.priorities[0].clear()             # <<<<<<<<<<<<<<
- *         print(f"scheduler completed {self}")
+      /* "acide/asyncop.pyx":300
+ *             priority.feed() # put tasks from queue to pendings
+ *             if priority.id != Priority.LOW and priority.completed:
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]             # <<<<<<<<<<<<<<
+ *                 _next.set()
+ *             if priority.id != Priority.HIGH:
+ */
+      if (unlikely(__pyx_v_self->priorities == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 300, __pyx_L1_error)
+      }
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->priorities, __pyx_n_s_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_1 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_1)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_1);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, ((PyObject *)__pyx_v_priority)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_priority));
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_self->priorities, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_v__next = __pyx_t_2;
+      __pyx_t_2 = 0;
+
+      /* "acide/asyncop.pyx":301
+ *             if priority.id != Priority.LOW and priority.completed:
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
+ *                 _next.set()             # <<<<<<<<<<<<<<
+ *             if priority.id != Priority.HIGH:
+ *                 priority.clear()
+ */
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v__next, __pyx_n_s_set); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_1 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_1)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_1);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+      /* "acide/asyncop.pyx":299
+ *         if priority.is_set():
+ *             priority.feed() # put tasks from queue to pendings
+ *             if priority.id != Priority.LOW and priority.completed:             # <<<<<<<<<<<<<<
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
+ *                 _next.set()
+ */
+    }
+
+    /* "acide/asyncop.pyx":302
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
+ *                 _next.set()
+ *             if priority.id != Priority.HIGH:             # <<<<<<<<<<<<<<
+ *                 priority.clear()
  * 
  */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 165, __pyx_L1_error)
-  }
-  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_priority->id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Priority); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_HIGH); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (__pyx_t_4) {
 
-  /* "acide/asyncop.pyx":166
- *         await asyncio.sleep(self.rate)
- *         self.priorities[0].clear()
- *         print(f"scheduler completed {self}")             # <<<<<<<<<<<<<<
+      /* "acide/asyncop.pyx":303
+ *                 _next.set()
+ *             if priority.id != Priority.HIGH:
+ *                 priority.clear()             # <<<<<<<<<<<<<<
  * 
- *     async def run_completed(self)  -> Coroutine:
+ *     cdef clear(self):
  */
-  __pyx_t_1 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_scheduler_completed, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_priority), __pyx_n_s_clear); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
+        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
+        if (likely(__pyx_t_2)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_1, function);
+        }
+      }
+      __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "acide/asyncop.pyx":159
- *         )
+      /* "acide/asyncop.pyx":302
+ *                 _next = self.priorities[self.priorities.index(priority) + 1]
+ *                 _next.set()
+ *             if priority.id != Priority.HIGH:             # <<<<<<<<<<<<<<
+ *                 priority.clear()
  * 
- *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
+ */
+    }
+
+    /* "acide/asyncop.pyx":297
+ *     cdef control(self, PriorityQueue priority):
+ *         priority.check() # put pending tasks done in dones
+ *         if priority.is_set():             # <<<<<<<<<<<<<<
+ *             priority.feed() # put tasks from queue to pendings
+ *             if priority.id != Priority.LOW and priority.completed:
+ */
+  }
+
+  /* "acide/asyncop.pyx":295
+ *             pass
+ * 
+ *     cdef control(self, PriorityQueue priority):             # <<<<<<<<<<<<<<
+ *         priority.check() # put pending tasks done in dones
+ *         if priority.is_set():
  */
 
   /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("run_once", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.control", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_23generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "acide/asyncop.pyx":168
- *         print(f"scheduler completed {self}")
- * 
- *     async def run_completed(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_22run_completed(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_21run_completed[] = "Scheduler.run_completed(self) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_22run_completed(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("run_completed (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_21run_completed(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_21run_completed(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("run_completed", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_5_run_completed(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_5_run_completed, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 168, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_23generator5, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_completed, __pyx_n_s_Scheduler_run_completed, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 168, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("acide.asyncop.Scheduler.run_completed", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
+  __Pyx_XDECREF(__pyx_v__next);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_23generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)__pyx_generator->closure);
+/* "acide/asyncop.pyx":305
+ *                 priority.clear()
+ * 
+ *     cdef clear(self):             # <<<<<<<<<<<<<<
+ *         cdef int i, r
+ *         r = 0
+ */
+
+static PyObject *__pyx_f_5acide_7asyncop_9Scheduler_clear(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  int __pyx_v_i;
+  int __pyx_v_r;
   PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_3;
   Py_ssize_t __pyx_t_4;
   int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  long __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("run_completed", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L8_resume_from_await;
-    case 2: goto __pyx_L9_resume_from_await;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __Pyx_RefNannySetupContext("clear", 0);
 
-  /* "acide/asyncop.pyx":169
- * 
- *     async def run_completed(self)  -> Coroutine:
- *         self.dones.clear()             # <<<<<<<<<<<<<<
- *         self.priorities[0].set()
- *         while len(self.pendings) > 0:
+  /* "acide/asyncop.pyx":307
+ *     cdef clear(self):
+ *         cdef int i, r
+ *         r = 0             # <<<<<<<<<<<<<<
+ *         for i in range(1, len(self.priorities) - 1):
+ *             if not self.priorities[i - r]:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->dones, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
+  __pyx_v_r = 0;
+
+  /* "acide/asyncop.pyx":308
+ *         cdef int i, r
+ *         r = 0
+ *         for i in range(1, len(self.priorities) - 1):             # <<<<<<<<<<<<<<
+ *             if not self.priorities[i - r]:
+ *                 self.priorities.pop(i - r)
+ */
+  __pyx_t_1 = 0;
+  __pyx_t_2 = __pyx_v_self->priorities;
+  __Pyx_INCREF(__pyx_t_2);
+  if (unlikely(__pyx_t_2 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 308, __pyx_L1_error)
   }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":170
- *     async def run_completed(self)  -> Coroutine:
- *         self.dones.clear()
- *         self.priorities[0].set()             # <<<<<<<<<<<<<<
- *         while len(self.pendings) > 0:
- *             scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_sub_const_Py_ssize_t_checking_overflow(__pyx_t_3, 1, &__pyx_t_1);
+  if (unlikely(__pyx_t_1)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 308, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_set); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 170, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
+  __pyx_t_3 = __pyx_t_4;
+  for (__pyx_t_1 = 1; __pyx_t_1 < __pyx_t_3; __pyx_t_1+=1) {
+    __pyx_v_i = __pyx_t_1;
+
+    /* "acide/asyncop.pyx":309
+ *         r = 0
+ *         for i in range(1, len(self.priorities) - 1):
+ *             if not self.priorities[i - r]:             # <<<<<<<<<<<<<<
+ *                 self.priorities.pop(i - r)
+ *                 r += 1
+ */
+    if (unlikely(__pyx_v_self->priorities == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 309, __pyx_L1_error)
     }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":171
- *         self.dones.clear()
- *         self.priorities[0].set()
- *         while len(self.pendings) > 0:             # <<<<<<<<<<<<<<
- *             scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- *             await asyncio.gather(*scheduler)
- */
-  while (1) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_pendings); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = ((__pyx_t_4 > 0) != 0);
-    if (!__pyx_t_5) break;
-
-    /* "acide/asyncop.pyx":172
- *         self.priorities[0].set()
- *         while len(self.pendings) > 0:
- *             scheduler = [self._scheduler(i) for i in range(len(self.queues))]             # <<<<<<<<<<<<<<
- *             await asyncio.gather(*scheduler)
- *             #print(f"Scheduler loop {self}")
- */
-    { /* enter inner scope */
-      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __pyx_cur_scope->__pyx_v_self->queues;
-      __Pyx_INCREF(__pyx_t_3);
-      if (unlikely(__pyx_t_3 == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-        __PYX_ERR(0, 172, __pyx_L1_error)
-      }
-      __pyx_t_4 = PyList_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 172, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __pyx_t_4;
-      for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-        __pyx_cur_scope->__pyx_7genexpr__pyx_v_i = __pyx_t_7;
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 172, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_8 = PyInt_FromSsize_t(__pyx_cur_scope->__pyx_7genexpr__pyx_v_i); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 172, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_9 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-          __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_2);
-          if (likely(__pyx_t_9)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-            __Pyx_INCREF(__pyx_t_9);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_2, function);
-          }
-        }
-        __pyx_t_3 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_9, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_8);
-        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 172, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 172, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      }
-    } /* exit inner scope */
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_scheduler);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_scheduler, ((PyObject*)__pyx_t_1));
-    __Pyx_GIVEREF(__pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "acide/asyncop.pyx":173
- *         while len(self.pendings) > 0:
- *             scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- *             await asyncio.gather(*scheduler)             # <<<<<<<<<<<<<<
- *             #print(f"Scheduler loop {self}")
- *             await asyncio.sleep(self.rate)
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_gather); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PySequence_Tuple(__pyx_cur_scope->__pyx_v_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_5 = 0;
+    __pyx_t_6 = __Pyx_sub_int_checking_overflow(__pyx_v_i, __pyx_v_r, &__pyx_t_5);
+    if (unlikely(__pyx_t_5)) {
+      PyErr_SetString(PyExc_OverflowError, "value too large");
+      __PYX_ERR(0, 309, __pyx_L1_error)
+    }
+    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->priorities, __pyx_t_6, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 309, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 1;
-      return __pyx_r;
-      __pyx_L8_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 173, __pyx_L1_error)
-    } else {
-      PyObject* exc_type = __Pyx_PyErr_Occurred();
-      if (exc_type) {
-        if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 173, __pyx_L1_error)
-      }
-    }
+    __pyx_t_8 = ((!__pyx_t_7) != 0);
+    if (__pyx_t_8) {
 
-    /* "acide/asyncop.pyx":175
- *             await asyncio.gather(*scheduler)
- *             #print(f"Scheduler loop {self}")
- *             await asyncio.sleep(self.rate)             # <<<<<<<<<<<<<<
- *         self.priorities[0].clear()
- *         print(f"scheduler completed {self}")
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_sleep); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 175, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_8)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_8);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_2 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_8, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1);
-    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 175, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 2;
-      return __pyx_r;
-      __pyx_L9_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 175, __pyx_L1_error)
-    } else {
-      PyObject* exc_type = __Pyx_PyErr_Occurred();
-      if (exc_type) {
-        if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 175, __pyx_L1_error)
-      }
-    }
-  }
-
-  /* "acide/asyncop.pyx":176
- *             #print(f"Scheduler loop {self}")
- *             await asyncio.sleep(self.rate)
- *         self.priorities[0].clear()             # <<<<<<<<<<<<<<
- *         print(f"scheduler completed {self}")
+      /* "acide/asyncop.pyx":310
+ *         for i in range(1, len(self.priorities) - 1):
+ *             if not self.priorities[i - r]:
+ *                 self.priorities.pop(i - r)             # <<<<<<<<<<<<<<
+ *                 r += 1
  * 
  */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 176, __pyx_L1_error)
-  }
-  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 176, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_clear); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(__pyx_v_self->priorities == Py_None)) {
+        PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "pop");
+        __PYX_ERR(0, 310, __pyx_L1_error)
+      }
+      __pyx_t_6 = 0;
+      __pyx_t_5 = __Pyx_sub_int_checking_overflow(__pyx_v_i, __pyx_v_r, &__pyx_t_6);
+      if (unlikely(__pyx_t_6)) {
+        PyErr_SetString(PyExc_OverflowError, "value too large");
+        __PYX_ERR(0, 310, __pyx_L1_error)
+      }
+      __pyx_t_2 = __Pyx_PyList_PopIndex(__pyx_v_self->priorities, Py_None, __pyx_t_5, 1, int, __Pyx_PyInt_From_int); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "acide/asyncop.pyx":177
- *             await asyncio.sleep(self.rate)
- *         self.priorities[0].clear()
- *         print(f"scheduler completed {self}")             # <<<<<<<<<<<<<<
+      /* "acide/asyncop.pyx":311
+ *             if not self.priorities[i - r]:
+ *                 self.priorities.pop(i - r)
+ *                 r += 1             # <<<<<<<<<<<<<<
  * 
  *     async def run_forever(self)  -> Coroutine:
  */
-  __pyx_t_2 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 177, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_kp_u_scheduler_completed, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 177, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+      __pyx_t_5 = 0;
+      __pyx_t_9 = __Pyx_add_const_long_checking_overflow(__pyx_v_r, 1, &__pyx_t_5);
+      if (unlikely(__pyx_t_5)) {
+        PyErr_SetString(PyExc_OverflowError, "value too large");
+        __PYX_ERR(0, 311, __pyx_L1_error)
+      }
+      __pyx_v_r = __pyx_t_9;
 
-  /* "acide/asyncop.pyx":168
- *         print(f"scheduler completed {self}")
+      /* "acide/asyncop.pyx":309
+ *         r = 0
+ *         for i in range(1, len(self.priorities) - 1):
+ *             if not self.priorities[i - r]:             # <<<<<<<<<<<<<<
+ *                 self.priorities.pop(i - r)
+ *                 r += 1
+ */
+    }
+  }
+
+  /* "acide/asyncop.pyx":305
+ *                 priority.clear()
  * 
- *     async def run_completed(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.dones.clear()
- *         self.priorities[0].set()
+ *     cdef clear(self):             # <<<<<<<<<<<<<<
+ *         cdef int i, r
+ *         r = 0
  */
 
   /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("run_completed", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.clear", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_26generator6(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_15generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "acide/asyncop.pyx":179
- *         print(f"scheduler completed {self}")
+/* "acide/asyncop.pyx":313
+ *                 r += 1
  * 
  *     async def run_forever(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.priorities[0].set()
- *         while True:
+ *         try:
+ *             self.loop_run = True
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_25run_forever(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_24run_forever[] = "Scheduler.run_forever(self) -> Coroutine";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_25run_forever(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_14run_forever(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_13run_forever[] = "Scheduler.run_forever(self) -> Coroutine";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_14run_forever(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("run_forever (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_24run_forever(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_13run_forever(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24run_forever(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *__pyx_cur_scope;
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_13run_forever(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_forever", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_6_run_forever(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_6_run_forever, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2_run_forever(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_2_run_forever, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 179, __pyx_L1_error)
+    __PYX_ERR(0, 313, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5665,7 +7126,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24run_forever(struct __pyx_
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_26generator6, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_forever, __pyx_n_s_Scheduler_run_forever, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_15generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_forever, __pyx_n_s_Scheduler_run_forever, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 313, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5681,9 +7142,9 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24run_forever(struct __pyx_
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_26generator6(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_15generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)__pyx_generator->closure);
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -5692,10 +7153,12 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_26generator6(__pyx_Coroutin
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   Py_ssize_t __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
-  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
   PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5703,398 +7166,494 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_26generator6(__pyx_Coroutin
   __Pyx_RefNannySetupContext("run_forever", 0);
   switch (__pyx_generator->resume_label) {
     case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L16_resume_from_await;
-    case 2: goto __pyx_L17_resume_from_await;
+    case 1: goto __pyx_L17_resume_from_await;
     default: /* CPython raises the right error here */
     __Pyx_RefNannyFinishContext();
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 313, __pyx_L1_error)
 
-  /* "acide/asyncop.pyx":180
+  /* "acide/asyncop.pyx":314
  * 
  *     async def run_forever(self)  -> Coroutine:
- *         self.priorities[0].set()             # <<<<<<<<<<<<<<
- *         while True:
- *             try:
+ *         try:             # <<<<<<<<<<<<<<
+ *             self.loop_run = True
+ *             self.priorities[0].set()
  */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 180, __pyx_L1_error)
-  }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_set); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":181
- *     async def run_forever(self)  -> Coroutine:
- *         self.priorities[0].set()
- *         while True:             # <<<<<<<<<<<<<<
- *             try:
- *                 self.dones.clear()
- */
-  while (1) {
-
-    /* "acide/asyncop.pyx":182
- *         self.priorities[0].set()
- *         while True:
- *             try:             # <<<<<<<<<<<<<<
- *                 self.dones.clear()
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- */
+  /*try:*/ {
     {
-      __Pyx_ExceptionSave(&__pyx_t_4, &__pyx_t_5, &__pyx_t_6);
-      __Pyx_XGOTREF(__pyx_t_4);
-      __Pyx_XGOTREF(__pyx_t_5);
-      __Pyx_XGOTREF(__pyx_t_6);
+      __Pyx_ExceptionSave(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
+      __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_2);
+      __Pyx_XGOTREF(__pyx_t_3);
       /*try:*/ {
 
-        /* "acide/asyncop.pyx":183
- *         while True:
- *             try:
- *                 self.dones.clear()             # <<<<<<<<<<<<<<
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- *                 await asyncio.gather(*scheduler)
+        /* "acide/asyncop.pyx":315
+ *     async def run_forever(self)  -> Coroutine:
+ *         try:
+ *             self.loop_run = True             # <<<<<<<<<<<<<<
+ *             self.priorities[0].set()
+ *             while True:
  */
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->dones, __pyx_n_s_clear); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_2 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-          __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-          if (likely(__pyx_t_2)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-            __Pyx_INCREF(__pyx_t_2);
+        __pyx_cur_scope->__pyx_v_self->loop_run = 1;
+
+        /* "acide/asyncop.pyx":316
+ *         try:
+ *             self.loop_run = True
+ *             self.priorities[0].set()             # <<<<<<<<<<<<<<
+ *             while True:
+ *                 for p in self.priorities:
+ */
+        if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          __PYX_ERR(0, 316, __pyx_L7_error)
+        }
+        __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 316, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_set); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 316, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
+          if (likely(__pyx_t_5)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+            __Pyx_INCREF(__pyx_t_5);
             __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_3, function);
+            __Pyx_DECREF_SET(__pyx_t_6, function);
           }
         }
-        __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L7_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "acide/asyncop.pyx":184
- *             try:
- *                 self.dones.clear()
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]             # <<<<<<<<<<<<<<
- *                 await asyncio.gather(*scheduler)
- *                 #print(f"Scheduler loop {self}")
+        /* "acide/asyncop.pyx":317
+ *             self.loop_run = True
+ *             self.priorities[0].set()
+ *             while True:             # <<<<<<<<<<<<<<
+ *                 for p in self.priorities:
+ *                     await asyncio.sleep(self.rate)
  */
-        { /* enter inner scope */
-          __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L6_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_3 = __pyx_cur_scope->__pyx_v_self->queues;
-          __Pyx_INCREF(__pyx_t_3);
-          if (unlikely(__pyx_t_3 == Py_None)) {
-            PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-            __PYX_ERR(0, 184, __pyx_L6_error)
+        while (1) {
+
+          /* "acide/asyncop.pyx":318
+ *             self.priorities[0].set()
+ *             while True:
+ *                 for p in self.priorities:             # <<<<<<<<<<<<<<
+ *                     await asyncio.sleep(self.rate)
+ *                     p.clear_dones()
+ */
+          if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
+            PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+            __PYX_ERR(0, 318, __pyx_L7_error)
           }
-          __pyx_t_7 = PyList_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 184, __pyx_L6_error)
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __pyx_t_8 = __pyx_t_7;
-          for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
-            __pyx_cur_scope->__pyx_8genexpr1__pyx_v_i = __pyx_t_9;
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_scheduler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L6_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_10 = PyInt_FromSsize_t(__pyx_cur_scope->__pyx_8genexpr1__pyx_v_i); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L6_error)
-            __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_11 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-              __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_2);
-              if (likely(__pyx_t_11)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-                __Pyx_INCREF(__pyx_t_11);
+          __pyx_t_4 = __pyx_cur_scope->__pyx_v_self->priorities; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
+          for (;;) {
+            if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_6); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 318, __pyx_L7_error)
+            #else
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 318, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            #endif
+            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_p);
+            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_p, __pyx_t_6);
+            __Pyx_GIVEREF(__pyx_t_6);
+            __pyx_t_6 = 0;
+
+            /* "acide/asyncop.pyx":319
+ *             while True:
+ *                 for p in self.priorities:
+ *                     await asyncio.sleep(self.rate)             # <<<<<<<<<<<<<<
+ *                     p.clear_dones()
+ *                     self.control(p)
+ */
+            __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 319, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_5);
+            __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_sleep); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 319, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_8);
+            __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+            __pyx_t_5 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->rate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 319, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_5);
+            __pyx_t_9 = NULL;
+            if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+              __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_8);
+              if (likely(__pyx_t_9)) {
+                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+                __Pyx_INCREF(__pyx_t_9);
                 __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_2, function);
+                __Pyx_DECREF_SET(__pyx_t_8, function);
               }
             }
-            __pyx_t_3 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_11, __pyx_t_10) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_10);
-            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-            __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 184, __pyx_L6_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 184, __pyx_L6_error)
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          }
-        } /* exit inner scope */
-        __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_scheduler);
-        __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_scheduler, ((PyObject*)__pyx_t_1));
-        __Pyx_GIVEREF(__pyx_t_1);
-        __pyx_t_1 = 0;
+            __pyx_t_6 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_9, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_5);
+            __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+            __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+            if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 319, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+            __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_6);
+            __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+            __Pyx_XGOTREF(__pyx_r);
+            if (likely(__pyx_r)) {
+              __Pyx_XGIVEREF(__pyx_t_1);
+              __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
+              __Pyx_XGIVEREF(__pyx_t_2);
+              __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
+              __Pyx_XGIVEREF(__pyx_t_3);
+              __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
+              __Pyx_XGIVEREF(__pyx_t_4);
+              __pyx_cur_scope->__pyx_t_3 = __pyx_t_4;
+              __pyx_cur_scope->__pyx_t_4 = __pyx_t_7;
+              __Pyx_XGIVEREF(__pyx_r);
+              __Pyx_RefNannyFinishContext();
+              __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+              /* return from generator, awaiting value */
+              __pyx_generator->resume_label = 1;
+              return __pyx_r;
+              __pyx_L17_resume_from_await:;
+              __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
+              __pyx_cur_scope->__pyx_t_0 = 0;
+              __Pyx_XGOTREF(__pyx_t_1);
+              __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
+              __pyx_cur_scope->__pyx_t_1 = 0;
+              __Pyx_XGOTREF(__pyx_t_2);
+              __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
+              __pyx_cur_scope->__pyx_t_2 = 0;
+              __Pyx_XGOTREF(__pyx_t_3);
+              __pyx_t_4 = __pyx_cur_scope->__pyx_t_3;
+              __pyx_cur_scope->__pyx_t_3 = 0;
+              __Pyx_XGOTREF(__pyx_t_4);
+              __pyx_t_7 = __pyx_cur_scope->__pyx_t_4;
+              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 319, __pyx_L7_error)
+            } else {
+              PyObject* exc_type = __Pyx_PyErr_Occurred();
+              if (exc_type) {
+                if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
+                else __PYX_ERR(0, 319, __pyx_L7_error)
+              }
+            }
 
-        /* "acide/asyncop.pyx":185
- *                 self.dones.clear()
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]
- *                 await asyncio.gather(*scheduler)             # <<<<<<<<<<<<<<
- *                 #print(f"Scheduler loop {self}")
- *                 await asyncio.sleep(self.rate)
+            /* "acide/asyncop.pyx":320
+ *                 for p in self.priorities:
+ *                     await asyncio.sleep(self.rate)
+ *                     p.clear_dones()             # <<<<<<<<<<<<<<
+ *                     self.control(p)
+ *                 self.clear()
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_gather); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 185, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PySequence_Tuple(__pyx_cur_scope->__pyx_v_scheduler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_XGOTREF(__pyx_r);
-        if (likely(__pyx_r)) {
-          __Pyx_XGIVEREF(__pyx_t_4);
-          __pyx_cur_scope->__pyx_t_0 = __pyx_t_4;
-          __Pyx_XGIVEREF(__pyx_t_5);
-          __pyx_cur_scope->__pyx_t_1 = __pyx_t_5;
-          __Pyx_XGIVEREF(__pyx_t_6);
-          __pyx_cur_scope->__pyx_t_2 = __pyx_t_6;
-          __Pyx_XGIVEREF(__pyx_r);
-          __Pyx_RefNannyFinishContext();
-          __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-          /* return from generator, awaiting value */
-          __pyx_generator->resume_label = 1;
-          return __pyx_r;
-          __pyx_L16_resume_from_await:;
-          __pyx_t_4 = __pyx_cur_scope->__pyx_t_0;
-          __pyx_cur_scope->__pyx_t_0 = 0;
-          __Pyx_XGOTREF(__pyx_t_4);
-          __pyx_t_5 = __pyx_cur_scope->__pyx_t_1;
-          __pyx_cur_scope->__pyx_t_1 = 0;
-          __Pyx_XGOTREF(__pyx_t_5);
-          __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
-          __pyx_cur_scope->__pyx_t_2 = 0;
-          __Pyx_XGOTREF(__pyx_t_6);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 185, __pyx_L6_error)
-        } else {
-          PyObject* exc_type = __Pyx_PyErr_Occurred();
-          if (exc_type) {
-            if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-            else __PYX_ERR(0, 185, __pyx_L6_error)
-          }
-        }
+            __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_p, __pyx_n_s_clear_dones); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 320, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_8);
+            __pyx_t_5 = NULL;
+            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+              __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_8);
+              if (likely(__pyx_t_5)) {
+                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+                __Pyx_INCREF(__pyx_t_5);
+                __Pyx_INCREF(function);
+                __Pyx_DECREF_SET(__pyx_t_8, function);
+              }
+            }
+            __pyx_t_6 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
+            __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+            if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 320, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+            __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "acide/asyncop.pyx":187
- *                 await asyncio.gather(*scheduler)
- *                 #print(f"Scheduler loop {self}")
- *                 await asyncio.sleep(self.rate)             # <<<<<<<<<<<<<<
- *             except:
- *                 raise
+            /* "acide/asyncop.pyx":321
+ *                     await asyncio.sleep(self.rate)
+ *                     p.clear_dones()
+ *                     self.control(p)             # <<<<<<<<<<<<<<
+ *                 self.clear()
+ *         except asyncio.CancelledError:
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_sleep); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_10 = NULL;
-        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-          __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_3);
-          if (likely(__pyx_t_10)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-            __Pyx_INCREF(__pyx_t_10);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_3, function);
+            if (!(likely(((__pyx_cur_scope->__pyx_v_p) == Py_None) || likely(__Pyx_TypeTest(__pyx_cur_scope->__pyx_v_p, __pyx_ptype_5acide_7asyncop_PriorityQueue))))) __PYX_ERR(0, 321, __pyx_L7_error)
+            __pyx_t_6 = __pyx_f_5acide_7asyncop_9Scheduler_control(__pyx_cur_scope->__pyx_v_self, ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_cur_scope->__pyx_v_p)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 321, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+            /* "acide/asyncop.pyx":318
+ *             self.priorities[0].set()
+ *             while True:
+ *                 for p in self.priorities:             # <<<<<<<<<<<<<<
+ *                     await asyncio.sleep(self.rate)
+ *                     p.clear_dones()
+ */
           }
-        }
-        __pyx_t_2 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_10, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1);
-        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 187, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_XGOTREF(__pyx_r);
-        if (likely(__pyx_r)) {
-          __Pyx_XGIVEREF(__pyx_t_4);
-          __pyx_cur_scope->__pyx_t_0 = __pyx_t_4;
-          __Pyx_XGIVEREF(__pyx_t_5);
-          __pyx_cur_scope->__pyx_t_1 = __pyx_t_5;
-          __Pyx_XGIVEREF(__pyx_t_6);
-          __pyx_cur_scope->__pyx_t_2 = __pyx_t_6;
-          __Pyx_XGIVEREF(__pyx_r);
-          __Pyx_RefNannyFinishContext();
-          __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-          /* return from generator, awaiting value */
-          __pyx_generator->resume_label = 2;
-          return __pyx_r;
-          __pyx_L17_resume_from_await:;
-          __pyx_t_4 = __pyx_cur_scope->__pyx_t_0;
-          __pyx_cur_scope->__pyx_t_0 = 0;
-          __Pyx_XGOTREF(__pyx_t_4);
-          __pyx_t_5 = __pyx_cur_scope->__pyx_t_1;
-          __pyx_cur_scope->__pyx_t_1 = 0;
-          __Pyx_XGOTREF(__pyx_t_5);
-          __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
-          __pyx_cur_scope->__pyx_t_2 = 0;
-          __Pyx_XGOTREF(__pyx_t_6);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 187, __pyx_L6_error)
-        } else {
-          PyObject* exc_type = __Pyx_PyErr_Occurred();
-          if (exc_type) {
-            if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-            else __PYX_ERR(0, 187, __pyx_L6_error)
-          }
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+          /* "acide/asyncop.pyx":322
+ *                     p.clear_dones()
+ *                     self.control(p)
+ *                 self.clear()             # <<<<<<<<<<<<<<
+ *         except asyncio.CancelledError:
+ *             print("runner cancelled")
+ */
+          __pyx_t_4 = __pyx_f_5acide_7asyncop_9Scheduler_clear(__pyx_cur_scope->__pyx_v_self); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L7_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         }
 
-        /* "acide/asyncop.pyx":182
- *         self.priorities[0].set()
- *         while True:
- *             try:             # <<<<<<<<<<<<<<
- *                 self.dones.clear()
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]
+        /* "acide/asyncop.pyx":314
+ * 
+ *     async def run_forever(self)  -> Coroutine:
+ *         try:             # <<<<<<<<<<<<<<
+ *             self.loop_run = True
+ *             self.priorities[0].set()
  */
       }
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      goto __pyx_L12_try_end;
+      __pyx_L7_error:;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      goto __pyx_L13_try_end;
-      __pyx_L6_error:;
-      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "acide/asyncop.pyx":188
- *                 #print(f"Scheduler loop {self}")
- *                 await asyncio.sleep(self.rate)
- *             except:             # <<<<<<<<<<<<<<
- *                 raise
- *                 break
+      /* "acide/asyncop.pyx":323
+ *                     self.control(p)
+ *                 self.clear()
+ *         except asyncio.CancelledError:             # <<<<<<<<<<<<<<
+ *             print("runner cancelled")
+ *             raise
  */
-      /*except:*/ {
+      __Pyx_ErrFetch(&__pyx_t_4, &__pyx_t_6, &__pyx_t_8);
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 323, __pyx_L9_except_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 323, __pyx_L9_except_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_10 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_4, __pyx_t_9);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_ErrRestore(__pyx_t_4, __pyx_t_6, __pyx_t_8);
+      __pyx_t_4 = 0; __pyx_t_6 = 0; __pyx_t_8 = 0;
+      if (__pyx_t_10) {
         __Pyx_AddTraceback("acide.asyncop.Scheduler.run_forever", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 188, __pyx_L8_except_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_GOTREF(__pyx_t_1);
+        if (__Pyx_GetException(&__pyx_t_8, &__pyx_t_6, &__pyx_t_4) < 0) __PYX_ERR(0, 323, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_GOTREF(__pyx_t_4);
 
-        /* "acide/asyncop.pyx":189
- *                 await asyncio.sleep(self.rate)
- *             except:
- *                 raise             # <<<<<<<<<<<<<<
- *                 break
- *         self.priorities[0].clear()
+        /* "acide/asyncop.pyx":324
+ *                 self.clear()
+ *         except asyncio.CancelledError:
+ *             print("runner cancelled")             # <<<<<<<<<<<<<<
+ *             raise
+ *         finally:
  */
-        __Pyx_GIVEREF(__pyx_t_2);
-        __Pyx_GIVEREF(__pyx_t_3);
-        __Pyx_XGIVEREF(__pyx_t_1);
-        __Pyx_ErrRestoreWithState(__pyx_t_2, __pyx_t_3, __pyx_t_1);
-        __pyx_t_2 = 0; __pyx_t_3 = 0; __pyx_t_1 = 0; 
-        __PYX_ERR(0, 189, __pyx_L8_except_error)
+        __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 324, __pyx_L9_except_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+        /* "acide/asyncop.pyx":325
+ *         except asyncio.CancelledError:
+ *             print("runner cancelled")
+ *             raise             # <<<<<<<<<<<<<<
+ *         finally:
+ *             self.priorities[0].clear()
+ */
+        __Pyx_GIVEREF(__pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_6);
+        __Pyx_XGIVEREF(__pyx_t_4);
+        __Pyx_ErrRestoreWithState(__pyx_t_8, __pyx_t_6, __pyx_t_4);
+        __pyx_t_8 = 0; __pyx_t_6 = 0; __pyx_t_4 = 0; 
+        __PYX_ERR(0, 325, __pyx_L9_except_error)
       }
-      __pyx_L8_except_error:;
+      goto __pyx_L9_except_error;
+      __pyx_L9_except_error:;
 
-      /* "acide/asyncop.pyx":182
- *         self.priorities[0].set()
- *         while True:
- *             try:             # <<<<<<<<<<<<<<
- *                 self.dones.clear()
- *                 scheduler = [self._scheduler(i) for i in range(len(self.queues))]
+      /* "acide/asyncop.pyx":314
+ * 
+ *     async def run_forever(self)  -> Coroutine:
+ *         try:             # <<<<<<<<<<<<<<
+ *             self.loop_run = True
+ *             self.priorities[0].set()
  */
-      __Pyx_XGIVEREF(__pyx_t_4);
-      __Pyx_XGIVEREF(__pyx_t_5);
-      __Pyx_XGIVEREF(__pyx_t_6);
-      __Pyx_ExceptionReset(__pyx_t_4, __pyx_t_5, __pyx_t_6);
+      __Pyx_XGIVEREF(__pyx_t_1);
+      __Pyx_XGIVEREF(__pyx_t_2);
+      __Pyx_XGIVEREF(__pyx_t_3);
+      __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+      goto __pyx_L5_error;
+      __pyx_L12_try_end:;
+    }
+  }
+
+  /* "acide/asyncop.pyx":327
+ *             raise
+ *         finally:
+ *             self.priorities[0].clear()             # <<<<<<<<<<<<<<
+ *             self.loop_run = False
+ *             return
+ */
+  /*finally:*/ {
+    /*normal exit:*/{
+      if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 327, __pyx_L1_error)
+      }
+      __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 327, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_clear); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 327, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_8);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_8, function);
+        }
+      }
+      __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+      /* "acide/asyncop.pyx":328
+ *         finally:
+ *             self.priorities[0].clear()
+ *             self.loop_run = False             # <<<<<<<<<<<<<<
+ *             return
+ * 
+ */
+      __pyx_cur_scope->__pyx_v_self->loop_run = 0;
+
+      /* "acide/asyncop.pyx":329
+ *             self.priorities[0].clear()
+ *             self.loop_run = False
+ *             return             # <<<<<<<<<<<<<<
+ * 
+ *     async def run_once(self)  -> Coroutine:
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_r = NULL;
+      goto __pyx_L0;
+    }
+    __pyx_L5_error:;
+    /*exception exit:*/{
+      __Pyx_PyThreadState_assign
+      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0;
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
+      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1) < 0)) __Pyx_ErrFetch(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_3);
+      __Pyx_XGOTREF(__pyx_t_2);
+      __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_11);
+      __Pyx_XGOTREF(__pyx_t_12);
+      __Pyx_XGOTREF(__pyx_t_13);
+      {
+
+        /* "acide/asyncop.pyx":327
+ *             raise
+ *         finally:
+ *             self.priorities[0].clear()             # <<<<<<<<<<<<<<
+ *             self.loop_run = False
+ *             return
+ */
+        if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          __PYX_ERR(0, 327, __pyx_L21_error)
+        }
+        __pyx_t_8 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 327, __pyx_L21_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_clear); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 327, __pyx_L21_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __pyx_t_8 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+          __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_6);
+          if (likely(__pyx_t_8)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+            __Pyx_INCREF(__pyx_t_8);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_6, function);
+          }
+        }
+        __pyx_t_4 = (__pyx_t_8) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_8) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L21_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+        /* "acide/asyncop.pyx":328
+ *         finally:
+ *             self.priorities[0].clear()
+ *             self.loop_run = False             # <<<<<<<<<<<<<<
+ *             return
+ * 
+ */
+        __pyx_cur_scope->__pyx_v_self->loop_run = 0;
+
+        /* "acide/asyncop.pyx":329
+ *             self.priorities[0].clear()
+ *             self.loop_run = False
+ *             return             # <<<<<<<<<<<<<<
+ * 
+ *     async def run_once(self)  -> Coroutine:
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_r = NULL;
+        goto __pyx_L20_return;
+      }
+      __pyx_L20_return:;
+      if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_11);
+        __Pyx_XGIVEREF(__pyx_t_12);
+        __Pyx_XGIVEREF(__pyx_t_13);
+        __Pyx_ExceptionReset(__pyx_t_11, __pyx_t_12, __pyx_t_13);
+      }
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0;
+      goto __pyx_L0;
+      __pyx_L21_error:;
+      if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_11);
+        __Pyx_XGIVEREF(__pyx_t_12);
+        __Pyx_XGIVEREF(__pyx_t_13);
+        __Pyx_ExceptionReset(__pyx_t_11, __pyx_t_12, __pyx_t_13);
+      }
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0;
       goto __pyx_L1_error;
-      __pyx_L13_try_end:;
     }
   }
-
-  /* "acide/asyncop.pyx":191
- *                 raise
- *                 break
- *         self.priorities[0].clear()             # <<<<<<<<<<<<<<
- *         print(f"scheduler stopped {self}")
- * 
- */
-  if (unlikely(__pyx_cur_scope->__pyx_v_self->priorities == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 191, __pyx_L1_error)
-  }
-  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_self->priorities, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":192
- *                 break
- *         self.priorities[0].clear()
- *         print(f"scheduler stopped {self}")             # <<<<<<<<<<<<<<
- * 
- *     def run(self, mode: Optional[str] = None) -> None:
- */
-  __pyx_t_1 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_scheduler_stopped, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "acide/asyncop.pyx":179
- *         print(f"scheduler completed {self}")
+  /* "acide/asyncop.pyx":313
+ *                 r += 1
  * 
  *     async def run_forever(self)  -> Coroutine:             # <<<<<<<<<<<<<<
- *         self.priorities[0].set()
- *         while True:
+ *         try:
+ *             self.loop_run = True
  */
 
   /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_AddTraceback("run_forever", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
@@ -6106,19 +7665,249 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_26generator6(__pyx_Coroutin
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_18generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "acide/asyncop.pyx":194
- *         print(f"scheduler stopped {self}")
+/* "acide/asyncop.pyx":331
+ *             return
  * 
- *     def run(self, mode: Optional[str] = None) -> None:             # <<<<<<<<<<<<<<
- *         if mode is None:
- *             asyncio.ensure_future(self.run_once())
+ *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_once")
+ *         # try:
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_28run(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_27run[] = "Scheduler.run(self, mode: Optional[str] = None) -> None";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_28run(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_17run_once(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_16run_once[] = "Scheduler.run_once(self) -> Coroutine";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_17run_once(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("run_once (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_16run_once(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_16run_once(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *__pyx_cur_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("run_once", 0);
+  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3_run_once(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_3_run_once, __pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)Py_None);
+    __Pyx_INCREF(Py_None);
+    __PYX_ERR(0, 331, __pyx_L1_error)
+  } else {
+    __Pyx_GOTREF(__pyx_cur_scope);
+  }
+  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  {
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_18generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_once, __pyx_n_s_Scheduler_run_once, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 331, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_cur_scope);
+    __Pyx_RefNannyFinishContext();
+    return (PyObject *) gen;
+  }
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.run_once", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_18generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+{
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)__pyx_generator->closure);
+  PyObject *__pyx_r = NULL;
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("run_once", 0);
+  switch (__pyx_generator->resume_label) {
+    case 0: goto __pyx_L3_first_run;
+    default: /* CPython raises the right error here */
+    __Pyx_RefNannyFinishContext();
+    return NULL;
+  }
+  __pyx_L3_first_run:;
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 331, __pyx_L1_error)
+
+  /* "acide/asyncop.pyx":332
+ * 
+ *     async def run_once(self)  -> Coroutine:
+ *         print("run_once")             # <<<<<<<<<<<<<<
+ *         # try:
+ *         #     loop = asyncio.get_running_loop()
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+
+  /* "acide/asyncop.pyx":331
+ *             return
+ * 
+ *     async def run_once(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_once")
+ *         # try:
+ */
+
+  /* function exit code */
+  PyErr_SetNone(PyExc_StopIteration);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("run_once", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
+  #if !CYTHON_USE_EXC_INFO_STACK
+  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+  #endif
+  __pyx_generator->resume_label = -1;
+  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_21generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+
+/* "acide/asyncop.pyx":349
+ *         #     self.loop_run = False
+ * 
+ *     async def run_until_complete(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_until_complete")
+ *         # try:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_20run_until_complete(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_19run_until_complete[] = "Scheduler.run_until_complete(self) -> Coroutine";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_20run_until_complete(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("run_until_complete (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_19run_until_complete(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_19run_until_complete(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *__pyx_cur_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("run_until_complete", 0);
+  __pyx_cur_scope = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_until_complete(__pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_until_complete, __pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)Py_None);
+    __Pyx_INCREF(Py_None);
+    __PYX_ERR(0, 349, __pyx_L1_error)
+  } else {
+    __Pyx_GOTREF(__pyx_cur_scope);
+  }
+  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
+  {
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_7asyncop_9Scheduler_21generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_run_until_complete, __pyx_n_s_Scheduler_run_until_complete, __pyx_n_s_acide_asyncop); if (unlikely(!gen)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_cur_scope);
+    __Pyx_RefNannyFinishContext();
+    return (PyObject *) gen;
+  }
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.run_until_complete", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_21generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+{
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *__pyx_cur_scope = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)__pyx_generator->closure);
+  PyObject *__pyx_r = NULL;
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("run_until_complete", 0);
+  switch (__pyx_generator->resume_label) {
+    case 0: goto __pyx_L3_first_run;
+    default: /* CPython raises the right error here */
+    __Pyx_RefNannyFinishContext();
+    return NULL;
+  }
+  __pyx_L3_first_run:;
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 349, __pyx_L1_error)
+
+  /* "acide/asyncop.pyx":350
+ * 
+ *     async def run_until_complete(self)  -> Coroutine:
+ *         print("run_until_complete")             # <<<<<<<<<<<<<<
+ *         # try:
+ *         #     loop = asyncio.get_running_loop()
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+
+  /* "acide/asyncop.pyx":349
+ *         #     self.loop_run = False
+ * 
+ *     async def run_until_complete(self)  -> Coroutine:             # <<<<<<<<<<<<<<
+ *         print("run_until_complete")
+ *         # try:
+ */
+
+  /* function exit code */
+  PyErr_SetNone(PyExc_StopIteration);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("run_until_complete", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
+  #if !CYTHON_USE_EXC_INFO_STACK
+  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+  #endif
+  __pyx_generator->resume_label = -1;
+  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":370
+ *         #     self.loop_run = False
+ * 
+ *     def run(self, mode: Optional[Run] = Run.ONCE) -> None:             # <<<<<<<<<<<<<<
+ *         """Start the :class:`Scheduler`'s loop and run the scheduled
+ *         tasks concurently respecting their priority.
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_23run(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_22run[] = "Scheduler.run(self, mode: Optional[Run] = Run.ONCE) -> None\nStart the :class:`Scheduler`'s loop and run the scheduled\n        tasks concurently respecting their priority.\n        ";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_23run(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_mode = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -6129,7 +7918,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_28run(PyObject *__pyx_v_sel
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_mode,0};
     PyObject* values[1] = {0};
-    values[0] = ((PyObject *)Py_None);
+    values[0] = __pyx_k__10;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -6148,7 +7937,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_28run(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run") < 0)) __PYX_ERR(0, 194, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run") < 0)) __PYX_ERR(0, 370, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6162,26 +7951,26 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_28run(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 194, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("run", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 370, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("acide.asyncop.Scheduler.run", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_27run(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_mode);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_22run(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), __pyx_v_mode);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_27run(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_mode) {
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_22run(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_mode) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  int __pyx_t_2;
+  PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
@@ -6189,249 +7978,522 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_27run(struct __pyx_obj_5aci
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run", 0);
+  __Pyx_INCREF(__pyx_v_mode);
 
-  /* "acide/asyncop.pyx":195
- * 
- *     def run(self, mode: Optional[str] = None) -> None:
- *         if mode is None:             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_once())
- *         elif mode == "completed":
+  /* "acide/asyncop.pyx":374
+ *         tasks concurently respecting their priority.
+ *         """
+ *         if not self.loop_run:             # <<<<<<<<<<<<<<
+ *             if mode is Run.LAST:
+ *                 mode = self.last_mode
  */
-  __pyx_t_1 = (__pyx_v_mode == Py_None);
-  __pyx_t_2 = (__pyx_t_1 != 0);
-  if (__pyx_t_2) {
+  __pyx_t_1 = ((!(__pyx_v_self->loop_run != 0)) != 0);
+  if (__pyx_t_1) {
 
-    /* "acide/asyncop.pyx":196
- *     def run(self, mode: Optional[str] = None) -> None:
- *         if mode is None:
- *             asyncio.ensure_future(self.run_once())             # <<<<<<<<<<<<<<
- *         elif mode == "completed":
- *             asyncio.ensure_future(self.run_completed())
+    /* "acide/asyncop.pyx":375
+ *         """
+ *         if not self.loop_run:
+ *             if mode is Run.LAST:             # <<<<<<<<<<<<<<
+ *                 mode = self.last_mode
+ *             if mode is Run.ONCE:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 196, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_once); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Run); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 375, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_LAST); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_1 = (__pyx_v_mode == __pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_4 = (__pyx_t_1 != 0);
+    if (__pyx_t_4) {
 
-    /* "acide/asyncop.pyx":195
- * 
- *     def run(self, mode: Optional[str] = None) -> None:
- *         if mode is None:             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_once())
- *         elif mode == "completed":
+      /* "acide/asyncop.pyx":376
+ *         if not self.loop_run:
+ *             if mode is Run.LAST:
+ *                 mode = self.last_mode             # <<<<<<<<<<<<<<
+ *             if mode is Run.ONCE:
+ *                 self.last_mode = Run.ONCE
+ */
+      __pyx_t_3 = __pyx_v_self->last_mode;
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_DECREF_SET(__pyx_v_mode, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "acide/asyncop.pyx":375
+ *         """
+ *         if not self.loop_run:
+ *             if mode is Run.LAST:             # <<<<<<<<<<<<<<
+ *                 mode = self.last_mode
+ *             if mode is Run.ONCE:
+ */
+    }
+
+    /* "acide/asyncop.pyx":377
+ *             if mode is Run.LAST:
+ *                 mode = self.last_mode
+ *             if mode is Run.ONCE:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.ONCE
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 377, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ONCE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 377, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_4 = (__pyx_v_mode == __pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_1 = (__pyx_t_4 != 0);
+    if (__pyx_t_1) {
+
+      /* "acide/asyncop.pyx":378
+ *                 mode = self.last_mode
+ *             if mode is Run.ONCE:
+ *                 self.last_mode = Run.ONCE             # <<<<<<<<<<<<<<
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ *             elif mode == Run.UNTIL_COMPLETE:
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Run); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 378, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ONCE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 378, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_GIVEREF(__pyx_t_3);
+      __Pyx_GOTREF(__pyx_v_self->last_mode);
+      __Pyx_DECREF(__pyx_v_self->last_mode);
+      __pyx_v_self->last_mode = __pyx_t_3;
+      __pyx_t_3 = 0;
+
+      /* "acide/asyncop.pyx":379
+ *             if mode is Run.ONCE:
+ *                 self.last_mode = Run.ONCE
+ *                 self.runner = asyncio.ensure_future(self.run_once())             # <<<<<<<<<<<<<<
+ *             elif mode == Run.UNTIL_COMPLETE:
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 379, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 379, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_once); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 379, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_7)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_6, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 379, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+        }
+      }
+      __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 379, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_GIVEREF(__pyx_t_3);
+      __Pyx_GOTREF(__pyx_v_self->runner);
+      __Pyx_DECREF(__pyx_v_self->runner);
+      __pyx_v_self->runner = __pyx_t_3;
+      __pyx_t_3 = 0;
+
+      /* "acide/asyncop.pyx":377
+ *             if mode is Run.LAST:
+ *                 mode = self.last_mode
+ *             if mode is Run.ONCE:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.ONCE
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ */
+      goto __pyx_L5;
+    }
+
+    /* "acide/asyncop.pyx":380
+ *                 self.last_mode = Run.ONCE
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ *             elif mode == Run.UNTIL_COMPLETE:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_UNTIL_COMPLETE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_mode, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (__pyx_t_1) {
+
+      /* "acide/asyncop.pyx":381
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ *             elif mode == Run.UNTIL_COMPLETE:
+ *                 self.last_mode = Run.UNTIL_COMPLETE             # <<<<<<<<<<<<<<
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ *             elif mode == Run.FOREVER:
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 381, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_UNTIL_COMPLETE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 381, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GIVEREF(__pyx_t_5);
+      __Pyx_GOTREF(__pyx_v_self->last_mode);
+      __Pyx_DECREF(__pyx_v_self->last_mode);
+      __pyx_v_self->last_mode = __pyx_t_5;
+      __pyx_t_5 = 0;
+
+      /* "acide/asyncop.pyx":382
+ *             elif mode == Run.UNTIL_COMPLETE:
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())             # <<<<<<<<<<<<<<
+ *             elif mode == Run.FOREVER:
+ *                 self.last_mode = Run.FOREVER
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 382, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_until_complete); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 382, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_7)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_6, function);
+        }
+      }
+      __pyx_t_3 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 382, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
+        }
+      }
+      __pyx_t_5 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 382, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_GIVEREF(__pyx_t_5);
+      __Pyx_GOTREF(__pyx_v_self->runner);
+      __Pyx_DECREF(__pyx_v_self->runner);
+      __pyx_v_self->runner = __pyx_t_5;
+      __pyx_t_5 = 0;
+
+      /* "acide/asyncop.pyx":380
+ *                 self.last_mode = Run.ONCE
+ *                 self.runner = asyncio.ensure_future(self.run_once())
+ *             elif mode == Run.UNTIL_COMPLETE:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ */
+      goto __pyx_L5;
+    }
+
+    /* "acide/asyncop.pyx":383
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ *             elif mode == Run.FOREVER:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.FOREVER
+ *                 self.runner = asyncio.ensure_future(self.run_forever())
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Run); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 383, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FOREVER); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyObject_RichCompare(__pyx_v_mode, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 383, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 383, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (likely(__pyx_t_1)) {
+
+      /* "acide/asyncop.pyx":384
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ *             elif mode == Run.FOREVER:
+ *                 self.last_mode = Run.FOREVER             # <<<<<<<<<<<<<<
+ *                 self.runner = asyncio.ensure_future(self.run_forever())
+ *             else:
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Run); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 384, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FOREVER); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 384, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_GIVEREF(__pyx_t_2);
+      __Pyx_GOTREF(__pyx_v_self->last_mode);
+      __Pyx_DECREF(__pyx_v_self->last_mode);
+      __pyx_v_self->last_mode = __pyx_t_2;
+      __pyx_t_2 = 0;
+
+      /* "acide/asyncop.pyx":385
+ *             elif mode == Run.FOREVER:
+ *                 self.last_mode = Run.FOREVER
+ *                 self.runner = asyncio.ensure_future(self.run_forever())             # <<<<<<<<<<<<<<
+ *             else:
+ *                 raise ValueError(f"Unavailable mode {mode}")
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 385, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_forever); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 385, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_7)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_6, function);
+        }
+      }
+      __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 385, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 385, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GIVEREF(__pyx_t_2);
+      __Pyx_GOTREF(__pyx_v_self->runner);
+      __Pyx_DECREF(__pyx_v_self->runner);
+      __pyx_v_self->runner = __pyx_t_2;
+      __pyx_t_2 = 0;
+
+      /* "acide/asyncop.pyx":383
+ *                 self.last_mode = Run.UNTIL_COMPLETE
+ *                 self.runner = asyncio.ensure_future(self.run_until_complete())
+ *             elif mode == Run.FOREVER:             # <<<<<<<<<<<<<<
+ *                 self.last_mode = Run.FOREVER
+ *                 self.runner = asyncio.ensure_future(self.run_forever())
+ */
+      goto __pyx_L5;
+    }
+
+    /* "acide/asyncop.pyx":387
+ *                 self.runner = asyncio.ensure_future(self.run_forever())
+ *             else:
+ *                 raise ValueError(f"Unavailable mode {mode}")             # <<<<<<<<<<<<<<
+ *         else:
+ *             print("scheduler already running")
+ */
+    /*else*/ {
+      __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_mode, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Unavailable_mode, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 387, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __PYX_ERR(0, 387, __pyx_L1_error)
+    }
+    __pyx_L5:;
+
+    /* "acide/asyncop.pyx":374
+ *         tasks concurently respecting their priority.
+ *         """
+ *         if not self.loop_run:             # <<<<<<<<<<<<<<
+ *             if mode is Run.LAST:
+ *                 mode = self.last_mode
  */
     goto __pyx_L3;
   }
 
-  /* "acide/asyncop.pyx":197
- *         if mode is None:
- *             asyncio.ensure_future(self.run_once())
- *         elif mode == "completed":             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_completed())
- *         elif mode == "forever":
- */
-  __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_completed, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
-  if (__pyx_t_2) {
-
-    /* "acide/asyncop.pyx":198
- *             asyncio.ensure_future(self.run_once())
- *         elif mode == "completed":
- *             asyncio.ensure_future(self.run_completed())             # <<<<<<<<<<<<<<
- *         elif mode == "forever":
- *             asyncio.ensure_future(self.run_forever())
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 198, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_completed); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 198, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 198, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 198, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "acide/asyncop.pyx":197
- *         if mode is None:
- *             asyncio.ensure_future(self.run_once())
- *         elif mode == "completed":             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_completed())
- *         elif mode == "forever":
- */
-    goto __pyx_L3;
-  }
-
-  /* "acide/asyncop.pyx":199
- *         elif mode == "completed":
- *             asyncio.ensure_future(self.run_completed())
- *         elif mode == "forever":             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_forever())
+  /* "acide/asyncop.pyx":389
+ *                 raise ValueError(f"Unavailable mode {mode}")
  *         else:
- */
-  __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_forever, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (likely(__pyx_t_2)) {
-
-    /* "acide/asyncop.pyx":200
- *             asyncio.ensure_future(self.run_completed())
- *         elif mode == "forever":
- *             asyncio.ensure_future(self.run_forever())             # <<<<<<<<<<<<<<
- *         else:
- *             raise ValueError(f"Unavailable mode {mode}")
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_ensure_future); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 200, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_run_forever); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 200, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "acide/asyncop.pyx":199
- *         elif mode == "completed":
- *             asyncio.ensure_future(self.run_completed())
- *         elif mode == "forever":             # <<<<<<<<<<<<<<
- *             asyncio.ensure_future(self.run_forever())
- *         else:
- */
-    goto __pyx_L3;
-  }
-
-  /* "acide/asyncop.pyx":202
- *             asyncio.ensure_future(self.run_forever())
- *         else:
- *             raise ValueError(f"Unavailable mode {mode}")             # <<<<<<<<<<<<<<
+ *             print("scheduler already running")             # <<<<<<<<<<<<<<
  * 
- *     def __str__(self) -> str:
+ *     def stop(self) -> None:
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_mode, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Unavailable_mode, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 202, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __pyx_L3:;
 
-  /* "acide/asyncop.pyx":194
- *         print(f"scheduler stopped {self}")
+  /* "acide/asyncop.pyx":370
+ *         #     self.loop_run = False
  * 
- *     def run(self, mode: Optional[str] = None) -> None:             # <<<<<<<<<<<<<<
- *         if mode is None:
- *             asyncio.ensure_future(self.run_once())
+ *     def run(self, mode: Optional[Run] = Run.ONCE) -> None:             # <<<<<<<<<<<<<<
+ *         """Start the :class:`Scheduler`'s loop and run the scheduled
+ *         tasks concurently respecting their priority.
  */
 
   /* function exit code */
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("acide.asyncop.Scheduler.run", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_mode);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":391
+ *             print("scheduler already running")
+ * 
+ *     def stop(self) -> None:             # <<<<<<<<<<<<<<
+ *         """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+ *         self.loop_run = False
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_25stop(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_24stop[] = "Scheduler.stop(self) -> None\nStop the :class:`Scheduler`'s loop at the end of the current iteration.";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_25stop(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("stop (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_24stop(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_24stop(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("stop", 0);
+
+  /* "acide/asyncop.pyx":393
+ *     def stop(self) -> None:
+ *         """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+ *         self.loop_run = False             # <<<<<<<<<<<<<<
+ *         if self.runner:
+ *             self.runner.cancel()
+ */
+  __pyx_v_self->loop_run = 0;
+
+  /* "acide/asyncop.pyx":394
+ *         """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+ *         self.loop_run = False
+ *         if self.runner:             # <<<<<<<<<<<<<<
+ *             self.runner.cancel()
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_self->runner); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 394, __pyx_L1_error)
+  if (__pyx_t_1) {
+
+    /* "acide/asyncop.pyx":395
+ *         self.loop_run = False
+ *         if self.runner:
+ *             self.runner.cancel()             # <<<<<<<<<<<<<<
+ * 
+ *     def _short_dump(self):
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->runner, __pyx_n_s_cancel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "acide/asyncop.pyx":394
+ *         """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+ *         self.loop_run = False
+ *         if self.runner:             # <<<<<<<<<<<<<<
+ *             self.runner.cancel()
+ * 
+ */
+  }
+
+  /* "acide/asyncop.pyx":391
+ *             print("scheduler already running")
+ * 
+ *     def stop(self) -> None:             # <<<<<<<<<<<<<<
+ *         """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+ *         self.loop_run = False
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler.stop", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6439,413 +8501,448 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_27run(struct __pyx_obj_5aci
   return __pyx_r;
 }
 
-/* "acide/asyncop.pyx":204
- *             raise ValueError(f"Unavailable mode {mode}")
+/* "acide/asyncop.pyx":397
+ *             self.runner.cancel()
  * 
- *     def __str__(self) -> str:             # <<<<<<<<<<<<<<
- *         st = do = ""
- *         for i, q in enumerate(self.queues):
+ *     def _short_dump(self):             # <<<<<<<<<<<<<<
+ *         return (
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_30__str__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_30__str__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_27_short_dump(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_26_short_dump[] = "Scheduler._short_dump(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_27_short_dump(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__str__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_29__str__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("_short_dump (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_26_short_dump(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_29__str__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
-  PyObject *__pyx_v_st = NULL;
-  PyObject *__pyx_v_do = NULL;
-  PyObject *__pyx_v_i = NULL;
-  PyObject *__pyx_v_q = NULL;
-  PyObject *__pyx_v_t = NULL;
-  PyObject *__pyx_v_d = NULL;
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_26_short_dump(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  Py_ssize_t __pyx_t_3;
+  Py_ssize_t __pyx_t_2;
+  Py_UCS4 __pyx_t_3;
   PyObject *__pyx_t_4 = NULL;
-  Py_ssize_t __pyx_t_5;
-  Py_UCS4 __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *(*__pyx_t_8)(PyObject *);
-  PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  Py_ssize_t __pyx_t_6;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__str__", 0);
+  __Pyx_RefNannySetupContext("_short_dump", 0);
 
-  /* "acide/asyncop.pyx":205
+  /* "acide/asyncop.pyx":398
  * 
- *     def __str__(self) -> str:
- *         st = do = ""             # <<<<<<<<<<<<<<
- *         for i, q in enumerate(self.queues):
- *             st += f"#{i}[ "
- */
-  __Pyx_INCREF(__pyx_kp_u__4);
-  __pyx_v_st = __pyx_kp_u__4;
-  __Pyx_INCREF(__pyx_kp_u__4);
-  __pyx_v_do = __pyx_kp_u__4;
-
-  /* "acide/asyncop.pyx":206
- *     def __str__(self) -> str:
- *         st = do = ""
- *         for i, q in enumerate(self.queues):             # <<<<<<<<<<<<<<
- *             st += f"#{i}[ "
- *             for t in q:
- */
-  __Pyx_INCREF(__pyx_int_0);
-  __pyx_t_1 = __pyx_int_0;
-  __pyx_t_2 = __pyx_v_self->queues; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
-  for (;;) {
-    if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
-    #else
-    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    #endif
-    __Pyx_XDECREF_SET(__pyx_v_q, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __Pyx_INCREF(__pyx_t_1);
-    __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
-    __pyx_t_4 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_1);
-    __pyx_t_1 = __pyx_t_4;
-    __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":207
- *         st = do = ""
- *         for i, q in enumerate(self.queues):
- *             st += f"#{i}[ "             # <<<<<<<<<<<<<<
- *             for t in q:
- *                 st+=  f"{t.get_name()}, "
- */
-    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = 0;
-    __pyx_t_6 = 127;
-    __Pyx_INCREF(__pyx_kp_u__5);
-    __pyx_t_5 += 1;
-    __Pyx_GIVEREF(__pyx_kp_u__5);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u__5);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_i, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_6;
-    __pyx_t_5 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_7);
-    __pyx_t_7 = 0;
-    __Pyx_INCREF(__pyx_kp_u__6);
-    __pyx_t_5 += 2;
-    __Pyx_GIVEREF(__pyx_kp_u__6);
-    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u__6);
-    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_4, 3, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_4));
-    __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":208
- *         for i, q in enumerate(self.queues):
- *             st += f"#{i}[ "
- *             for t in q:             # <<<<<<<<<<<<<<
- *                 st+=  f"{t.get_name()}, "
- *             st += "], "
- */
-    if (likely(PyList_CheckExact(__pyx_v_q)) || PyTuple_CheckExact(__pyx_v_q)) {
-      __pyx_t_4 = __pyx_v_q; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
-      __pyx_t_8 = NULL;
-    } else {
-      __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_q); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 208, __pyx_L1_error)
-    }
-    for (;;) {
-      if (likely(!__pyx_t_8)) {
-        if (likely(PyList_CheckExact(__pyx_t_4))) {
-          if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
-          #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          #endif
-        } else {
-          if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
-          #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          #endif
-        }
-      } else {
-        __pyx_t_7 = __pyx_t_8(__pyx_t_4);
-        if (unlikely(!__pyx_t_7)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 208, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_7);
-      }
-      __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_7);
-      __pyx_t_7 = 0;
-
-      /* "acide/asyncop.pyx":209
- *             st += f"#{i}[ "
- *             for t in q:
- *                 st+=  f"{t.get_name()}, "             # <<<<<<<<<<<<<<
- *             st += "], "
- *         for d in self.dones:
- */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_get_name); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 209, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
-        __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
-        if (likely(__pyx_t_10)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-          __Pyx_INCREF(__pyx_t_10);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_9, function);
-        }
-      }
-      __pyx_t_7 = (__pyx_t_10) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_10) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
-      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_9 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 209, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 209, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_9));
-      __pyx_t_9 = 0;
-
-      /* "acide/asyncop.pyx":208
- *         for i, q in enumerate(self.queues):
- *             st += f"#{i}[ "
- *             for t in q:             # <<<<<<<<<<<<<<
- *                 st+=  f"{t.get_name()}, "
- *             st += "], "
- */
-    }
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":210
- *             for t in q:
- *                 st+=  f"{t.get_name()}, "
- *             st += "], "             # <<<<<<<<<<<<<<
- *         for d in self.dones:
- *             do += f"{d.get_name()}, "
- */
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_kp_u__8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_4));
-    __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":206
- *     def __str__(self) -> str:
- *         st = do = ""
- *         for i, q in enumerate(self.queues):             # <<<<<<<<<<<<<<
- *             st += f"#{i}[ "
- *             for t in q:
- */
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":211
- *                 st+=  f"{t.get_name()}, "
- *             st += "], "
- *         for d in self.dones:             # <<<<<<<<<<<<<<
- *             do += f"{d.get_name()}, "
- * 
- */
-  if (likely(PyList_CheckExact(__pyx_v_self->dones)) || PyTuple_CheckExact(__pyx_v_self->dones)) {
-    __pyx_t_1 = __pyx_v_self->dones; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
-    __pyx_t_8 = NULL;
-  } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_self->dones); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 211, __pyx_L1_error)
-  }
-  for (;;) {
-    if (likely(!__pyx_t_8)) {
-      if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 211, __pyx_L1_error)
-        #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        #endif
-      } else {
-        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 211, __pyx_L1_error)
-        #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        #endif
-      }
-    } else {
-      __pyx_t_2 = __pyx_t_8(__pyx_t_1);
-      if (unlikely(!__pyx_t_2)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 211, __pyx_L1_error)
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_2);
-    }
-    __Pyx_XDECREF_SET(__pyx_v_d, __pyx_t_2);
-    __pyx_t_2 = 0;
-
-    /* "acide/asyncop.pyx":212
- *             st += "], "
- *         for d in self.dones:
- *             do += f"{d.get_name()}, "             # <<<<<<<<<<<<<<
- * 
- *         return (
- */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_d, __pyx_n_s_get_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_9)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_9);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
-      }
-    }
-    __pyx_t_2 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_4, __pyx_kp_u__7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_v_do, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF_SET(__pyx_v_do, ((PyObject*)__pyx_t_4));
-    __pyx_t_4 = 0;
-
-    /* "acide/asyncop.pyx":211
- *                 st+=  f"{t.get_name()}, "
- *             st += "], "
- *         for d in self.dones:             # <<<<<<<<<<<<<<
- *             do += f"{d.get_name()}, "
- * 
- */
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "acide/asyncop.pyx":214
- *             do += f"{d.get_name()}, "
- * 
+ *     def _short_dump(self):
  *         return (             # <<<<<<<<<<<<<<
- *             f"Scheduler state: pendings({st}) | dones({do})"
- *         )
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
+ *             f"| dones({len(self.dones)}) "
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "acide/asyncop.pyx":215
- * 
+  /* "acide/asyncop.pyx":399
+ *     def _short_dump(self):
  *         return (
- *             f"Scheduler state: pendings({st}) | dones({do})"             # <<<<<<<<<<<<<<
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "             # <<<<<<<<<<<<<<
+ *             f"| dones({len(self.dones)}) "
+ *             f"| levels({self.priority_levels})"
+ */
+  __pyx_t_1 = PyTuple_New(9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 127;
+  __Pyx_INCREF(__pyx_kp_u_Scheduler_state);
+  __pyx_t_2 += 16;
+  __Pyx_GIVEREF(__pyx_kp_u_Scheduler_state);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Scheduler_state);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is_running); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_5);
+  __pyx_t_5 = 0;
+  __Pyx_INCREF(__pyx_kp_u_pendings);
+  __pyx_t_2 += 11;
+  __Pyx_GIVEREF(__pyx_kp_u_pendings);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_pendings);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_pendings_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = PyObject_Length(__pyx_t_5); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_6, 0, ' ', 'd'); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_5);
+  __pyx_t_5 = 0;
+  __Pyx_INCREF(__pyx_kp_u_dones);
+  __pyx_t_2 += 10;
+  __Pyx_GIVEREF(__pyx_kp_u_dones);
+  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_dones);
+
+  /* "acide/asyncop.pyx":400
+ *         return (
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
+ *             f"| dones({len(self.dones)}) "             # <<<<<<<<<<<<<<
+ *             f"| levels({self.priority_levels})"
+ *         )
+ */
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dones_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = PyObject_Length(__pyx_t_5); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 400, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_6, 0, ' ', 'd'); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_5);
+  __pyx_t_5 = 0;
+  __Pyx_INCREF(__pyx_kp_u_levels);
+  __pyx_t_2 += 11;
+  __Pyx_GIVEREF(__pyx_kp_u_levels);
+  PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u_levels);
+
+  /* "acide/asyncop.pyx":401
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
+ *             f"| dones({len(self.dones)}) "
+ *             f"| levels({self.priority_levels})"             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = 0;
-  __pyx_t_6 = 127;
-  __Pyx_INCREF(__pyx_kp_u_Scheduler_state_pendings);
-  __pyx_t_3 += 26;
-  __Pyx_GIVEREF(__pyx_kp_u_Scheduler_state_pendings);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Scheduler_state_pendings);
-  __Pyx_INCREF(__pyx_v_st);
-  __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_st) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_st) : __pyx_t_6;
-  __pyx_t_3 += __Pyx_PyUnicode_GET_LENGTH(__pyx_v_st);
-  __Pyx_GIVEREF(__pyx_v_st);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_st);
-  __Pyx_INCREF(__pyx_kp_u_dones);
-  __pyx_t_3 += 10;
-  __Pyx_GIVEREF(__pyx_kp_u_dones);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_dones);
-  __Pyx_INCREF(__pyx_v_do);
-  __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_do) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_do) : __pyx_t_6;
-  __pyx_t_3 += __Pyx_PyUnicode_GET_LENGTH(__pyx_v_do);
-  __Pyx_GIVEREF(__pyx_v_do);
-  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_v_do);
-  __Pyx_INCREF(__pyx_kp_u__9);
-  __pyx_t_3 += 1;
-  __Pyx_GIVEREF(__pyx_kp_u__9);
-  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u__9);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_priority_levels); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_);
+  __pyx_t_2 += 1;
+  __Pyx_GIVEREF(__pyx_kp_u_);
+  PyTuple_SET_ITEM(__pyx_t_1, 8, __pyx_kp_u_);
+
+  /* "acide/asyncop.pyx":399
+ *     def _short_dump(self):
+ *         return (
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "             # <<<<<<<<<<<<<<
+ *             f"| dones({len(self.dones)}) "
+ *             f"| levels({self.priority_levels})"
+ */
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 9, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "acide/asyncop.pyx":204
- *             raise ValueError(f"Unavailable mode {mode}")
+  /* "acide/asyncop.pyx":397
+ *             self.runner.cancel()
  * 
- *     def __str__(self) -> str:             # <<<<<<<<<<<<<<
- *         st = do = ""
- *         for i, q in enumerate(self.queues):
+ *     def _short_dump(self):             # <<<<<<<<<<<<<<
+ *         return (
+ *             f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("acide.asyncop.Scheduler._short_dump", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "acide/asyncop.pyx":404
+ *         )
+ * 
+ *     def __str__(self) -> str:             # <<<<<<<<<<<<<<
+ *         st = do = ""
+ *         for p in self.priorities:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_29__str__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_29__str__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__str__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_28__str__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+  PyObject *__pyx_v_st = NULL;
+  CYTHON_UNUSED PyObject *__pyx_v_do = NULL;
+  PyObject *__pyx_v_p = NULL;
+  PyObject *__pyx_v_t = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  PyObject *(*__pyx_t_6)(PyObject *);
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  Py_UCS4 __pyx_t_9;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__str__", 0);
+
+  /* "acide/asyncop.pyx":405
+ * 
+ *     def __str__(self) -> str:
+ *         st = do = ""             # <<<<<<<<<<<<<<
+ *         for p in self.priorities:
+ *             st += f"{p}[ "
+ */
+  __Pyx_INCREF(__pyx_kp_u__12);
+  __pyx_v_st = __pyx_kp_u__12;
+  __Pyx_INCREF(__pyx_kp_u__12);
+  __pyx_v_do = __pyx_kp_u__12;
+
+  /* "acide/asyncop.pyx":406
+ *     def __str__(self) -> str:
+ *         st = do = ""
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *             st += f"{p}[ "
+ *             for t in (<PriorityQueue> p).queue:
+ */
+  if (unlikely(__pyx_v_self->priorities == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(0, 406, __pyx_L1_error)
+  }
+  __pyx_t_1 = __pyx_v_self->priorities; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+  for (;;) {
+    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 406, __pyx_L1_error)
+    #else
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 406, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":407
+ *         st = do = ""
+ *         for p in self.priorities:
+ *             st += f"{p}[ "             # <<<<<<<<<<<<<<
+ *             for t in (<PriorityQueue> p).queue:
+ *                 st+=  f"{t.get_name()}, "
+ */
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_p, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_3));
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":408
+ *         for p in self.priorities:
+ *             st += f"{p}[ "
+ *             for t in (<PriorityQueue> p).queue:             # <<<<<<<<<<<<<<
+ *                 st+=  f"{t.get_name()}, "
+ *             st += "], "
+ */
+    if (likely(PyList_CheckExact(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->queue)) || PyTuple_CheckExact(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->queue)) {
+      __pyx_t_3 = ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->queue; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
+      __pyx_t_6 = NULL;
+    } else {
+      __pyx_t_5 = -1; __pyx_t_3 = PyObject_GetIter(((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)__pyx_v_p)->queue); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 408, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 408, __pyx_L1_error)
+    }
+    for (;;) {
+      if (likely(!__pyx_t_6)) {
+        if (likely(PyList_CheckExact(__pyx_t_3))) {
+          if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 408, __pyx_L1_error)
+          #else
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 408, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          #endif
+        } else {
+          if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 408, __pyx_L1_error)
+          #else
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 408, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          #endif
+        }
+      } else {
+        __pyx_t_4 = __pyx_t_6(__pyx_t_3);
+        if (unlikely(!__pyx_t_4)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 408, __pyx_L1_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_4);
+      }
+      __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
+      __pyx_t_4 = 0;
+
+      /* "acide/asyncop.pyx":409
+ *             st += f"{p}[ "
+ *             for t in (<PriorityQueue> p).queue:
+ *                 st+=  f"{t.get_name()}, "             # <<<<<<<<<<<<<<
+ *             st += "], "
+ *         return (
+ */
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_get_name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_8 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_7);
+        if (likely(__pyx_t_8)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_8);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_7, function);
+        }
+      }
+      __pyx_t_4 = (__pyx_t_8) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_8) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_7, __pyx_kp_u__14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_7));
+      __pyx_t_7 = 0;
+
+      /* "acide/asyncop.pyx":408
+ *         for p in self.priorities:
+ *             st += f"{p}[ "
+ *             for t in (<PriorityQueue> p).queue:             # <<<<<<<<<<<<<<
+ *                 st+=  f"{t.get_name()}, "
+ *             st += "], "
+ */
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":410
+ *             for t in (<PriorityQueue> p).queue:
+ *                 st+=  f"{t.get_name()}, "
+ *             st += "], "             # <<<<<<<<<<<<<<
+ *         return (
+ *             f"Scheduler state: pendings({st})"
+ */
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_kp_u__15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 410, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_3));
+    __pyx_t_3 = 0;
+
+    /* "acide/asyncop.pyx":406
+ *     def __str__(self) -> str:
+ *         st = do = ""
+ *         for p in self.priorities:             # <<<<<<<<<<<<<<
+ *             st += f"{p}[ "
+ *             for t in (<PriorityQueue> p).queue:
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/asyncop.pyx":411
+ *                 st+=  f"{t.get_name()}, "
+ *             st += "], "
+ *         return (             # <<<<<<<<<<<<<<
+ *             f"Scheduler state: pendings({st})"
+ *         )
+ */
+  __Pyx_XDECREF(__pyx_r);
+
+  /* "acide/asyncop.pyx":412
+ *             st += "], "
+ *         return (
+ *             f"Scheduler state: pendings({st})"             # <<<<<<<<<<<<<<
+ *         )
+ * 
+ */
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 412, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = 0;
+  __pyx_t_9 = 127;
+  __Pyx_INCREF(__pyx_kp_u_Scheduler_state_pendings);
+  __pyx_t_2 += 26;
+  __Pyx_GIVEREF(__pyx_kp_u_Scheduler_state_pendings);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Scheduler_state_pendings);
+  __Pyx_INCREF(__pyx_v_st);
+  __pyx_t_9 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_st) > __pyx_t_9) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_v_st) : __pyx_t_9;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_v_st);
+  __Pyx_GIVEREF(__pyx_v_st);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_st);
+  __Pyx_INCREF(__pyx_kp_u_);
+  __pyx_t_2 += 1;
+  __Pyx_GIVEREF(__pyx_kp_u_);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_);
+  __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 412, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "acide/asyncop.pyx":404
+ *         )
+ * 
+ *     def __str__(self) -> str:             # <<<<<<<<<<<<<<
+ *         st = do = ""
+ *         for p in self.priorities:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("acide.asyncop.Scheduler.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_st);
   __Pyx_XDECREF(__pyx_v_do);
-  __Pyx_XDECREF(__pyx_v_i);
-  __Pyx_XDECREF(__pyx_v_q);
+  __Pyx_XDECREF(__pyx_v_p);
   __Pyx_XDECREF(__pyx_v_t);
-  __Pyx_XDECREF(__pyx_v_d);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -6858,20 +8955,20 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_29__str__(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_32__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_31__reduce_cython__[] = "Scheduler.__reduce_cython__(self)";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_32__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_31__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_30__reduce_cython__[] = "Scheduler.__reduce_cython__(self)";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_31__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_31__reduce_cython__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_30__reduce_cython__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_31__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_30__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6886,7 +8983,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_31__reduce_cython__(CYTHON_
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6916,20 +9013,20 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_31__reduce_cython__(CYTHON_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_34__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_5acide_7asyncop_9Scheduler_33__setstate_cython__[] = "Scheduler.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_34__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_33__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_5acide_7asyncop_9Scheduler_32__setstate_cython__[] = "Scheduler.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_33__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_33__setstate_cython__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5acide_7asyncop_9Scheduler_32__setstate_cython__(((struct __pyx_obj_5acide_7asyncop_Scheduler *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_33__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_32__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6943,7 +9040,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_33__setstate_cython__(CYTHO
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6965,6 +9062,246 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_33__setstate_cython__(CYTHO
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+
+static PyObject *__pyx_tp_new_5acide_7asyncop_PriorityQueue(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *p;
+  PyObject *o;
+  o = (*t->tp_alloc)(t, 0);
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5acide_7asyncop_PriorityQueue *)o);
+  p->queue = Py_None; Py_INCREF(Py_None);
+  p->event = Py_None; Py_INCREF(Py_None);
+  p->pendings = Py_None; Py_INCREF(Py_None);
+  p->dones = Py_None; Py_INCREF(Py_None);
+  if (unlikely(__pyx_pw_5acide_7asyncop_13PriorityQueue_1__cinit__(o, a, k) < 0)) goto bad;
+  return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
+}
+
+static void __pyx_tp_dealloc_5acide_7asyncop_PriorityQueue(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *p = (struct __pyx_obj_5acide_7asyncop_PriorityQueue *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->queue);
+  Py_CLEAR(p->event);
+  Py_CLEAR(p->pendings);
+  Py_CLEAR(p->dones);
+  (*Py_TYPE(o)->tp_free)(o);
+}
+
+static int __pyx_tp_traverse_5acide_7asyncop_PriorityQueue(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *p = (struct __pyx_obj_5acide_7asyncop_PriorityQueue *)o;
+  if (p->queue) {
+    e = (*v)(p->queue, a); if (e) return e;
+  }
+  if (p->event) {
+    e = (*v)(p->event, a); if (e) return e;
+  }
+  if (p->pendings) {
+    e = (*v)(p->pendings, a); if (e) return e;
+  }
+  if (p->dones) {
+    e = (*v)(p->dones, a); if (e) return e;
+  }
+  return 0;
+}
+
+static int __pyx_tp_clear_5acide_7asyncop_PriorityQueue(PyObject *o) {
+  PyObject* tmp;
+  struct __pyx_obj_5acide_7asyncop_PriorityQueue *p = (struct __pyx_obj_5acide_7asyncop_PriorityQueue *)o;
+  tmp = ((PyObject*)p->queue);
+  p->queue = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->event);
+  p->event = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->pendings);
+  p->pendings = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->dones);
+  p->dones = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  return 0;
+}
+
+static PyObject *__pyx_getprop_5acide_7asyncop_13PriorityQueue_completed(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5acide_7asyncop_13PriorityQueue_9completed_1__get__(o);
+}
+
+static PyMethodDef __pyx_methods_5acide_7asyncop_PriorityQueue[] = {
+  {"add", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_7add, METH_O, __pyx_doc_5acide_7asyncop_13PriorityQueue_6add},
+  {"feed", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_9feed, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_8feed},
+  {"clear_queue", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_11clear_queue, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_10clear_queue},
+  {"clear_dones", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_13clear_dones, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_12clear_dones},
+  {"set", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_15set, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_14set},
+  {"clear", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_17clear, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_16clear},
+  {"is_set", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_19is_set, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_18is_set},
+  {"check", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_21check, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_20check},
+  {"wait", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_23wait, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_22wait},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_28__reduce_cython__, METH_NOARGS, __pyx_doc_5acide_7asyncop_13PriorityQueue_27__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_13PriorityQueue_30__setstate_cython__, METH_O, __pyx_doc_5acide_7asyncop_13PriorityQueue_29__setstate_cython__},
+  {0, 0, 0, 0}
+};
+
+static struct PyGetSetDef __pyx_getsets_5acide_7asyncop_PriorityQueue[] = {
+  {(char *)"completed", __pyx_getprop_5acide_7asyncop_13PriorityQueue_completed, 0, (char *)0, 0},
+  {0, 0, 0, 0, 0}
+};
+
+static PyNumberMethods __pyx_tp_as_number_PriorityQueue = {
+  0, /*nb_add*/
+  0, /*nb_subtract*/
+  0, /*nb_multiply*/
+  #if PY_MAJOR_VERSION < 3 || (CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x03050000)
+  0, /*nb_divide*/
+  #endif
+  0, /*nb_remainder*/
+  0, /*nb_divmod*/
+  0, /*nb_power*/
+  0, /*nb_negative*/
+  0, /*nb_positive*/
+  0, /*nb_absolute*/
+  __pyx_pw_5acide_7asyncop_13PriorityQueue_5__nonzero__, /*nb_nonzero*/
+  0, /*nb_invert*/
+  0, /*nb_lshift*/
+  0, /*nb_rshift*/
+  0, /*nb_and*/
+  0, /*nb_xor*/
+  0, /*nb_or*/
+  #if PY_MAJOR_VERSION < 3 || (CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x03050000)
+  0, /*nb_coerce*/
+  #endif
+  0, /*nb_int*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*nb_long*/
+  #else
+  0, /*reserved*/
+  #endif
+  0, /*nb_float*/
+  #if PY_MAJOR_VERSION < 3 || (CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x03050000)
+  0, /*nb_oct*/
+  #endif
+  #if PY_MAJOR_VERSION < 3 || (CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x03050000)
+  0, /*nb_hex*/
+  #endif
+  0, /*nb_inplace_add*/
+  0, /*nb_inplace_subtract*/
+  0, /*nb_inplace_multiply*/
+  #if PY_MAJOR_VERSION < 3 || (CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x03050000)
+  0, /*nb_inplace_divide*/
+  #endif
+  0, /*nb_inplace_remainder*/
+  0, /*nb_inplace_power*/
+  0, /*nb_inplace_lshift*/
+  0, /*nb_inplace_rshift*/
+  0, /*nb_inplace_and*/
+  0, /*nb_inplace_xor*/
+  0, /*nb_inplace_or*/
+  0, /*nb_floor_divide*/
+  0, /*nb_true_divide*/
+  0, /*nb_inplace_floor_divide*/
+  0, /*nb_inplace_true_divide*/
+  0, /*nb_index*/
+  #if PY_VERSION_HEX >= 0x03050000
+  0, /*nb_matrix_multiply*/
+  #endif
+  #if PY_VERSION_HEX >= 0x03050000
+  0, /*nb_inplace_matrix_multiply*/
+  #endif
+};
+
+static PySequenceMethods __pyx_tp_as_sequence_PriorityQueue = {
+  __pyx_pw_5acide_7asyncop_13PriorityQueue_3__len__, /*sq_length*/
+  0, /*sq_concat*/
+  0, /*sq_repeat*/
+  0, /*sq_item*/
+  0, /*sq_slice*/
+  0, /*sq_ass_item*/
+  0, /*sq_ass_slice*/
+  0, /*sq_contains*/
+  0, /*sq_inplace_concat*/
+  0, /*sq_inplace_repeat*/
+};
+
+static PyMappingMethods __pyx_tp_as_mapping_PriorityQueue = {
+  __pyx_pw_5acide_7asyncop_13PriorityQueue_3__len__, /*mp_length*/
+  0, /*mp_subscript*/
+  0, /*mp_ass_subscript*/
+};
+
+static PyTypeObject __pyx_type_5acide_7asyncop_PriorityQueue = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "acide.asyncop.PriorityQueue", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop_PriorityQueue), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5acide_7asyncop_PriorityQueue, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  __pyx_pw_5acide_7asyncop_13PriorityQueue_26__repr__, /*tp_repr*/
+  &__pyx_tp_as_number_PriorityQueue, /*tp_as_number*/
+  &__pyx_tp_as_sequence_PriorityQueue, /*tp_as_sequence*/
+  &__pyx_tp_as_mapping_PriorityQueue, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5acide_7asyncop_PriorityQueue, /*tp_traverse*/
+  __pyx_tp_clear_5acide_7asyncop_PriorityQueue, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_5acide_7asyncop_PriorityQueue, /*tp_methods*/
+  0, /*tp_members*/
+  __pyx_getsets_5acide_7asyncop_PriorityQueue, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5acide_7asyncop_PriorityQueue, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
+  0, /*tp_pypy_flags*/
+  #endif
+};
 static struct __pyx_vtabstruct_5acide_7asyncop_Scheduler __pyx_vtable_5acide_7asyncop_Scheduler;
 
 static PyObject *__pyx_tp_new_5acide_7asyncop_Scheduler(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
@@ -6974,9 +9311,9 @@ static PyObject *__pyx_tp_new_5acide_7asyncop_Scheduler(PyTypeObject *t, CYTHON_
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5acide_7asyncop_Scheduler *)o);
   p->__pyx_vtab = __pyx_vtabptr_5acide_7asyncop_Scheduler;
-  p->queues = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->priorities = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  p->dones = Py_None; Py_INCREF(Py_None);
+  p->last_mode = Py_None; Py_INCREF(Py_None);
+  p->runner = Py_None; Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5acide_7asyncop_9Scheduler_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
   bad:
@@ -6987,23 +9324,23 @@ static PyObject *__pyx_tp_new_5acide_7asyncop_Scheduler(PyTypeObject *t, CYTHON_
 static void __pyx_tp_dealloc_5acide_7asyncop_Scheduler(PyObject *o) {
   struct __pyx_obj_5acide_7asyncop_Scheduler *p = (struct __pyx_obj_5acide_7asyncop_Scheduler *)o;
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->queues);
   Py_CLEAR(p->priorities);
-  Py_CLEAR(p->dones);
+  Py_CLEAR(p->last_mode);
+  Py_CLEAR(p->runner);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
 static int __pyx_tp_traverse_5acide_7asyncop_Scheduler(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_5acide_7asyncop_Scheduler *p = (struct __pyx_obj_5acide_7asyncop_Scheduler *)o;
-  if (p->queues) {
-    e = (*v)(p->queues, a); if (e) return e;
-  }
   if (p->priorities) {
     e = (*v)(p->priorities, a); if (e) return e;
   }
-  if (p->dones) {
-    e = (*v)(p->dones, a); if (e) return e;
+  if (p->last_mode) {
+    e = (*v)(p->last_mode, a); if (e) return e;
+  }
+  if (p->runner) {
+    e = (*v)(p->runner, a); if (e) return e;
   }
   return 0;
 }
@@ -7011,16 +9348,20 @@ static int __pyx_tp_traverse_5acide_7asyncop_Scheduler(PyObject *o, visitproc v,
 static int __pyx_tp_clear_5acide_7asyncop_Scheduler(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_5acide_7asyncop_Scheduler *p = (struct __pyx_obj_5acide_7asyncop_Scheduler *)o;
-  tmp = ((PyObject*)p->queues);
-  p->queues = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
   tmp = ((PyObject*)p->priorities);
   p->priorities = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->dones);
-  p->dones = Py_None; Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->last_mode);
+  p->last_mode = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->runner);
+  p->runner = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
+}
+
+static PyObject *__pyx_getprop_5acide_7asyncop_9Scheduler_priority_levels(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5acide_7asyncop_9Scheduler_15priority_levels_1__get__(o);
 }
 
 static PyObject *__pyx_getprop_5acide_7asyncop_9Scheduler_pendings(PyObject *o, CYTHON_UNUSED void *x) {
@@ -7031,26 +9372,66 @@ static PyObject *__pyx_getprop_5acide_7asyncop_9Scheduler_dones(PyObject *o, CYT
   return __pyx_pw_5acide_7asyncop_9Scheduler_5dones_1__get__(o);
 }
 
+static PyObject *__pyx_getprop_5acide_7asyncop_9Scheduler_is_running(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5acide_7asyncop_9Scheduler_10is_running_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_5acide_7asyncop_9Scheduler_rate(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5acide_7asyncop_9Scheduler_4rate_1__get__(o);
+}
+
+static int __pyx_setprop_5acide_7asyncop_9Scheduler_rate(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_5acide_7asyncop_9Scheduler_4rate_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyMethodDef __pyx_methods_5acide_7asyncop_Scheduler[] = {
   {"new", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_3new, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_2new},
-  {"_scheduled", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_5_scheduled, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_4_scheduled},
-  {"schedule", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_8schedule, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_7schedule},
-  {"_runner", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_10_runner, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_9_runner},
-  {"_task", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_13_task, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_12_task},
-  {"_scheduler", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_16_scheduler, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_15_scheduler},
-  {"run_once", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_19run_once, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_18run_once},
-  {"run_completed", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_22run_completed, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_21run_completed},
-  {"run_forever", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_25run_forever, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_24run_forever},
-  {"run", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_28run, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_27run},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_32__reduce_cython__, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_31__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_34__setstate_cython__, METH_O, __pyx_doc_5acide_7asyncop_9Scheduler_33__setstate_cython__},
+  {"add_priority", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_7add_priority, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_6add_priority},
+  {"add", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_9add, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_8add},
+  {"_scheduled", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_10_scheduled},
+  {"run_forever", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_14run_forever, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_13run_forever},
+  {"run_once", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_17run_once, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_16run_once},
+  {"run_until_complete", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_20run_until_complete, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_19run_until_complete},
+  {"run", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5acide_7asyncop_9Scheduler_23run, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5acide_7asyncop_9Scheduler_22run},
+  {"stop", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_25stop, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_24stop},
+  {"_short_dump", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_27_short_dump, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_26_short_dump},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_31__reduce_cython__, METH_NOARGS, __pyx_doc_5acide_7asyncop_9Scheduler_30__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5acide_7asyncop_9Scheduler_33__setstate_cython__, METH_O, __pyx_doc_5acide_7asyncop_9Scheduler_32__setstate_cython__},
   {0, 0, 0, 0}
 };
 
 static struct PyGetSetDef __pyx_getsets_5acide_7asyncop_Scheduler[] = {
-  {(char *)"pendings", __pyx_getprop_5acide_7asyncop_9Scheduler_pendings, 0, (char *)0, 0},
-  {(char *)"dones", __pyx_getprop_5acide_7asyncop_9Scheduler_dones, 0, (char *)0, 0},
+  {(char *)"priority_levels", __pyx_getprop_5acide_7asyncop_9Scheduler_priority_levels, 0, (char *)"A :class:`int` as the actual level of priority in this\n        :class:`Scheduler` (read only).", 0},
+  {(char *)"pendings", __pyx_getprop_5acide_7asyncop_9Scheduler_pendings, 0, (char *)"A :class:`set` of scheduled pendings :class:`Task` (read only).", 0},
+  {(char *)"dones", __pyx_getprop_5acide_7asyncop_9Scheduler_dones, 0, (char *)"A :class:`set` of scheduled and completed :class:`Task` (read only).\n        Note that this set is clened at the begining of each :class:`Scheduler`\n        loop iteraton.\n        ", 0},
+  {(char *)"is_running", __pyx_getprop_5acide_7asyncop_9Scheduler_is_running, 0, (char *)"A boolean indicating if the :class:`Scheduler` loop is running (read only).\n        ", 0},
+  {(char *)"rate", __pyx_getprop_5acide_7asyncop_9Scheduler_rate, __pyx_setprop_5acide_7asyncop_9Scheduler_rate, (char *)"A :class:`float` as the time in second between each :class:`Scheduler`\n        loop iteraton (default to 0.001sec.).\n        ", 0},
   {0, 0, 0, 0, 0}
+};
+
+static PySequenceMethods __pyx_tp_as_sequence_Scheduler = {
+  __pyx_pw_5acide_7asyncop_9Scheduler_5__len__, /*sq_length*/
+  0, /*sq_concat*/
+  0, /*sq_repeat*/
+  0, /*sq_item*/
+  0, /*sq_slice*/
+  0, /*sq_ass_item*/
+  0, /*sq_ass_slice*/
+  0, /*sq_contains*/
+  0, /*sq_inplace_concat*/
+  0, /*sq_inplace_repeat*/
+};
+
+static PyMappingMethods __pyx_tp_as_mapping_Scheduler = {
+  __pyx_pw_5acide_7asyncop_9Scheduler_5__len__, /*mp_length*/
+  0, /*mp_subscript*/
+  0, /*mp_ass_subscript*/
 };
 
 static PyTypeObject __pyx_type_5acide_7asyncop_Scheduler = {
@@ -7075,16 +9456,16 @@ static PyTypeObject __pyx_type_5acide_7asyncop_Scheduler = {
   #endif
   0, /*tp_repr*/
   0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
+  &__pyx_tp_as_sequence_Scheduler, /*tp_as_sequence*/
+  &__pyx_tp_as_mapping_Scheduler, /*tp_as_mapping*/
   0, /*tp_hash*/
   0, /*tp_call*/
-  __pyx_pw_5acide_7asyncop_9Scheduler_30__str__, /*tp_str*/
+  __pyx_pw_5acide_7asyncop_9Scheduler_29__str__, /*tp_str*/
   0, /*tp_getattro*/
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
+  "Schedule *coroutines* and *awaitable* concurently as prioritized *Tasks*.\n\n    ", /*tp_doc*/
   __pyx_tp_traverse_5acide_7asyncop_Scheduler, /*tp_traverse*/
   __pyx_tp_clear_5acide_7asyncop_Scheduler, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -7125,14 +9506,14 @@ static PyTypeObject __pyx_type_5acide_7asyncop_Scheduler = {
   #endif
 };
 
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *__pyx_freelist_5acide_7asyncop___pyx_scope_struct___scheduled[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct___scheduled = 0;
+static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *__pyx_freelist_5acide_7asyncop___pyx_scope_struct__wait[8];
+static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct__wait = 0;
 
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct___scheduled(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct__wait(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct___scheduled > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct___scheduled[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct___scheduled];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct__wait > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait)))) {
+    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct__wait[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct__wait];
+    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -7142,8 +9523,117 @@ static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct___scheduled(PyT
   return o;
 }
 
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct___scheduled(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)o;
+static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct__wait(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_v_self);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct__wait < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait)))) {
+    __pyx_freelist_5acide_7asyncop___pyx_scope_struct__wait[__pyx_freecount_5acide_7asyncop___pyx_scope_struct__wait++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct__wait(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait *)o;
+  if (p->__pyx_v_self) {
+    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
+  }
+  return 0;
+}
+
+static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct__wait = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "acide.asyncop.__pyx_scope_struct__wait", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct__wait), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct__wait, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct__wait, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct__wait, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+
+static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__scheduled[8];
+static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__scheduled = 0;
+
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__scheduled(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__scheduled > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled)))) {
+    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__scheduled[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__scheduled];
+    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_1__scheduled(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_awt);
   Py_CLEAR(p->__pyx_v_callback);
@@ -7151,18 +9641,20 @@ static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct___scheduled(PyOb
   Py_CLEAR(p->__pyx_v_name);
   Py_CLEAR(p->__pyx_v_priority);
   Py_CLEAR(p->__pyx_v_result);
+  Py_CLEAR(p->__pyx_v_start);
   Py_CLEAR(p->__pyx_t_0);
   Py_CLEAR(p->__pyx_t_1);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct___scheduled < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct___scheduled[__pyx_freecount_5acide_7asyncop___pyx_scope_struct___scheduled++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)o);
+  Py_CLEAR(p->__pyx_t_2);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__scheduled < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled)))) {
+    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__scheduled[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__scheduled++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct___scheduled(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_1__scheduled(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled *)o;
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *)o;
   if (p->__pyx_v_awt) {
     e = (*v)(p->__pyx_v_awt, a); if (e) return e;
   }
@@ -7172,717 +9664,14 @@ static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct___scheduled(PyOb
   if (p->__pyx_v_loop) {
     e = (*v)(p->__pyx_v_loop, a); if (e) return e;
   }
-  if (p->__pyx_v_name) {
-    e = (*v)(p->__pyx_v_name, a); if (e) return e;
-  }
   if (p->__pyx_v_priority) {
-    e = (*v)(p->__pyx_v_priority, a); if (e) return e;
+    e = (*v)(((PyObject *)p->__pyx_v_priority), a); if (e) return e;
   }
   if (p->__pyx_v_result) {
     e = (*v)(p->__pyx_v_result, a); if (e) return e;
   }
-  if (p->__pyx_t_0) {
-    e = (*v)(p->__pyx_t_0, a); if (e) return e;
-  }
-  if (p->__pyx_t_1) {
-    e = (*v)(p->__pyx_t_1, a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct___scheduled", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct___scheduled), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct___scheduled, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct___scheduled, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct___scheduled, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__runner[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__runner = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__runner(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__runner > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__runner[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__runner];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_1__runner(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_done);
-  Py_CLEAR(p->__pyx_v_pending);
-  Py_CLEAR(p->__pyx_v_policy);
-  Py_CLEAR(p->__pyx_v_priority_id);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__runner < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_1__runner[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_1__runner++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_1__runner(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner *)o;
-  if (p->__pyx_v_done) {
-    e = (*v)(p->__pyx_v_done, a); if (e) return e;
-  }
-  if (p->__pyx_v_pending) {
-    e = (*v)(p->__pyx_v_pending, a); if (e) return e;
-  }
-  if (p->__pyx_v_policy) {
-    e = (*v)(p->__pyx_v_policy, a); if (e) return e;
-  }
-  if (p->__pyx_v_priority_id) {
-    e = (*v)(p->__pyx_v_priority_id, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_1__runner", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__runner), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_1__runner, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_1__runner, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__runner, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_2__task[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_2__task = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2__task(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2__task > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_2__task[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2__task];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_2__task(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_priority_id);
-  Py_CLEAR(p->__pyx_v_runner);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2__task < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_2__task[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2__task++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_2__task(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task *)o;
-  if (p->__pyx_v_priority_id) {
-    e = (*v)(p->__pyx_v_priority_id, a); if (e) return e;
-  }
-  if (p->__pyx_v_runner) {
-    e = (*v)(p->__pyx_v_runner, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_2__task = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_2__task", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2__task), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_2__task, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_2__task, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2__task, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_3__scheduler[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_3__scheduler = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3__scheduler(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3__scheduler > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_3__scheduler[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3__scheduler];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_3__scheduler(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_policy);
-  Py_CLEAR(p->__pyx_v_priority_id);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3__scheduler < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_3__scheduler[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3__scheduler++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_3__scheduler(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler *)o;
-  if (p->__pyx_v_policy) {
-    e = (*v)(p->__pyx_v_policy, a); if (e) return e;
-  }
-  if (p->__pyx_v_priority_id) {
-    e = (*v)(p->__pyx_v_priority_id, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_3__scheduler", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3__scheduler), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_3__scheduler, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_3__scheduler, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3__scheduler, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_once[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_once = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_once(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_once > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_once[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_once];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_4_run_once(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_once < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_once[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_once++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_4_run_once(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once *)o;
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_4_run_once", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_once), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_4_run_once, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_4_run_once, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_once, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_5_run_completed[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_5_run_completed = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_5_run_completed(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_5_run_completed > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_5_run_completed[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_5_run_completed];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_5_run_completed(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_scheduler);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_5_run_completed < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_5_run_completed[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_5_run_completed++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_5_run_completed(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed *)o;
-  if (p->__pyx_v_scheduler) {
-    e = (*v)(p->__pyx_v_scheduler, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_5_run_completed", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_5_run_completed), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_5_run_completed, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_5_run_completed, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_5_run_completed, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
-  0, /*tp_pypy_flags*/
-  #endif
-};
-
-static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_6_run_forever[8];
-static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_6_run_forever = 0;
-
-static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_6_run_forever(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_6_run_forever > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever)))) {
-    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_6_run_forever[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_6_run_forever];
-    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_6_run_forever(PyObject *o) {
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_scheduler);
-  Py_CLEAR(p->__pyx_v_self);
-  Py_CLEAR(p->__pyx_t_0);
-  Py_CLEAR(p->__pyx_t_1);
-  Py_CLEAR(p->__pyx_t_2);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_6_run_forever < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever)))) {
-    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_6_run_forever[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_6_run_forever++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_6_run_forever(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever *)o;
-  if (p->__pyx_v_scheduler) {
-    e = (*v)(p->__pyx_v_scheduler, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
+  if (p->__pyx_v_start) {
+    e = (*v)(p->__pyx_v_start, a); if (e) return e;
   }
   if (p->__pyx_t_0) {
     e = (*v)(p->__pyx_t_0, a); if (e) return e;
@@ -7896,12 +9685,12 @@ static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_6_run_forever(Py
   return 0;
 }
 
-static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever = {
+static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled = {
   PyVarObject_HEAD_INIT(0, 0)
-  "acide.asyncop.__pyx_scope_struct_6_run_forever", /*tp_name*/
-  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_6_run_forever), /*tp_basicsize*/
+  "acide.asyncop.__pyx_scope_struct_1__scheduled", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_6_run_forever, /*tp_dealloc*/
+  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_1__scheduled, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -7928,7 +9717,7 @@ static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever 
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_6_run_forever, /*tp_traverse*/
+  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_1__scheduled, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
@@ -7944,7 +9733,354 @@ static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever 
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_6_run_forever, /*tp_new*/
+  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_1__scheduled, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+
+static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_2_run_forever[8];
+static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_2_run_forever = 0;
+
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2_run_forever(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2_run_forever > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever)))) {
+    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_2_run_forever[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2_run_forever];
+    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_2_run_forever(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_v_p);
+  Py_CLEAR(p->__pyx_v_self);
+  Py_CLEAR(p->__pyx_t_0);
+  Py_CLEAR(p->__pyx_t_1);
+  Py_CLEAR(p->__pyx_t_2);
+  Py_CLEAR(p->__pyx_t_3);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2_run_forever < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever)))) {
+    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_2_run_forever[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_2_run_forever++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_2_run_forever(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever *)o;
+  if (p->__pyx_v_p) {
+    e = (*v)(p->__pyx_v_p, a); if (e) return e;
+  }
+  if (p->__pyx_v_self) {
+    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
+  }
+  if (p->__pyx_t_0) {
+    e = (*v)(p->__pyx_t_0, a); if (e) return e;
+  }
+  if (p->__pyx_t_1) {
+    e = (*v)(p->__pyx_t_1, a); if (e) return e;
+  }
+  if (p->__pyx_t_2) {
+    e = (*v)(p->__pyx_t_2, a); if (e) return e;
+  }
+  if (p->__pyx_t_3) {
+    e = (*v)(p->__pyx_t_3, a); if (e) return e;
+  }
+  return 0;
+}
+
+static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "acide.asyncop.__pyx_scope_struct_2_run_forever", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_2_run_forever), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_2_run_forever, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_2_run_forever, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_2_run_forever, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+
+static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_3_run_once[8];
+static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_3_run_once = 0;
+
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3_run_once(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3_run_once > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once)))) {
+    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_3_run_once[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3_run_once];
+    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_3_run_once(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_v_self);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3_run_once < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once)))) {
+    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_3_run_once[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_3_run_once++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_3_run_once(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once *)o;
+  if (p->__pyx_v_self) {
+    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
+  }
+  return 0;
+}
+
+static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "acide.asyncop.__pyx_scope_struct_3_run_once", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_3_run_once), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_3_run_once, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_3_run_once, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_3_run_once, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+
+static struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *__pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_until_complete[8];
+static int __pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_until_complete = 0;
+
+static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_until_complete(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_until_complete > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete)))) {
+    o = (PyObject*)__pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_until_complete[--__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_until_complete];
+    memset(o, 0, sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_4_run_until_complete(PyObject *o) {
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_v_self);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_until_complete < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete)))) {
+    __pyx_freelist_5acide_7asyncop___pyx_scope_struct_4_run_until_complete[__pyx_freecount_5acide_7asyncop___pyx_scope_struct_4_run_until_complete++] = ((struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_4_run_until_complete(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *p = (struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete *)o;
+  if (p->__pyx_v_self) {
+    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
+  }
+  return 0;
+}
+
+static PyTypeObject __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "acide.asyncop.__pyx_scope_struct_4_run_until_complete", /*tp_name*/
+  sizeof(struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_4_run_until_complete), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5acide_7asyncop___pyx_scope_struct_4_run_until_complete, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5acide_7asyncop___pyx_scope_struct_4_run_until_complete, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_until_complete, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -7986,7 +10122,7 @@ static PyModuleDef_Slot __pyx_moduledef_slots[] = {
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
     "asyncop",
-    0, /* m_doc */
+    __pyx_k_This_module_provides_utilities, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
   #else
@@ -8014,41 +10150,50 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_n_s_ALL_COMPLETED, __pyx_k_ALL_COMPLETED, sizeof(__pyx_k_ALL_COMPLETED), 0, 0, 1, 1},
+  {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
   {&__pyx_n_s_Any, __pyx_k_Any, sizeof(__pyx_k_Any), 0, 0, 1, 1},
   {&__pyx_n_s_AsyncReadyCallback, __pyx_k_AsyncReadyCallback, sizeof(__pyx_k_AsyncReadyCallback), 0, 0, 1, 1},
   {&__pyx_n_s_Awaitable, __pyx_k_Awaitable, sizeof(__pyx_k_Awaitable), 0, 0, 1, 1},
   {&__pyx_n_s_Callable, __pyx_k_Callable, sizeof(__pyx_k_Callable), 0, 0, 1, 1},
+  {&__pyx_n_s_CancelledError, __pyx_k_CancelledError, sizeof(__pyx_k_CancelledError), 0, 0, 1, 1},
   {&__pyx_n_s_Coroutine, __pyx_k_Coroutine, sizeof(__pyx_k_Coroutine), 0, 0, 1, 1},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
+  {&__pyx_kp_s_Enumeration_of_level_of_priority, __pyx_k_Enumeration_of_level_of_priority, sizeof(__pyx_k_Enumeration_of_level_of_priority), 0, 0, 1, 0},
+  {&__pyx_kp_s_Enumeration_of_running_mode_for, __pyx_k_Enumeration_of_running_mode_for, sizeof(__pyx_k_Enumeration_of_running_mode_for), 0, 0, 1, 0},
   {&__pyx_n_s_Event, __pyx_k_Event, sizeof(__pyx_k_Event), 0, 0, 1, 1},
-  {&__pyx_n_s_FIRST_COMPLETED, __pyx_k_FIRST_COMPLETED, sizeof(__pyx_k_FIRST_COMPLETED), 0, 0, 1, 1},
+  {&__pyx_n_s_FOREVER, __pyx_k_FOREVER, sizeof(__pyx_k_FOREVER), 0, 0, 1, 1},
   {&__pyx_n_s_Gio, __pyx_k_Gio, sizeof(__pyx_k_Gio), 0, 0, 1, 1},
-  {&__pyx_n_s_HIGHEST, __pyx_k_HIGHEST, sizeof(__pyx_k_HIGHEST), 0, 0, 1, 1},
-  {&__pyx_n_s_LOWEST, __pyx_k_LOWEST, sizeof(__pyx_k_LOWEST), 0, 0, 1, 1},
+  {&__pyx_n_s_HIGH, __pyx_k_HIGH, sizeof(__pyx_k_HIGH), 0, 0, 1, 1},
+  {&__pyx_n_s_IntEnum, __pyx_k_IntEnum, sizeof(__pyx_k_IntEnum), 0, 0, 1, 1},
+  {&__pyx_n_s_LAST, __pyx_k_LAST, sizeof(__pyx_k_LAST), 0, 0, 1, 1},
+  {&__pyx_n_s_LOW, __pyx_k_LOW, sizeof(__pyx_k_LOW), 0, 0, 1, 1},
   {&__pyx_n_s_NEXT, __pyx_k_NEXT, sizeof(__pyx_k_NEXT), 0, 0, 1, 1},
+  {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
+  {&__pyx_n_s_ONCE, __pyx_k_ONCE, sizeof(__pyx_k_ONCE), 0, 0, 1, 1},
   {&__pyx_n_s_Optional, __pyx_k_Optional, sizeof(__pyx_k_Optional), 0, 0, 1, 1},
   {&__pyx_n_s_Priority, __pyx_k_Priority, sizeof(__pyx_k_Priority), 0, 0, 1, 1},
+  {&__pyx_kp_u_PriorityQueue, __pyx_k_PriorityQueue, sizeof(__pyx_k_PriorityQueue), 0, 1, 0, 0},
+  {&__pyx_n_s_PriorityQueue_2, __pyx_k_PriorityQueue_2, sizeof(__pyx_k_PriorityQueue_2), 0, 0, 1, 1},
+  {&__pyx_n_s_PriorityQueue_wait, __pyx_k_PriorityQueue_wait, sizeof(__pyx_k_PriorityQueue_wait), 0, 0, 1, 1},
+  {&__pyx_n_s_Run, __pyx_k_Run, sizeof(__pyx_k_Run), 0, 0, 1, 1},
   {&__pyx_n_s_Scheduler, __pyx_k_Scheduler, sizeof(__pyx_k_Scheduler), 0, 0, 1, 1},
-  {&__pyx_n_s_Scheduler__runner, __pyx_k_Scheduler__runner, sizeof(__pyx_k_Scheduler__runner), 0, 0, 1, 1},
   {&__pyx_n_s_Scheduler__scheduled, __pyx_k_Scheduler__scheduled, sizeof(__pyx_k_Scheduler__scheduled), 0, 0, 1, 1},
-  {&__pyx_n_s_Scheduler__scheduler, __pyx_k_Scheduler__scheduler, sizeof(__pyx_k_Scheduler__scheduler), 0, 0, 1, 1},
-  {&__pyx_n_s_Scheduler__task, __pyx_k_Scheduler__task, sizeof(__pyx_k_Scheduler__task), 0, 0, 1, 1},
-  {&__pyx_n_s_Scheduler_run_completed, __pyx_k_Scheduler_run_completed, sizeof(__pyx_k_Scheduler_run_completed), 0, 0, 1, 1},
   {&__pyx_n_s_Scheduler_run_forever, __pyx_k_Scheduler_run_forever, sizeof(__pyx_k_Scheduler_run_forever), 0, 0, 1, 1},
   {&__pyx_n_s_Scheduler_run_once, __pyx_k_Scheduler_run_once, sizeof(__pyx_k_Scheduler_run_once), 0, 0, 1, 1},
+  {&__pyx_n_s_Scheduler_run_until_complete, __pyx_k_Scheduler_run_until_complete, sizeof(__pyx_k_Scheduler_run_until_complete), 0, 0, 1, 1},
+  {&__pyx_kp_u_Scheduler_state, __pyx_k_Scheduler_state, sizeof(__pyx_k_Scheduler_state), 0, 1, 0, 0},
   {&__pyx_kp_u_Scheduler_state_pendings, __pyx_k_Scheduler_state_pendings, sizeof(__pyx_k_Scheduler_state_pendings), 0, 1, 0, 0},
   {&__pyx_n_s_Task, __pyx_k_Task, sizeof(__pyx_k_Task), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
+  {&__pyx_n_s_UNTIL_COMPLETE, __pyx_k_UNTIL_COMPLETE, sizeof(__pyx_k_UNTIL_COMPLETE), 0, 0, 1, 1},
   {&__pyx_kp_u_Unavailable_mode, __pyx_k_Unavailable_mode, sizeof(__pyx_k_Unavailable_mode), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
-  {&__pyx_n_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 1},
-  {&__pyx_kp_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 0},
-  {&__pyx_kp_u__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 1, 0, 0},
+  {&__pyx_kp_u__12, __pyx_k__12, sizeof(__pyx_k__12), 0, 1, 0, 0},
+  {&__pyx_kp_u__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0, 0},
+  {&__pyx_kp_u__14, __pyx_k__14, sizeof(__pyx_k__14), 0, 1, 0, 0},
+  {&__pyx_kp_u__15, __pyx_k__15, sizeof(__pyx_k__15), 0, 1, 0, 0},
+  {&__pyx_n_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 1},
   {&__pyx_kp_u__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0, 0},
-  {&__pyx_kp_u__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0, 0},
-  {&__pyx_kp_u__8, __pyx_k__8, sizeof(__pyx_k__8), 0, 1, 0, 0},
-  {&__pyx_kp_u__9, __pyx_k__9, sizeof(__pyx_k__9), 0, 1, 0, 0},
   {&__pyx_n_s_acide_asyncop, __pyx_k_acide_asyncop, sizeof(__pyx_k_acide_asyncop), 0, 0, 1, 1},
   {&__pyx_kp_s_acide_asyncop_pyx, __pyx_k_acide_asyncop_pyx, sizeof(__pyx_k_acide_asyncop_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_add, __pyx_k_add, sizeof(__pyx_k_add), 0, 0, 1, 1},
@@ -8056,31 +10201,43 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_asyncio, __pyx_k_asyncio, sizeof(__pyx_k_asyncio), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_tasks, __pyx_k_asyncio_tasks, sizeof(__pyx_k_asyncio_tasks), 0, 0, 1, 1},
+  {&__pyx_kp_u_at, __pyx_k_at, sizeof(__pyx_k_at), 0, 1, 0, 0},
+  {&__pyx_n_s_auto, __pyx_k_auto, sizeof(__pyx_k_auto), 0, 0, 1, 1},
   {&__pyx_n_s_await, __pyx_k_await, sizeof(__pyx_k_await), 0, 0, 1, 1},
   {&__pyx_n_s_awt, __pyx_k_awt, sizeof(__pyx_k_awt), 0, 0, 1, 1},
   {&__pyx_n_s_callback, __pyx_k_callback, sizeof(__pyx_k_callback), 0, 0, 1, 1},
+  {&__pyx_n_s_cancel, __pyx_k_cancel, sizeof(__pyx_k_cancel), 0, 0, 1, 1},
+  {&__pyx_kp_u_cancelled, __pyx_k_cancelled, sizeof(__pyx_k_cancelled), 0, 1, 0, 0},
+  {&__pyx_n_s_check, __pyx_k_check, sizeof(__pyx_k_check), 0, 0, 1, 1},
   {&__pyx_n_s_clear, __pyx_k_clear, sizeof(__pyx_k_clear), 0, 0, 1, 1},
+  {&__pyx_n_s_clear_dones, __pyx_k_clear_dones, sizeof(__pyx_k_clear_dones), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_co, __pyx_k_co, sizeof(__pyx_k_co), 0, 0, 1, 1},
-  {&__pyx_n_u_completed, __pyx_k_completed, sizeof(__pyx_k_completed), 0, 1, 0, 1},
+  {&__pyx_n_s_completed, __pyx_k_completed, sizeof(__pyx_k_completed), 0, 0, 1, 1},
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
-  {&__pyx_n_s_create_future, __pyx_k_create_future, sizeof(__pyx_k_create_future), 0, 0, 1, 1},
   {&__pyx_n_s_create_task, __pyx_k_create_task, sizeof(__pyx_k_create_task), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
+  {&__pyx_n_s_done, __pyx_k_done, sizeof(__pyx_k_done), 0, 0, 1, 1},
+  {&__pyx_kp_u_done_for, __pyx_k_done_for, sizeof(__pyx_k_done_for), 0, 1, 0, 0},
   {&__pyx_kp_u_dones, __pyx_k_dones, sizeof(__pyx_k_dones), 0, 1, 0, 0},
+  {&__pyx_n_s_dones_2, __pyx_k_dones_2, sizeof(__pyx_k_dones_2), 0, 0, 1, 1},
   {&__pyx_n_s_ensure_future, __pyx_k_ensure_future, sizeof(__pyx_k_ensure_future), 0, 0, 1, 1},
   {&__pyx_n_s_enum, __pyx_k_enum, sizeof(__pyx_k_enum), 0, 0, 1, 1},
-  {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
-  {&__pyx_n_u_forever, __pyx_k_forever, sizeof(__pyx_k_forever), 0, 1, 0, 1},
+  {&__pyx_n_s_feed, __pyx_k_feed, sizeof(__pyx_k_feed), 0, 0, 1, 1},
   {&__pyx_n_s_functools, __pyx_k_functools, sizeof(__pyx_k_functools), 0, 0, 1, 1},
-  {&__pyx_n_s_gather, __pyx_k_gather, sizeof(__pyx_k_gather), 0, 0, 1, 1},
   {&__pyx_n_s_get_name, __pyx_k_get_name, sizeof(__pyx_k_get_name), 0, 0, 1, 1},
   {&__pyx_n_s_get_running_loop, __pyx_k_get_running_loop, sizeof(__pyx_k_get_running_loop), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_n_s_gi_repository, __pyx_k_gi_repository, sizeof(__pyx_k_gi_repository), 0, 0, 1, 1},
+  {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_kp_u_in, __pyx_k_in, sizeof(__pyx_k_in), 0, 1, 0, 0},
+  {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_inspect, __pyx_k_inspect, sizeof(__pyx_k_inspect), 0, 0, 1, 1},
+  {&__pyx_n_s_is_running, __pyx_k_is_running, sizeof(__pyx_k_is_running), 0, 0, 1, 1},
+  {&__pyx_n_s_is_set, __pyx_k_is_set, sizeof(__pyx_k_is_set), 0, 0, 1, 1},
+  {&__pyx_kp_u_levels, __pyx_k_levels, sizeof(__pyx_k_levels), 0, 1, 0, 0},
   {&__pyx_n_s_loop, __pyx_k_loop, sizeof(__pyx_k_loop), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
@@ -8090,58 +10247,62 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
-  {&__pyx_n_s_pendings, __pyx_k_pendings, sizeof(__pyx_k_pendings), 0, 0, 1, 1},
-  {&__pyx_n_s_policy, __pyx_k_policy, sizeof(__pyx_k_policy), 0, 0, 1, 1},
+  {&__pyx_kp_u_pendings, __pyx_k_pendings, sizeof(__pyx_k_pendings), 0, 1, 0, 0},
+  {&__pyx_n_s_pendings_2, __pyx_k_pendings_2, sizeof(__pyx_k_pendings_2), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
-  {&__pyx_n_s_priority, __pyx_k_priority, sizeof(__pyx_k_priority), 0, 0, 1, 1},
-  {&__pyx_kp_u_priority_2, __pyx_k_priority_2, sizeof(__pyx_k_priority_2), 0, 1, 0, 0},
-  {&__pyx_n_s_priority_id, __pyx_k_priority_id, sizeof(__pyx_k_priority_id), 0, 0, 1, 1},
+  {&__pyx_kp_u_priority, __pyx_k_priority, sizeof(__pyx_k_priority), 0, 1, 0, 0},
+  {&__pyx_n_s_priority_2, __pyx_k_priority_2, sizeof(__pyx_k_priority_2), 0, 0, 1, 1},
+  {&__pyx_n_s_priority_levels, __pyx_k_priority_levels, sizeof(__pyx_k_priority_levels), 0, 0, 1, 1},
+  {&__pyx_n_s_properties, __pyx_k_properties, sizeof(__pyx_k_properties), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
+  {&__pyx_kp_u_q, __pyx_k_q, sizeof(__pyx_k_q), 0, 1, 0, 0},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
+  {&__pyx_n_s_remove, __pyx_k_remove, sizeof(__pyx_k_remove), 0, 0, 1, 1},
   {&__pyx_n_s_result, __pyx_k_result, sizeof(__pyx_k_result), 0, 0, 1, 1},
-  {&__pyx_n_s_return_when, __pyx_k_return_when, sizeof(__pyx_k_return_when), 0, 0, 1, 1},
-  {&__pyx_n_s_run_completed, __pyx_k_run_completed, sizeof(__pyx_k_run_completed), 0, 0, 1, 1},
   {&__pyx_n_s_run_forever, __pyx_k_run_forever, sizeof(__pyx_k_run_forever), 0, 0, 1, 1},
   {&__pyx_n_s_run_once, __pyx_k_run_once, sizeof(__pyx_k_run_once), 0, 0, 1, 1},
-  {&__pyx_n_s_runner, __pyx_k_runner, sizeof(__pyx_k_runner), 0, 0, 1, 1},
-  {&__pyx_n_s_runner_2, __pyx_k_runner_2, sizeof(__pyx_k_runner_2), 0, 0, 1, 1},
+  {&__pyx_n_u_run_once, __pyx_k_run_once, sizeof(__pyx_k_run_once), 0, 1, 0, 1},
+  {&__pyx_n_s_run_until_complete, __pyx_k_run_until_complete, sizeof(__pyx_k_run_until_complete), 0, 0, 1, 1},
+  {&__pyx_n_u_run_until_complete, __pyx_k_run_until_complete, sizeof(__pyx_k_run_until_complete), 0, 1, 0, 1},
+  {&__pyx_kp_u_runner_cancelled, __pyx_k_runner_cancelled, sizeof(__pyx_k_runner_cancelled), 0, 1, 0, 0},
   {&__pyx_n_s_sch, __pyx_k_sch, sizeof(__pyx_k_sch), 0, 0, 1, 1},
   {&__pyx_n_s_scheduled, __pyx_k_scheduled, sizeof(__pyx_k_scheduled), 0, 0, 1, 1},
-  {&__pyx_n_s_scheduler, __pyx_k_scheduler, sizeof(__pyx_k_scheduler), 0, 0, 1, 1},
-  {&__pyx_kp_u_scheduler_completed, __pyx_k_scheduler_completed, sizeof(__pyx_k_scheduler_completed), 0, 1, 0, 0},
-  {&__pyx_kp_u_scheduler_stopped, __pyx_k_scheduler_stopped, sizeof(__pyx_k_scheduler_stopped), 0, 1, 0, 0},
+  {&__pyx_kp_u_scheduled_2, __pyx_k_scheduled_2, sizeof(__pyx_k_scheduled_2), 0, 1, 0, 0},
+  {&__pyx_kp_u_scheduled_for, __pyx_k_scheduled_for, sizeof(__pyx_k_scheduled_for), 0, 1, 0, 0},
+  {&__pyx_kp_u_scheduler_already_running, __pyx_k_scheduler_already_running, sizeof(__pyx_k_scheduler_already_running), 0, 1, 0, 0},
+  {&__pyx_kp_u_sec, __pyx_k_sec, sizeof(__pyx_k_sec), 0, 1, 0, 0},
   {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_s_set, __pyx_k_set, sizeof(__pyx_k_set), 0, 0, 1, 1},
   {&__pyx_n_s_set_name, __pyx_k_set_name, sizeof(__pyx_k_set_name), 0, 0, 1, 1},
-  {&__pyx_n_s_set_result, __pyx_k_set_result, sizeof(__pyx_k_set_result), 0, 0, 1, 1},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_sleep, __pyx_k_sleep, sizeof(__pyx_k_sleep), 0, 0, 1, 1},
+  {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_staticmethod, __pyx_k_staticmethod, sizeof(__pyx_k_staticmethod), 0, 0, 1, 1},
-  {&__pyx_n_s_task, __pyx_k_task, sizeof(__pyx_k_task), 0, 0, 1, 1},
+  {&__pyx_n_s_stop, __pyx_k_stop, sizeof(__pyx_k_stop), 0, 0, 1, 1},
+  {&__pyx_n_s_sum, __pyx_k_sum, sizeof(__pyx_k_sum), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
-  {&__pyx_n_s_timeout, __pyx_k_timeout, sizeof(__pyx_k_timeout), 0, 0, 1, 1},
+  {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
   {&__pyx_n_s_typing, __pyx_k_typing, sizeof(__pyx_k_typing), 0, 0, 1, 1},
-  {&__pyx_n_s_union, __pyx_k_union, sizeof(__pyx_k_union), 0, 0, 1, 1},
   {&__pyx_n_s_unique, __pyx_k_unique, sizeof(__pyx_k_unique), 0, 0, 1, 1},
   {&__pyx_kp_u_unset, __pyx_k_unset, sizeof(__pyx_k_unset), 0, 1, 0, 0},
   {&__pyx_n_s_wait, __pyx_k_wait, sizeof(__pyx_k_wait), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 57, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 104, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 116, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 166, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 140, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 281, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -8157,42 +10318,105 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__2);
+  __Pyx_GIVEREF(__pyx_tuple__2);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__3);
+  __Pyx_GIVEREF(__pyx_tuple__3);
+
+  /* "acide/asyncop.pyx":324
+ *                 self.clear()
+ *         except asyncio.CancelledError:
+ *             print("runner cancelled")             # <<<<<<<<<<<<<<
+ *             raise
+ *         finally:
+ */
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_runner_cancelled); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+
+  /* "acide/asyncop.pyx":332
+ * 
+ *     async def run_once(self)  -> Coroutine:
+ *         print("run_once")             # <<<<<<<<<<<<<<
+ *         # try:
+ *         #     loop = asyncio.get_running_loop()
+ */
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_u_run_once); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+
+  /* "acide/asyncop.pyx":350
+ * 
+ *     async def run_until_complete(self)  -> Coroutine:
+ *         print("run_until_complete")             # <<<<<<<<<<<<<<
+ *         # try:
+ *         #     loop = asyncio.get_running_loop()
+ */
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_u_run_until_complete); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+
+  /* "acide/asyncop.pyx":389
+ *                 raise ValueError(f"Unavailable mode {mode}")
+ *         else:
+ *             print("scheduler already running")             # <<<<<<<<<<<<<<
+ * 
+ *     def stop(self) -> None:
+ */
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_scheduler_already_running); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 389, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "acide/asyncop.pyx":58
+  /* "(tree fragment)":2
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+
+  /* "(tree fragment)":4
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ */
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
+
+  /* "acide/asyncop.pyx":141
  * 
  *     @staticmethod
  *     def new() -> 'Scheduler':             # <<<<<<<<<<<<<<
  *         cdef Scheduler sch
  *         sch = get_singleton()
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_sch); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_new, 58, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_sch); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_new, 141, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 141, __pyx_L1_error)
 
-  /* "acide/asyncop.pyx":75
+  /* "acide/asyncop.pyx":272
  * 
  *     @staticmethod
  *     async def _scheduled(             # <<<<<<<<<<<<<<
  *         awt: Awaitable,
- *         result: asyncio.Future,
+ *         priority: PriorityQueue,
  */
-  __pyx_tuple__14 = PyTuple_Pack(6, __pyx_n_s_awt, __pyx_n_s_result, __pyx_n_s_priority, __pyx_n_s_callback, __pyx_n_s_name_2, __pyx_n_s_loop); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 75, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_scheduled, 75, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(7, __pyx_n_s_awt, __pyx_n_s_priority_2, __pyx_n_s_callback, __pyx_n_s_name_2, __pyx_n_s_loop, __pyx_n_s_start, __pyx_n_s_result); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_scheduled, 272, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -8208,11 +10432,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
 
 if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
+  /* SizeCheck.init */
+  if (unlikely(__Pyx_check_sane_Py_ssize_t())) {
+    PyErr_WriteUnraisable(__pyx_m);
+}
+
+if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
+
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_888 = PyInt_FromLong(888); if (unlikely(!__pyx_int_888)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_999 = PyInt_FromLong(999); if (unlikely(!__pyx_int_999)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -8258,75 +10488,72 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop_PriorityQueue) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  #if PY_VERSION_HEX < 0x030800B1
+  __pyx_type_5acide_7asyncop_PriorityQueue.tp_print = 0;
+  #endif
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop_PriorityQueue.tp_dictoffset && __pyx_type_5acide_7asyncop_PriorityQueue.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop_PriorityQueue.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  }
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PriorityQueue_2, (PyObject *)&__pyx_type_5acide_7asyncop_PriorityQueue) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_7asyncop_PriorityQueue) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_ptype_5acide_7asyncop_PriorityQueue = &__pyx_type_5acide_7asyncop_PriorityQueue;
   __pyx_vtabptr_5acide_7asyncop_Scheduler = &__pyx_vtable_5acide_7asyncop_Scheduler;
-  __pyx_vtable_5acide_7asyncop_Scheduler.schedule = (PyObject *(*)(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_schedule *__pyx_optional_args))__pyx_f_5acide_7asyncop_9Scheduler_schedule;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_vtable_5acide_7asyncop_Scheduler.add_priority = (int (*)(struct __pyx_obj_5acide_7asyncop_Scheduler *, int __pyx_skip_dispatch))__pyx_f_5acide_7asyncop_9Scheduler_add_priority;
+  __pyx_vtable_5acide_7asyncop_Scheduler.add = (PyObject *(*)(struct __pyx_obj_5acide_7asyncop_Scheduler *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_7asyncop_9Scheduler_add *__pyx_optional_args))__pyx_f_5acide_7asyncop_9Scheduler_add;
+  __pyx_vtable_5acide_7asyncop_Scheduler.clear = (PyObject *(*)(struct __pyx_obj_5acide_7asyncop_Scheduler *))__pyx_f_5acide_7asyncop_9Scheduler_clear;
+  __pyx_vtable_5acide_7asyncop_Scheduler.control = (PyObject *(*)(struct __pyx_obj_5acide_7asyncop_Scheduler *, struct __pyx_obj_5acide_7asyncop_PriorityQueue *))__pyx_f_5acide_7asyncop_9Scheduler_control;
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5acide_7asyncop_Scheduler.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop_Scheduler.tp_dictoffset && __pyx_type_5acide_7asyncop_Scheduler.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5acide_7asyncop_Scheduler.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  if (__Pyx_SetVtable(__pyx_type_5acide_7asyncop_Scheduler.tp_dict, __pyx_vtabptr_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Scheduler, (PyObject *)&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5acide_7asyncop_Scheduler.tp_dict, __pyx_vtabptr_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Scheduler, (PyObject *)&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5acide_7asyncop_Scheduler) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
   __pyx_ptype_5acide_7asyncop_Scheduler = &__pyx_type_5acide_7asyncop_Scheduler;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct__wait) < 0) __PYX_ERR(0, 114, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled.tp_print = 0;
+  __pyx_type_5acide_7asyncop___pyx_scope_struct__wait.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct__wait.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct__wait.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop___pyx_scope_struct__wait.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct___scheduled = &__pyx_type_5acide_7asyncop___pyx_scope_struct___scheduled;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_ptype_5acide_7asyncop___pyx_scope_struct__wait = &__pyx_type_5acide_7asyncop___pyx_scope_struct__wait;
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled) < 0) __PYX_ERR(0, 272, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner.tp_print = 0;
+  __pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__runner = &__pyx_type_5acide_7asyncop___pyx_scope_struct_1__runner;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_2__task) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_1__scheduled = &__pyx_type_5acide_7asyncop___pyx_scope_struct_1__scheduled;
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_2__task.tp_print = 0;
+  __pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_2__task.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_2__task.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_2__task.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_2__task = &__pyx_type_5acide_7asyncop___pyx_scope_struct_2__task;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_2_run_forever = &__pyx_type_5acide_7asyncop___pyx_scope_struct_2_run_forever;
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler.tp_print = 0;
+  __pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_3__scheduler = &__pyx_type_5acide_7asyncop___pyx_scope_struct_3__scheduler;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_3_run_once = &__pyx_type_5acide_7asyncop___pyx_scope_struct_3_run_once;
+  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete) < 0) __PYX_ERR(0, 349, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once.tp_print = 0;
+  __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_once = &__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_once;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed) < 0) __PYX_ERR(0, 168, __pyx_L1_error)
-  #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed.tp_print = 0;
-  #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_5_run_completed = &__pyx_type_5acide_7asyncop___pyx_scope_struct_5_run_completed;
-  if (PyType_Ready(&__pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
-  #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever.tp_print = 0;
-  #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever.tp_dictoffset && __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_6_run_forever = &__pyx_type_5acide_7asyncop___pyx_scope_struct_6_run_forever;
+  __pyx_ptype_5acide_7asyncop___pyx_scope_struct_4_run_until_complete = &__pyx_type_5acide_7asyncop___pyx_scope_struct_4_run_until_complete;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -8518,7 +10745,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("asyncop", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("asyncop", __pyx_methods, __pyx_k_This_module_provides_utilities, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -8564,38 +10791,38 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "acide/asyncop.pyx":18
- * # along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * #
+  /* "acide/asyncop.pyx":26
+ * """
+ * 
  * import asyncio             # <<<<<<<<<<<<<<
  * import functools
  * from typing import Any, Awaitable, Callable, Coroutine, Optional
  */
-  __pyx_t_1 = __Pyx_patch_asyncio(__Pyx_Import(__pyx_n_s_asyncio, 0, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_patch_asyncio(__Pyx_Import(__pyx_n_s_asyncio, 0, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_asyncio, __pyx_t_1) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_asyncio, __pyx_t_1) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/asyncop.pyx":19
- * #
+  /* "acide/asyncop.pyx":27
+ * 
  * import asyncio
  * import functools             # <<<<<<<<<<<<<<
  * from typing import Any, Awaitable, Callable, Coroutine, Optional
- * from enum import Enum, unique
+ * from enum import Enum, IntEnum, unique, auto
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_functools, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_functools, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_functools, __pyx_t_1) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_functools, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/asyncop.pyx":20
+  /* "acide/asyncop.pyx":28
  * import asyncio
  * import functools
  * from typing import Any, Awaitable, Callable, Coroutine, Optional             # <<<<<<<<<<<<<<
- * from enum import Enum, unique
+ * from enum import Enum, IntEnum, unique, auto
  * 
  */
-  __pyx_t_1 = PyList_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Any);
   __Pyx_GIVEREF(__pyx_n_s_Any);
@@ -8612,99 +10839,113 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_Optional);
   __Pyx_GIVEREF(__pyx_n_s_Optional);
   PyList_SET_ITEM(__pyx_t_1, 4, __pyx_n_s_Optional);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_typing, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_typing, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Any); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Any); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Any, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Any, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Awaitable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Awaitable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Awaitable, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Awaitable, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Callable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Callable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Callable, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Callable, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Coroutine); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Coroutine); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Coroutine, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Coroutine, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Optional); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Optional); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Optional, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Optional, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "acide/asyncop.pyx":21
+  /* "acide/asyncop.pyx":29
  * import functools
  * from typing import Any, Awaitable, Callable, Coroutine, Optional
- * from enum import Enum, unique             # <<<<<<<<<<<<<<
+ * from enum import Enum, IntEnum, unique, auto             # <<<<<<<<<<<<<<
  * 
  * from gi.repository import Gio
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_Enum);
   __Pyx_GIVEREF(__pyx_n_s_Enum);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_Enum);
+  __Pyx_INCREF(__pyx_n_s_IntEnum);
+  __Pyx_GIVEREF(__pyx_n_s_IntEnum);
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_IntEnum);
   __Pyx_INCREF(__pyx_n_s_unique);
   __Pyx_GIVEREF(__pyx_n_s_unique);
-  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_unique);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_2, 2, __pyx_n_s_unique);
+  __Pyx_INCREF(__pyx_n_s_auto);
+  __Pyx_GIVEREF(__pyx_n_s_auto);
+  PyList_SET_ITEM(__pyx_t_2, 3, __pyx_n_s_auto);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_2) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_unique); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_IntEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unique, __pyx_t_2) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_IntEnum, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_unique); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unique, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_auto, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/asyncop.pyx":23
- * from enum import Enum, unique
+  /* "acide/asyncop.pyx":31
+ * from enum import Enum, IntEnum, unique, auto
  * 
  * from gi.repository import Gio             # <<<<<<<<<<<<<<
  * 
  * cimport cython
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Gio);
   __Pyx_GIVEREF(__pyx_n_s_Gio);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Gio);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_gi_repository, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_gi_repository, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Gio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Gio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Gio, __pyx_t_1) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Gio, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "acide/asyncop.pyx":28
+  /* "acide/asyncop.pyx":36
  * 
  * 
  * AsyncReadyCallback = Callable[[Any, Gio.Task, Any], None]             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Callable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Callable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Any); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Any); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Gio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Gio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_Task); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_Task); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Any); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_Any); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = PyList_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_5 = PyList_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
@@ -8715,7 +10956,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_4 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5);
@@ -8723,77 +10964,158 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(Py_None);
   PyTuple_SET_ITEM(__pyx_t_3, 1, Py_None);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AsyncReadyCallback, __pyx_t_5) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AsyncReadyCallback, __pyx_t_5) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "acide/asyncop.pyx":32
+  /* "acide/asyncop.pyx":40
  * 
  * @unique
- * class Priority(Enum):             # <<<<<<<<<<<<<<
- *     HIGHEST = 0
- *     LOWEST = 999
+ * class Run(Enum):             # <<<<<<<<<<<<<<
+ *     """Enumeration of running mode for the :class:`Scheduler`'s loop.
+ *     """
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Enum); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Enum); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_3, __pyx_n_s_Priority, __pyx_n_s_Priority, (PyObject *) NULL, __pyx_n_s_acide_asyncop, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_3, __pyx_n_s_Run, __pyx_n_s_Run, (PyObject *) NULL, __pyx_n_s_acide_asyncop, __pyx_kp_s_Enumeration_of_running_mode_for); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "acide/asyncop.pyx":33
+  /* "acide/asyncop.pyx":43
+ *     """Enumeration of running mode for the :class:`Scheduler`'s loop.
+ *     """
+ *     ONCE = auto()             # <<<<<<<<<<<<<<
+ *     UNTIL_COMPLETE = auto()
+ *     FOREVER = auto()
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_ONCE, __pyx_t_4) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "acide/asyncop.pyx":44
+ *     """
+ *     ONCE = auto()
+ *     UNTIL_COMPLETE = auto()             # <<<<<<<<<<<<<<
+ *     FOREVER = auto()
+ *     LAST = auto()
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_UNTIL_COMPLETE, __pyx_t_4) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "acide/asyncop.pyx":45
+ *     ONCE = auto()
+ *     UNTIL_COMPLETE = auto()
+ *     FOREVER = auto()             # <<<<<<<<<<<<<<
+ *     LAST = auto()
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_FOREVER, __pyx_t_4) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "acide/asyncop.pyx":46
+ *     UNTIL_COMPLETE = auto()
+ *     FOREVER = auto()
+ *     LAST = auto()             # <<<<<<<<<<<<<<
+ * 
  * @unique
- * class Priority(Enum):
- *     HIGHEST = 0             # <<<<<<<<<<<<<<
- *     LOWEST = 999
- *     NEXT = 888
  */
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_HIGHEST, __pyx_int_0) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_LAST, __pyx_t_4) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/asyncop.pyx":34
- * class Priority(Enum):
- *     HIGHEST = 0
- *     LOWEST = 999             # <<<<<<<<<<<<<<
- *     NEXT = 888
- * 
- */
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_LOWEST, __pyx_int_999) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":35
- *     HIGHEST = 0
- *     LOWEST = 999
- *     NEXT = 888             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_NEXT, __pyx_int_888) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
-
-  /* "acide/asyncop.pyx":31
+  /* "acide/asyncop.pyx":39
  * 
  * 
  * @unique             # <<<<<<<<<<<<<<
- * class Priority(Enum):
- *     HIGHEST = 0
+ * class Run(Enum):
+ *     """Enumeration of running mode for the :class:`Scheduler`'s loop.
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_unique); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_unique); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "acide/asyncop.pyx":32
+  /* "acide/asyncop.pyx":40
  * 
  * @unique
- * class Priority(Enum):             # <<<<<<<<<<<<<<
- *     HIGHEST = 0
- *     LOWEST = 999
+ * class Run(Enum):             # <<<<<<<<<<<<<<
+ *     """Enumeration of running mode for the :class:`Scheduler`'s loop.
+ *     """
  */
-  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_Priority, __pyx_t_3, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_Run, __pyx_t_3, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -8808,16 +11130,130 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Priority, __pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Run, __pyx_t_4) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "acide/asyncop.pyx":38
+  /* "acide/asyncop.pyx":49
+ * 
+ * @unique
+ * class Priority(IntEnum):             # <<<<<<<<<<<<<<
+ *     """Enumeration of level of priority for scheuled task.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_IntEnum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_5, __pyx_n_s_Priority, __pyx_n_s_Priority, (PyObject *) NULL, __pyx_n_s_acide_asyncop, __pyx_kp_s_Enumeration_of_level_of_priority); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "acide/asyncop.pyx":52
+ *     """Enumeration of level of priority for scheuled task.
+ *     """
+ *     HIGH = 0             # <<<<<<<<<<<<<<
+ *     NEXT = auto()
+ *     LOW = -1
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_HIGH, __pyx_int_0) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+
+  /* "acide/asyncop.pyx":53
+ *     """
+ *     HIGH = 0
+ *     NEXT = auto()             # <<<<<<<<<<<<<<
+ *     LOW = -1
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_auto); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_NEXT, __pyx_t_4) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "acide/asyncop.pyx":54
+ *     HIGH = 0
+ *     NEXT = auto()
+ *     LOW = -1             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_LOW, __pyx_int_neg_1) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+
+  /* "acide/asyncop.pyx":48
+ *     LAST = auto()
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class Priority(IntEnum):
+ *     """Enumeration of level of priority for scheuled task.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_unique); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+
+  /* "acide/asyncop.pyx":49
+ * 
+ * @unique
+ * class Priority(IntEnum):             # <<<<<<<<<<<<<<
+ *     """Enumeration of level of priority for scheuled task.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_Priority, __pyx_t_5, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Priority, __pyx_t_4) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "acide/asyncop.pyx":58
+ * 
+ * cdef int _id[1]
+ * _id[0] = 0             # <<<<<<<<<<<<<<
+ * cdef int _unique_id():
+ *     _id[0] += 1
+ */
+  (__pyx_v_5acide_7asyncop__id[0]) = 0;
+
+  /* "acide/asyncop.pyx":121
  * 
  * 
  * cdef Scheduler _sched_singleton = None             # <<<<<<<<<<<<<<
@@ -8829,89 +11265,89 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF_SET(__pyx_v_5acide_7asyncop__sched_singleton, ((struct __pyx_obj_5acide_7asyncop_Scheduler *)Py_None));
   __Pyx_GIVEREF(Py_None);
 
-  /* "acide/asyncop.pyx":58
+  /* "acide/asyncop.pyx":141
  * 
  *     @staticmethod
  *     def new() -> 'Scheduler':             # <<<<<<<<<<<<<<
  *         cdef Scheduler sch
  *         sch = get_singleton()
  */
-  __pyx_t_3 = PyCFunction_NewEx(&__pyx_mdef_5acide_7asyncop_9Scheduler_3new, NULL, __pyx_n_s_acide_asyncop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_new, __pyx_t_3) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = PyCFunction_NewEx(&__pyx_mdef_5acide_7asyncop_9Scheduler_3new, NULL, __pyx_n_s_acide_asyncop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_new, __pyx_t_5) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   PyType_Modified(__pyx_ptype_5acide_7asyncop_Scheduler);
 
-  /* "acide/asyncop.pyx":57
- *         self.rate = 0.001
+  /* "acide/asyncop.pyx":140
+ *         self.loop_run = False
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def new() -> 'Scheduler':
  *         cdef Scheduler sch
  */
-  __Pyx_GetNameInClass(__pyx_t_3, (PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler, __pyx_n_s_new); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetNameInClass(__pyx_t_5, (PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler, __pyx_n_s_new); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_new, __pyx_t_5) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_new, __pyx_t_3) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_5acide_7asyncop_Scheduler);
 
-  /* "acide/asyncop.pyx":75
+  /* "acide/asyncop.pyx":272
  * 
  *     @staticmethod
  *     async def _scheduled(             # <<<<<<<<<<<<<<
  *         awt: Awaitable,
- *         result: asyncio.Future,
+ *         priority: PriorityQueue,
  */
-  __pyx_t_5 = PyCFunction_NewEx(&__pyx_mdef_5acide_7asyncop_9Scheduler_5_scheduled, NULL, __pyx_n_s_acide_asyncop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_scheduled, __pyx_t_5) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_3 = PyCFunction_NewEx(&__pyx_mdef_5acide_7asyncop_9Scheduler_11_scheduled, NULL, __pyx_n_s_acide_asyncop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_scheduled, __pyx_t_3) < 0) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_5acide_7asyncop_Scheduler);
 
-  /* "acide/asyncop.pyx":74
- *         return self.dones.copy()
+  /* "acide/asyncop.pyx":271
+ *         return task
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     async def _scheduled(
  *         awt: Awaitable,
  */
-  __Pyx_GetNameInClass(__pyx_t_5, (PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler, __pyx_n_s_scheduled); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GetNameInClass(__pyx_t_3, (PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler, __pyx_n_s_scheduled); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_scheduled, __pyx_t_3) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_5acide_7asyncop_Scheduler->tp_dict, __pyx_n_s_scheduled, __pyx_t_5) < 0) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   PyType_Modified(__pyx_ptype_5acide_7asyncop_Scheduler);
 
-  /* "acide/asyncop.pyx":153
- *         self,
- *         priority_id: int,
- *         policy=asyncio.FIRST_COMPLETED             # <<<<<<<<<<<<<<
- *     )  -> Coroutine:
- *         await self._task(
+  /* "acide/asyncop.pyx":370
+ *         #     self.loop_run = False
+ * 
+ *     def run(self, mode: Optional[Run] = Run.ONCE) -> None:             # <<<<<<<<<<<<<<
+ *         """Start the :class:`Scheduler`'s loop and run the scheduled
+ *         tasks concurently respecting their priority.
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 153, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FIRST_COMPLETED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Run); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_k__3 = __pyx_t_5;
-  __Pyx_GIVEREF(__pyx_t_5);
-  __pyx_t_5 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ONCE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_k__10 = __pyx_t_3;
+  __Pyx_GIVEREF(__pyx_t_3);
+  __pyx_t_3 = 0;
 
   /* "acide/asyncop.pyx":1
  * # asyncop.pyx             # <<<<<<<<<<<<<<
  * #
  * # Copyright 2022 Gilles Coissac
  */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_5) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -8989,6 +11425,188 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
     return result;
 }
 
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+/* RaiseDoubleKeywords */
+static void __Pyx_RaiseDoubleKeywordsError(
+    const char* func_name,
+    PyObject* kw_name)
+{
+    PyErr_Format(PyExc_TypeError,
+        #if PY_MAJOR_VERSION >= 3
+        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
+        #else
+        "%s() got multiple values for keyword argument '%s'", func_name,
+        PyString_AsString(kw_name));
+        #endif
+}
+
+/* ParseKeywords */
+static int __Pyx_ParseOptionalKeywords(
+    PyObject *kwds,
+    PyObject **argnames[],
+    PyObject *kwds2,
+    PyObject *values[],
+    Py_ssize_t num_pos_args,
+    const char* function_name)
+{
+    PyObject *key = 0, *value = 0;
+    Py_ssize_t pos = 0;
+    PyObject*** name;
+    PyObject*** first_kw_arg = argnames + num_pos_args;
+    while (PyDict_Next(kwds, &pos, &key, &value)) {
+        name = first_kw_arg;
+        while (*name && (**name != key)) name++;
+        if (*name) {
+            values[name-argnames] = value;
+            continue;
+        }
+        name = first_kw_arg;
+        #if PY_MAJOR_VERSION < 3
+        if (likely(PyString_Check(key))) {
+            while (*name) {
+                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
+                        && _PyString_Eq(**name, key)) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    if ((**argname == key) || (
+                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
+                             && _PyString_Eq(**argname, key))) {
+                        goto arg_passed_twice;
+                    }
+                    argname++;
+                }
+            }
+        } else
+        #endif
+        if (likely(PyUnicode_Check(key))) {
+            while (*name) {
+                int cmp = (**name == key) ? 0 :
+                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                    (__Pyx_PyUnicode_GET_LENGTH(**name) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
+                #endif
+                    PyUnicode_Compare(**name, key);
+                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                if (cmp == 0) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    int cmp = (**argname == key) ? 0 :
+                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                        (__Pyx_PyUnicode_GET_LENGTH(**argname) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
+                    #endif
+                        PyUnicode_Compare(**argname, key);
+                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                    if (cmp == 0) goto arg_passed_twice;
+                    argname++;
+                }
+            }
+        } else
+            goto invalid_keyword_type;
+        if (kwds2) {
+            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
+        } else {
+            goto invalid_keyword;
+        }
+    }
+    return 0;
+arg_passed_twice:
+    __Pyx_RaiseDoubleKeywordsError(function_name, key);
+    goto bad;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    goto bad;
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+bad:
+    return -1;
+}
+
 /* RaiseArgTupleInvalid */
 static void __Pyx_RaiseArgtupleInvalid(
     const char* func_name,
@@ -9013,46 +11631,6 @@ static void __Pyx_RaiseArgtupleInvalid(
                  "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
                  func_name, more_or_less, num_expected,
                  (num_expected == 1) ? "" : "s", num_found);
-}
-
-/* KeywordStringCheck */
-static int __Pyx_CheckKeywordStrings(
-    PyObject *kwdict,
-    const char* function_name,
-    int kw_allowed)
-{
-    PyObject* key = 0;
-    Py_ssize_t pos = 0;
-#if CYTHON_COMPILING_IN_PYPY
-    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
-        goto invalid_keyword;
-    return 1;
-#else
-    while (PyDict_Next(kwdict, &pos, &key, 0)) {
-        #if PY_MAJOR_VERSION < 3
-        if (unlikely(!PyString_Check(key)))
-        #endif
-            if (unlikely(!PyUnicode_Check(key)))
-                goto invalid_keyword_type;
-    }
-    if ((!kw_allowed) && unlikely(key))
-        goto invalid_keyword;
-    return 1;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    return 0;
-#endif
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-    return 0;
 }
 
 /* PyDictVersioning */
@@ -9360,120 +11938,33 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 }
 #endif
 
-/* RaiseDoubleKeywords */
-static void __Pyx_RaiseDoubleKeywordsError(
-    const char* func_name,
-    PyObject* kw_name)
-{
-    PyErr_Format(PyExc_TypeError,
-        #if PY_MAJOR_VERSION >= 3
-        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
-        #else
-        "%s() got multiple values for keyword argument '%s'", func_name,
-        PyString_AsString(kw_name));
-        #endif
-}
-
-/* ParseKeywords */
-static int __Pyx_ParseOptionalKeywords(
-    PyObject *kwds,
-    PyObject **argnames[],
-    PyObject *kwds2,
-    PyObject *values[],
-    Py_ssize_t num_pos_args,
-    const char* function_name)
-{
-    PyObject *key = 0, *value = 0;
-    Py_ssize_t pos = 0;
-    PyObject*** name;
-    PyObject*** first_kw_arg = argnames + num_pos_args;
-    while (PyDict_Next(kwds, &pos, &key, &value)) {
-        name = first_kw_arg;
-        while (*name && (**name != key)) name++;
-        if (*name) {
-            values[name-argnames] = value;
-            continue;
-        }
-        name = first_kw_arg;
-        #if PY_MAJOR_VERSION < 3
-        if (likely(PyString_Check(key))) {
-            while (*name) {
-                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
-                        && _PyString_Eq(**name, key)) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    if ((**argname == key) || (
-                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
-                             && _PyString_Eq(**argname, key))) {
-                        goto arg_passed_twice;
-                    }
-                    argname++;
-                }
-            }
-        } else
-        #endif
-        if (likely(PyUnicode_Check(key))) {
-            while (*name) {
-                int cmp = (**name == key) ? 0 :
-                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                    (__Pyx_PyUnicode_GET_LENGTH(**name) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
-                #endif
-                    PyUnicode_Compare(**name, key);
-                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                if (cmp == 0) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    int cmp = (**argname == key) ? 0 :
-                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                        (__Pyx_PyUnicode_GET_LENGTH(**argname) != __Pyx_PyUnicode_GET_LENGTH(key)) ? 1 :
-                    #endif
-                        PyUnicode_Compare(**argname, key);
-                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                    if (cmp == 0) goto arg_passed_twice;
-                    argname++;
-                }
-            }
-        } else
-            goto invalid_keyword_type;
-        if (kwds2) {
-            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
-        } else {
-            goto invalid_keyword;
-        }
+/* PyObjectCall2Args */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args, *result = NULL;
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyFunction_FastCall(function, args, 2);
     }
-    return 0;
-arg_passed_twice:
-    __Pyx_RaiseDoubleKeywordsError(function_name, key);
-    goto bad;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    goto bad;
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
     #endif
-bad:
-    return -1;
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyCFunction_FastCall(function, args, 2);
+    }
+    #endif
+    args = PyTuple_New(2);
+    if (unlikely(!args)) goto done;
+    Py_INCREF(arg1);
+    PyTuple_SET_ITEM(args, 0, arg1);
+    Py_INCREF(arg2);
+    PyTuple_SET_ITEM(args, 1, arg2);
+    Py_INCREF(function);
+    result = __Pyx_PyObject_Call(function, args, NULL);
+    Py_DECREF(args);
+    Py_DECREF(function);
+done:
+    return result;
 }
 
 /* FetchCommonType */
@@ -9514,30 +12005,6 @@ bad:
     cached_type = NULL;
     goto done;
 }
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
 
 /* RaiseException */
 #if PY_MAJOR_VERSION < 3
@@ -9788,35 +12255,6 @@ static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value,
     *tb = tmp_tb;
 }
 #endif
-
-/* PyObjectCall2Args */
-static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
-    PyObject *args, *result = NULL;
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(function)) {
-        PyObject *args[2] = {arg1, arg2};
-        return __Pyx_PyFunction_FastCall(function, args, 2);
-    }
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(function)) {
-        PyObject *args[2] = {arg1, arg2};
-        return __Pyx_PyCFunction_FastCall(function, args, 2);
-    }
-    #endif
-    args = PyTuple_New(2);
-    if (unlikely(!args)) goto done;
-    Py_INCREF(arg1);
-    PyTuple_SET_ITEM(args, 0, arg1);
-    Py_INCREF(arg2);
-    PyTuple_SET_ITEM(args, 1, arg2);
-    Py_INCREF(function);
-    result = __Pyx_PyObject_Call(function, args, NULL);
-    Py_DECREF(args);
-    Py_DECREF(function);
-done:
-    return result;
-}
 
 /* PyObjectGetMethod */
 static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
@@ -11286,155 +13724,6 @@ static CYTHON_INLINE PyObject* __Pyx_Coroutine_Yield_From(__pyx_CoroutineObject 
     return retval;
 }
 
-/* JoinPyUnicode */
-static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
-                                      CYTHON_UNUSED Py_UCS4 max_char) {
-#if CYTHON_USE_UNICODE_INTERNALS && CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    PyObject *result_uval;
-    int result_ukind;
-    Py_ssize_t i, char_pos;
-    void *result_udata;
-#if CYTHON_PEP393_ENABLED
-    result_uval = PyUnicode_New(result_ulength, max_char);
-    if (unlikely(!result_uval)) return NULL;
-    result_ukind = (max_char <= 255) ? PyUnicode_1BYTE_KIND : (max_char <= 65535) ? PyUnicode_2BYTE_KIND : PyUnicode_4BYTE_KIND;
-    result_udata = PyUnicode_DATA(result_uval);
-#else
-    result_uval = PyUnicode_FromUnicode(NULL, result_ulength);
-    if (unlikely(!result_uval)) return NULL;
-    result_ukind = sizeof(Py_UNICODE);
-    result_udata = PyUnicode_AS_UNICODE(result_uval);
-#endif
-    char_pos = 0;
-    for (i=0; i < value_count; i++) {
-        int ukind;
-        Py_ssize_t ulength;
-        void *udata;
-        PyObject *uval = PyTuple_GET_ITEM(value_tuple, i);
-        if (unlikely(__Pyx_PyUnicode_READY(uval)))
-            goto bad;
-        ulength = __Pyx_PyUnicode_GET_LENGTH(uval);
-        if (unlikely(!ulength))
-            continue;
-        if (unlikely(char_pos + ulength < 0))
-            goto overflow;
-        ukind = __Pyx_PyUnicode_KIND(uval);
-        udata = __Pyx_PyUnicode_DATA(uval);
-        if (!CYTHON_PEP393_ENABLED || ukind == result_ukind) {
-            memcpy((char *)result_udata + char_pos * result_ukind, udata, (size_t) (ulength * result_ukind));
-        } else {
-            #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030300F0 || defined(_PyUnicode_FastCopyCharacters)
-            _PyUnicode_FastCopyCharacters(result_uval, char_pos, uval, 0, ulength);
-            #else
-            Py_ssize_t j;
-            for (j=0; j < ulength; j++) {
-                Py_UCS4 uchar = __Pyx_PyUnicode_READ(ukind, udata, j);
-                __Pyx_PyUnicode_WRITE(result_ukind, result_udata, char_pos+j, uchar);
-            }
-            #endif
-        }
-        char_pos += ulength;
-    }
-    return result_uval;
-overflow:
-    PyErr_SetString(PyExc_OverflowError, "join() result is too long for a Python string");
-bad:
-    Py_DECREF(result_uval);
-    return NULL;
-#else
-    result_ulength++;
-    value_count++;
-    return PyUnicode_Join(__pyx_empty_unicode, value_tuple);
-#endif
-}
-
-/* GetItemInt */
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (!j) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyList_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyTuple_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
-        if (likely(m && m->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
-                Py_ssize_t l = m->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return NULL;
-                    PyErr_Clear();
-                }
-            }
-            return m->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || PySequence_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
-
 /* CIntToDigits */
 static const char DIGIT_PAIRS_10[2*10*10+1] = {
     "00010203040506070809"
@@ -11612,263 +13901,553 @@ static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_int(int value, Py_ssize_t wi
     return __Pyx_PyUnicode_BuildFromAscii(ulength, dpos, (int) length, prepend_sign, padding_char);
 }
 
-/* ObjectGetItem */
-#if CYTHON_USE_TYPE_SLOTS
-static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
-    PyObject *runerr;
-    Py_ssize_t key_value;
-    PySequenceMethods *m = Py_TYPE(obj)->tp_as_sequence;
-    if (unlikely(!(m && m->sq_item))) {
-        PyErr_Format(PyExc_TypeError, "'%.200s' object is not subscriptable", Py_TYPE(obj)->tp_name);
-        return NULL;
-    }
-    key_value = __Pyx_PyIndex_AsSsize_t(index);
-    if (likely(key_value != -1 || !(runerr = PyErr_Occurred()))) {
-        return __Pyx_GetItemInt_Fast(obj, key_value, 0, 1, 1);
-    }
-    if (PyErr_GivenExceptionMatches(runerr, PyExc_OverflowError)) {
-        PyErr_Clear();
-        PyErr_Format(PyExc_IndexError, "cannot fit '%.200s' into an index-sized integer", Py_TYPE(index)->tp_name);
-    }
-    return NULL;
-}
-static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
-    PyMappingMethods *m = Py_TYPE(obj)->tp_as_mapping;
-    if (likely(m && m->mp_subscript)) {
-        return m->mp_subscript(obj, key);
-    }
-    return __Pyx_PyObject_GetIndex(obj, key);
-}
+/* CIntToPyUnicode */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_Py_ssize_t(Py_ssize_t value, Py_ssize_t width, char padding_char, char format_char) {
+    char digits[sizeof(Py_ssize_t)*3+2];
+    char *dpos, *end = digits + sizeof(Py_ssize_t)*3+2;
+    const char *hex_digits = DIGITS_HEX;
+    Py_ssize_t length, ulength;
+    int prepend_sign, last_one_off;
+    Py_ssize_t remaining;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
 #endif
-
-/* PyIntCompare */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED long inplace) {
-    if (op1 == op2) {
-        Py_RETURN_TRUE;
+    const Py_ssize_t neg_one = (Py_ssize_t) -1, const_zero = (Py_ssize_t) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (format_char == 'X') {
+        hex_digits += 16;
+        format_char = 'x';
     }
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long a = PyInt_AS_LONG(op1);
-        if (a == b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        int unequal;
-        unsigned long uintval;
-        Py_ssize_t size = Py_SIZE(op1);
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        if (intval == 0) {
-            if (size == 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-        } else if (intval < 0) {
-            if (size >= 0)
-                Py_RETURN_FALSE;
-            intval = -intval;
-            size = -size;
-        } else {
-            if (size <= 0)
-                Py_RETURN_FALSE;
+    remaining = value;
+    last_one_off = 0;
+    dpos = end;
+    do {
+        int digit_pos;
+        switch (format_char) {
+        case 'o':
+            digit_pos = abs((int)(remaining % (8*8)));
+            remaining = (Py_ssize_t) (remaining / (8*8));
+            dpos -= 2;
+            memcpy(dpos, DIGIT_PAIRS_8 + digit_pos * 2, 2);
+            last_one_off = (digit_pos < 8);
+            break;
+        case 'd':
+            digit_pos = abs((int)(remaining % (10*10)));
+            remaining = (Py_ssize_t) (remaining / (10*10));
+            dpos -= 2;
+            memcpy(dpos, DIGIT_PAIRS_10 + digit_pos * 2, 2);
+            last_one_off = (digit_pos < 10);
+            break;
+        case 'x':
+            *(--dpos) = hex_digits[abs((int)(remaining % 16))];
+            remaining = (Py_ssize_t) (remaining / 16);
+            break;
+        default:
+            assert(0);
+            break;
         }
-        uintval = (unsigned long) intval;
-#if PyLong_SHIFT * 4 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 4)) {
-            unequal = (size != 5) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[4] != ((uintval >> (4 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 3 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 3)) {
-            unequal = (size != 4) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 2 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 2)) {
-            unequal = (size != 3) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 1 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 1)) {
-            unequal = (size != 2) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-            unequal = (size != 1) || (((unsigned long) digits[0]) != (uintval & (unsigned long) PyLong_MASK));
-        if (unequal == 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+    } while (unlikely(remaining != 0));
+    if (last_one_off) {
+        assert(*dpos == '0');
+        dpos++;
     }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-        if ((double)a == (double)b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-    }
-    return (
-        PyObject_RichCompare(op1, op2, Py_EQ));
-}
-
-/* RaiseTooManyValuesToUnpack */
-static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
-    PyErr_Format(PyExc_ValueError,
-                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
-}
-
-/* RaiseNeedMoreValuesToUnpack */
-static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
-    PyErr_Format(PyExc_ValueError,
-                 "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
-                 index, (index == 1) ? "" : "s");
-}
-
-/* IterFinish */
-static CYTHON_INLINE int __Pyx_IterFinish(void) {
-#if CYTHON_FAST_THREAD_STATE
-    PyThreadState *tstate = __Pyx_PyThreadState_Current;
-    PyObject* exc_type = tstate->curexc_type;
-    if (unlikely(exc_type)) {
-        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
-            PyObject *exc_value, *exc_tb;
-            exc_value = tstate->curexc_value;
-            exc_tb = tstate->curexc_traceback;
-            tstate->curexc_type = 0;
-            tstate->curexc_value = 0;
-            tstate->curexc_traceback = 0;
-            Py_DECREF(exc_type);
-            Py_XDECREF(exc_value);
-            Py_XDECREF(exc_tb);
-            return 0;
+    length = end - dpos;
+    ulength = length;
+    prepend_sign = 0;
+    if (!is_unsigned && value <= neg_one) {
+        if (padding_char == ' ' || width <= length + 1) {
+            *(--dpos) = '-';
+            ++length;
         } else {
-            return -1;
+            prepend_sign = 1;
         }
+        ++ulength;
     }
-    return 0;
+    if (width > ulength) {
+        ulength = width;
+    }
+    if (ulength == 1) {
+        return PyUnicode_FromOrdinal(*dpos);
+    }
+    return __Pyx_PyUnicode_BuildFromAscii(ulength, dpos, (int) length, prepend_sign, padding_char);
+}
+
+/* JoinPyUnicode */
+static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
+                                      CYTHON_UNUSED Py_UCS4 max_char) {
+#if CYTHON_USE_UNICODE_INTERNALS && CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    PyObject *result_uval;
+    int result_ukind;
+    Py_ssize_t i, char_pos;
+    void *result_udata;
+#if CYTHON_PEP393_ENABLED
+    result_uval = PyUnicode_New(result_ulength, max_char);
+    if (unlikely(!result_uval)) return NULL;
+    result_ukind = (max_char <= 255) ? PyUnicode_1BYTE_KIND : (max_char <= 65535) ? PyUnicode_2BYTE_KIND : PyUnicode_4BYTE_KIND;
+    result_udata = PyUnicode_DATA(result_uval);
 #else
-    if (unlikely(PyErr_Occurred())) {
-        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
-            PyErr_Clear();
-            return 0;
+    result_uval = PyUnicode_FromUnicode(NULL, result_ulength);
+    if (unlikely(!result_uval)) return NULL;
+    result_ukind = sizeof(Py_UNICODE);
+    result_udata = PyUnicode_AS_UNICODE(result_uval);
+#endif
+    char_pos = 0;
+    for (i=0; i < value_count; i++) {
+        int ukind;
+        Py_ssize_t ulength;
+        void *udata;
+        PyObject *uval = PyTuple_GET_ITEM(value_tuple, i);
+        if (unlikely(__Pyx_PyUnicode_READY(uval)))
+            goto bad;
+        ulength = __Pyx_PyUnicode_GET_LENGTH(uval);
+        if (unlikely(!ulength))
+            continue;
+        if (unlikely(char_pos + ulength < 0))
+            goto overflow;
+        ukind = __Pyx_PyUnicode_KIND(uval);
+        udata = __Pyx_PyUnicode_DATA(uval);
+        if (!CYTHON_PEP393_ENABLED || ukind == result_ukind) {
+            memcpy((char *)result_udata + char_pos * result_ukind, udata, (size_t) (ulength * result_ukind));
         } else {
-            return -1;
+            #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030300F0 || defined(_PyUnicode_FastCopyCharacters)
+            _PyUnicode_FastCopyCharacters(result_uval, char_pos, uval, 0, ulength);
+            #else
+            Py_ssize_t j;
+            for (j=0; j < ulength; j++) {
+                Py_UCS4 uchar = __Pyx_PyUnicode_READ(ukind, udata, j);
+                __Pyx_PyUnicode_WRITE(result_ukind, result_udata, char_pos+j, uchar);
+            }
+            #endif
         }
+        char_pos += ulength;
     }
-    return 0;
+    return result_uval;
+overflow:
+    PyErr_SetString(PyExc_OverflowError, "join() result is too long for a Python string");
+bad:
+    Py_DECREF(result_uval);
+    return NULL;
+#else
+    result_ulength++;
+    value_count++;
+    return PyUnicode_Join(__pyx_empty_unicode, value_tuple);
 #endif
 }
 
-/* UnpackItemEndCheck */
-static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
-    if (unlikely(retval)) {
-        Py_DECREF(retval);
-        __Pyx_RaiseTooManyValuesError(expected);
-        return -1;
-    } else {
-        return __Pyx_IterFinish();
+/* KeywordStringCheck */
+static int __Pyx_CheckKeywordStrings(
+    PyObject *kwdict,
+    const char* function_name,
+    int kw_allowed)
+{
+    PyObject* key = 0;
+    Py_ssize_t pos = 0;
+#if CYTHON_COMPILING_IN_PYPY
+    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
+        goto invalid_keyword;
+    return 1;
+#else
+    while (PyDict_Next(kwdict, &pos, &key, 0)) {
+        #if PY_MAJOR_VERSION < 3
+        if (unlikely(!PyString_Check(key)))
+        #endif
+            if (unlikely(!PyUnicode_Check(key)))
+                goto invalid_keyword_type;
     }
+    if ((!kw_allowed) && unlikely(key))
+        goto invalid_keyword;
+    return 1;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
     return 0;
-}
-
-/* PyIntCompare */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_NeObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED long inplace) {
-    if (op1 == op2) {
-        Py_RETURN_FALSE;
-    }
+#endif
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
     #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long a = PyInt_AS_LONG(op1);
-        if (a != b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-    }
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
     #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        int unequal;
-        unsigned long uintval;
-        Py_ssize_t size = Py_SIZE(op1);
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        if (intval == 0) {
-            if (size != 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-        } else if (intval < 0) {
-            if (size >= 0)
-                Py_RETURN_TRUE;
-            intval = -intval;
-            size = -size;
-        } else {
-            if (size <= 0)
-                Py_RETURN_TRUE;
-        }
-        uintval = (unsigned long) intval;
-#if PyLong_SHIFT * 4 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 4)) {
-            unequal = (size != 5) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[4] != ((uintval >> (4 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 3 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 3)) {
-            unequal = (size != 4) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 2 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 2)) {
-            unequal = (size != 3) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-#if PyLong_SHIFT * 1 < SIZEOF_LONG*8
-        if (uintval >> (PyLong_SHIFT * 1)) {
-            unequal = (size != 2) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
-                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
-        } else
-#endif
-            unequal = (size != 1) || (((unsigned long) digits[0]) != (uintval & (unsigned long) PyLong_MASK));
-        if (unequal != 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-        if ((double)a != (double)b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-    }
-    return (
-        PyObject_RichCompare(op1, op2, Py_NE));
+    return 0;
 }
 
-/* pop_index */
-static PyObject* __Pyx__PyObject_PopNewIndex(PyObject* L, PyObject* py_ix) {
+/* pyobject_as_double */
+static double __Pyx__PyObject_AsDouble(PyObject* obj) {
+    PyObject* float_value;
+#if !CYTHON_USE_TYPE_SLOTS
+    float_value = PyNumber_Float(obj);  if ((0)) goto bad;
+#else
+    PyNumberMethods *nb = Py_TYPE(obj)->tp_as_number;
+    if (likely(nb) && likely(nb->nb_float)) {
+        float_value = nb->nb_float(obj);
+        if (likely(float_value) && unlikely(!PyFloat_Check(float_value))) {
+            PyErr_Format(PyExc_TypeError,
+                "__float__ returned non-float (type %.200s)",
+                Py_TYPE(float_value)->tp_name);
+            Py_DECREF(float_value);
+            goto bad;
+        }
+    } else if (PyUnicode_CheckExact(obj) || PyBytes_CheckExact(obj)) {
+#if PY_MAJOR_VERSION >= 3
+        float_value = PyFloat_FromString(obj);
+#else
+        float_value = PyFloat_FromString(obj, 0);
+#endif
+    } else {
+        PyObject* args = PyTuple_New(1);
+        if (unlikely(!args)) goto bad;
+        PyTuple_SET_ITEM(args, 0, obj);
+        float_value = PyObject_Call((PyObject*)&PyFloat_Type, args, 0);
+        PyTuple_SET_ITEM(args, 0, 0);
+        Py_DECREF(args);
+    }
+#endif
+    if (likely(float_value)) {
+        double value = PyFloat_AS_DOUBLE(float_value);
+        Py_DECREF(float_value);
+        return value;
+    }
+bad:
+    return (double)-1;
+}
+
+/* GetItemInt */
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
     PyObject *r;
-    if (unlikely(!py_ix)) return NULL;
-    r = __Pyx__PyObject_PopIndex(L, py_ix);
-    Py_DECREF(py_ix);
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
     return r;
 }
-static PyObject* __Pyx__PyObject_PopIndex(PyObject* L, PyObject* py_ix) {
-    return __Pyx_PyObject_CallMethod1(L, __pyx_n_s_pop, py_ix);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
 }
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t ix) {
-    Py_ssize_t size = PyList_GET_SIZE(L);
-    if (likely(size > (((PyListObject*)L)->allocated >> 1))) {
-        Py_ssize_t cix = ix;
-        if (cix < 0) {
-            cix += size;
-        }
-        if (likely(__Pyx_is_valid_index(cix, size))) {
-            PyObject* v = PyList_GET_ITEM(L, cix);
-            __Pyx_SET_SIZE(L, Py_SIZE(L) - 1);
-            size -= 1;
-            memmove(&PyList_GET_ITEM(L, cix), &PyList_GET_ITEM(L, cix+1), (size_t)(size-cix)*sizeof(PyObject*));
-            return v;
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
         }
     }
-    if (py_ix == Py_None) {
-        return __Pyx__PyObject_PopNewIndex(L, PyInt_FromSsize_t(ix));
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
     } else {
-        return __Pyx__PyObject_PopIndex(L, py_ix);
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
     }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+/* ArgTypeTest */
+static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
+{
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    else if (exact) {
+        #if PY_MAJOR_VERSION == 2
+        if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
+        #endif
+    }
+    else {
+        if (likely(__Pyx_TypeCheck(obj, type))) return 1;
+    }
+    PyErr_Format(PyExc_TypeError,
+        "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
+        name, type->tp_name, Py_TYPE(obj)->tp_name);
+    return 0;
+}
+
+/* PyUnicode_Unicode */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj) {
+    if (unlikely(obj == Py_None))
+        obj = __pyx_kp_u_None;
+    return __Pyx_NewRef(obj);
+}
+
+/* ReturnWithStopIteration */
+static void __Pyx__ReturnWithStopIteration(PyObject* value) {
+    PyObject *exc, *args;
+#if CYTHON_COMPILING_IN_CPYTHON || CYTHON_COMPILING_IN_PYSTON
+    __Pyx_PyThreadState_declare
+    if ((PY_VERSION_HEX >= 0x03030000 && PY_VERSION_HEX < 0x030500B1)
+            || unlikely(PyTuple_Check(value) || PyExceptionInstance_Check(value))) {
+        args = PyTuple_New(1);
+        if (unlikely(!args)) return;
+        Py_INCREF(value);
+        PyTuple_SET_ITEM(args, 0, value);
+        exc = PyType_Type.tp_call(PyExc_StopIteration, args, NULL);
+        Py_DECREF(args);
+        if (!exc) return;
+    } else {
+        Py_INCREF(value);
+        exc = value;
+    }
+    #if CYTHON_FAST_THREAD_STATE
+    __Pyx_PyThreadState_assign
+    #if CYTHON_USE_EXC_INFO_STACK
+    if (!__pyx_tstate->exc_info->exc_type)
+    #else
+    if (!__pyx_tstate->exc_type)
+    #endif
+    {
+        Py_INCREF(PyExc_StopIteration);
+        __Pyx_ErrRestore(PyExc_StopIteration, exc, NULL);
+        return;
+    }
+    #endif
+#else
+    args = PyTuple_Pack(1, value);
+    if (unlikely(!args)) return;
+    exc = PyObject_Call(PyExc_StopIteration, args, NULL);
+    Py_DECREF(args);
+    if (unlikely(!exc)) return;
+#endif
+    PyErr_SetObject(PyExc_StopIteration, exc);
+    Py_DECREF(exc);
+}
+
+/* FastTypeChecks */
+#if CYTHON_COMPILING_IN_CPYTHON
+static int __Pyx_InBases(PyTypeObject *a, PyTypeObject *b) {
+    while (a) {
+        a = a->tp_base;
+        if (a == b)
+            return 1;
+    }
+    return b == &PyBaseObject_Type;
+}
+static CYTHON_INLINE int __Pyx_IsSubtype(PyTypeObject *a, PyTypeObject *b) {
+    PyObject *mro;
+    if (a == b) return 1;
+    mro = a->tp_mro;
+    if (likely(mro)) {
+        Py_ssize_t i, n;
+        n = PyTuple_GET_SIZE(mro);
+        for (i = 0; i < n; i++) {
+            if (PyTuple_GET_ITEM(mro, i) == (PyObject *)b)
+                return 1;
+        }
+        return 0;
+    }
+    return __Pyx_InBases(a, b);
+}
+#if PY_MAJOR_VERSION == 2
+static int __Pyx_inner_PyErr_GivenExceptionMatches2(PyObject *err, PyObject* exc_type1, PyObject* exc_type2) {
+    PyObject *exception, *value, *tb;
+    int res;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&exception, &value, &tb);
+    res = exc_type1 ? PyObject_IsSubclass(err, exc_type1) : 0;
+    if (unlikely(res == -1)) {
+        PyErr_WriteUnraisable(err);
+        res = 0;
+    }
+    if (!res) {
+        res = PyObject_IsSubclass(err, exc_type2);
+        if (unlikely(res == -1)) {
+            PyErr_WriteUnraisable(err);
+            res = 0;
+        }
+    }
+    __Pyx_ErrRestore(exception, value, tb);
+    return res;
+}
+#else
+static CYTHON_INLINE int __Pyx_inner_PyErr_GivenExceptionMatches2(PyObject *err, PyObject* exc_type1, PyObject *exc_type2) {
+    int res = exc_type1 ? __Pyx_IsSubtype((PyTypeObject*)err, (PyTypeObject*)exc_type1) : 0;
+    if (!res) {
+        res = __Pyx_IsSubtype((PyTypeObject*)err, (PyTypeObject*)exc_type2);
+    }
+    return res;
 }
 #endif
+static int __Pyx_PyErr_GivenExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
+    Py_ssize_t i, n;
+    assert(PyExceptionClass_Check(exc_type));
+    n = PyTuple_GET_SIZE(tuple);
+#if PY_MAJOR_VERSION >= 3
+    for (i=0; i<n; i++) {
+        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
+    }
+#endif
+    for (i=0; i<n; i++) {
+        PyObject *t = PyTuple_GET_ITEM(tuple, i);
+        #if PY_MAJOR_VERSION < 3
+        if (likely(exc_type == t)) return 1;
+        #endif
+        if (likely(PyExceptionClass_Check(t))) {
+            if (__Pyx_inner_PyErr_GivenExceptionMatches2(exc_type, NULL, t)) return 1;
+        } else {
+        }
+    }
+    return 0;
+}
+static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches(PyObject *err, PyObject* exc_type) {
+    if (likely(err == exc_type)) return 1;
+    if (likely(PyExceptionClass_Check(err))) {
+        if (likely(PyExceptionClass_Check(exc_type))) {
+            return __Pyx_inner_PyErr_GivenExceptionMatches2(err, NULL, exc_type);
+        } else if (likely(PyTuple_Check(exc_type))) {
+            return __Pyx_PyErr_GivenExceptionMatchesTuple(err, exc_type);
+        } else {
+        }
+    }
+    return PyErr_GivenExceptionMatches(err, exc_type);
+}
+static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObject *exc_type1, PyObject *exc_type2) {
+    assert(PyExceptionClass_Check(exc_type1));
+    assert(PyExceptionClass_Check(exc_type2));
+    if (likely(err == exc_type1 || err == exc_type2)) return 1;
+    if (likely(PyExceptionClass_Check(err))) {
+        return __Pyx_inner_PyErr_GivenExceptionMatches2(err, exc_type1, exc_type2);
+    }
+    return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
+}
+#endif
+
+/* GetException */
+#if CYTHON_FAST_THREAD_STATE
+static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb)
+#else
+static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb)
+#endif
+{
+    PyObject *local_type, *local_value, *local_tb;
+#if CYTHON_FAST_THREAD_STATE
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    local_type = tstate->curexc_type;
+    local_value = tstate->curexc_value;
+    local_tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+#else
+    PyErr_Fetch(&local_type, &local_value, &local_tb);
+#endif
+    PyErr_NormalizeException(&local_type, &local_value, &local_tb);
+#if CYTHON_FAST_THREAD_STATE
+    if (unlikely(tstate->curexc_type))
+#else
+    if (unlikely(PyErr_Occurred()))
+#endif
+        goto bad;
+    #if PY_MAJOR_VERSION >= 3
+    if (local_tb) {
+        if (unlikely(PyException_SetTraceback(local_value, local_tb) < 0))
+            goto bad;
+    }
+    #endif
+    Py_XINCREF(local_tb);
+    Py_XINCREF(local_type);
+    Py_XINCREF(local_value);
+    *type = local_type;
+    *value = local_value;
+    *tb = local_tb;
+#if CYTHON_FAST_THREAD_STATE
+    #if CYTHON_USE_EXC_INFO_STACK
+    {
+        _PyErr_StackItem *exc_info = tstate->exc_info;
+        tmp_type = exc_info->exc_type;
+        tmp_value = exc_info->exc_value;
+        tmp_tb = exc_info->exc_traceback;
+        exc_info->exc_type = local_type;
+        exc_info->exc_value = local_value;
+        exc_info->exc_traceback = local_tb;
+    }
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = local_type;
+    tstate->exc_value = local_value;
+    tstate->exc_traceback = local_tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+#else
+    PyErr_SetExcInfo(local_type, local_value, local_tb);
+#endif
+    return 0;
+bad:
+    *type = 0;
+    *value = 0;
+    *tb = 0;
+    Py_XDECREF(local_type);
+    Py_XDECREF(local_value);
+    Py_XDECREF(local_tb);
+    return -1;
+}
 
 /* PyIntBinop */
 #if !CYTHON_COMPILING_IN_PYPY
@@ -11994,245 +14573,81 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
 }
 #endif
 
-/* GetException */
-#if CYTHON_FAST_THREAD_STATE
-static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb)
-#else
-static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb)
-#endif
-{
-    PyObject *local_type, *local_value, *local_tb;
-#if CYTHON_FAST_THREAD_STATE
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    local_type = tstate->curexc_type;
-    local_value = tstate->curexc_value;
-    local_tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-#else
-    PyErr_Fetch(&local_type, &local_value, &local_tb);
-#endif
-    PyErr_NormalizeException(&local_type, &local_value, &local_tb);
-#if CYTHON_FAST_THREAD_STATE
-    if (unlikely(tstate->curexc_type))
-#else
-    if (unlikely(PyErr_Occurred()))
-#endif
-        goto bad;
-    #if PY_MAJOR_VERSION >= 3
-    if (local_tb) {
-        if (unlikely(PyException_SetTraceback(local_value, local_tb) < 0))
-            goto bad;
+/* ObjectGetItem */
+#if CYTHON_USE_TYPE_SLOTS
+static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
+    PyObject *runerr;
+    Py_ssize_t key_value;
+    PySequenceMethods *m = Py_TYPE(obj)->tp_as_sequence;
+    if (unlikely(!(m && m->sq_item))) {
+        PyErr_Format(PyExc_TypeError, "'%.200s' object is not subscriptable", Py_TYPE(obj)->tp_name);
+        return NULL;
     }
-    #endif
-    Py_XINCREF(local_tb);
-    Py_XINCREF(local_type);
-    Py_XINCREF(local_value);
-    *type = local_type;
-    *value = local_value;
-    *tb = local_tb;
-#if CYTHON_FAST_THREAD_STATE
-    #if CYTHON_USE_EXC_INFO_STACK
-    {
-        _PyErr_StackItem *exc_info = tstate->exc_info;
-        tmp_type = exc_info->exc_type;
-        tmp_value = exc_info->exc_value;
-        tmp_tb = exc_info->exc_traceback;
-        exc_info->exc_type = local_type;
-        exc_info->exc_value = local_value;
-        exc_info->exc_traceback = local_tb;
+    key_value = __Pyx_PyIndex_AsSsize_t(index);
+    if (likely(key_value != -1 || !(runerr = PyErr_Occurred()))) {
+        return __Pyx_GetItemInt_Fast(obj, key_value, 0, 1, 1);
     }
-    #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = local_type;
-    tstate->exc_value = local_value;
-    tstate->exc_traceback = local_tb;
-    #endif
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-#else
-    PyErr_SetExcInfo(local_type, local_value, local_tb);
-#endif
-    return 0;
-bad:
-    *type = 0;
-    *value = 0;
-    *tb = 0;
-    Py_XDECREF(local_type);
-    Py_XDECREF(local_value);
-    Py_XDECREF(local_tb);
-    return -1;
+    if (PyErr_GivenExceptionMatches(runerr, PyExc_OverflowError)) {
+        PyErr_Clear();
+        PyErr_Format(PyExc_IndexError, "cannot fit '%.200s' into an index-sized integer", Py_TYPE(index)->tp_name);
+    }
+    return NULL;
 }
-
-/* BytesEquals */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-    if (s1 == s2) {
-        return (equals == Py_EQ);
-    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
-        const char *ps1, *ps2;
-        Py_ssize_t length = PyBytes_GET_SIZE(s1);
-        if (length != PyBytes_GET_SIZE(s2))
-            return (equals == Py_NE);
-        ps1 = PyBytes_AS_STRING(s1);
-        ps2 = PyBytes_AS_STRING(s2);
-        if (ps1[0] != ps2[0]) {
-            return (equals == Py_NE);
-        } else if (length == 1) {
-            return (equals == Py_EQ);
-        } else {
-            int result;
-#if CYTHON_USE_UNICODE_INTERNALS
-            Py_hash_t hash1, hash2;
-            hash1 = ((PyBytesObject*)s1)->ob_shash;
-            hash2 = ((PyBytesObject*)s2)->ob_shash;
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                return (equals == Py_NE);
-            }
+static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
+    PyMappingMethods *m = Py_TYPE(obj)->tp_as_mapping;
+    if (likely(m && m->mp_subscript)) {
+        return m->mp_subscript(obj, key);
+    }
+    return __Pyx_PyObject_GetIndex(obj, key);
+}
 #endif
-            result = memcmp(ps1, ps2, (size_t)length);
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+
+/* pop_index */
+static PyObject* __Pyx__PyObject_PopNewIndex(PyObject* L, PyObject* py_ix) {
+    PyObject *r;
+    if (unlikely(!py_ix)) return NULL;
+    r = __Pyx__PyObject_PopIndex(L, py_ix);
+    Py_DECREF(py_ix);
+    return r;
+}
+static PyObject* __Pyx__PyObject_PopIndex(PyObject* L, PyObject* py_ix) {
+    return __Pyx_PyObject_CallMethod1(L, __pyx_n_s_pop, py_ix);
+}
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t ix) {
+    Py_ssize_t size = PyList_GET_SIZE(L);
+    if (likely(size > (((PyListObject*)L)->allocated >> 1))) {
+        Py_ssize_t cix = ix;
+        if (cix < 0) {
+            cix += size;
         }
-    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
-        return (equals == Py_NE);
-    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
-        return (equals == Py_NE);
+        if (likely(__Pyx_is_valid_index(cix, size))) {
+            PyObject* v = PyList_GET_ITEM(L, cix);
+            __Pyx_SET_SIZE(L, Py_SIZE(L) - 1);
+            size -= 1;
+            memmove(&PyList_GET_ITEM(L, cix), &PyList_GET_ITEM(L, cix+1), (size_t)(size-cix)*sizeof(PyObject*));
+            return v;
+        }
+    }
+    if (py_ix == Py_None) {
+        return __Pyx__PyObject_PopNewIndex(L, PyInt_FromSsize_t(ix));
     } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
+        return __Pyx__PyObject_PopIndex(L, py_ix);
     }
-#endif
 }
+#endif
 
-/* UnicodeEquals */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-#if PY_MAJOR_VERSION < 3
-    PyObject* owned_ref = NULL;
-#endif
-    int s1_is_unicode, s2_is_unicode;
-    if (s1 == s2) {
-        goto return_eq;
+/* ExtTypeTest */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
     }
-    s1_is_unicode = PyUnicode_CheckExact(s1);
-    s2_is_unicode = PyUnicode_CheckExact(s2);
-#if PY_MAJOR_VERSION < 3
-    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
-        owned_ref = PyUnicode_FromObject(s2);
-        if (unlikely(!owned_ref))
-            return -1;
-        s2 = owned_ref;
-        s2_is_unicode = 1;
-    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
-        owned_ref = PyUnicode_FromObject(s1);
-        if (unlikely(!owned_ref))
-            return -1;
-        s1 = owned_ref;
-        s1_is_unicode = 1;
-    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
-        return __Pyx_PyBytes_Equals(s1, s2, equals);
-    }
-#endif
-    if (s1_is_unicode & s2_is_unicode) {
-        Py_ssize_t length;
-        int kind;
-        void *data1, *data2;
-        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
-            return -1;
-        length = __Pyx_PyUnicode_GET_LENGTH(s1);
-        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
-            goto return_ne;
-        }
-#if CYTHON_USE_UNICODE_INTERNALS
-        {
-            Py_hash_t hash1, hash2;
-        #if CYTHON_PEP393_ENABLED
-            hash1 = ((PyASCIIObject*)s1)->hash;
-            hash2 = ((PyASCIIObject*)s2)->hash;
-        #else
-            hash1 = ((PyUnicodeObject*)s1)->hash;
-            hash2 = ((PyUnicodeObject*)s2)->hash;
-        #endif
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                goto return_ne;
-            }
-        }
-#endif
-        kind = __Pyx_PyUnicode_KIND(s1);
-        if (kind != __Pyx_PyUnicode_KIND(s2)) {
-            goto return_ne;
-        }
-        data1 = __Pyx_PyUnicode_DATA(s1);
-        data2 = __Pyx_PyUnicode_DATA(s2);
-        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
-            goto return_ne;
-        } else if (length == 1) {
-            goto return_eq;
-        } else {
-            int result = memcmp(data1, data2, (size_t)(length * kind));
-            #if PY_MAJOR_VERSION < 3
-            Py_XDECREF(owned_ref);
-            #endif
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & s2_is_unicode) {
-        goto return_ne;
-    } else if ((s2 == Py_None) & s1_is_unicode) {
-        goto return_ne;
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        #if PY_MAJOR_VERSION < 3
-        Py_XDECREF(owned_ref);
-        #endif
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-return_eq:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_EQ);
-return_ne:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_NE);
-#endif
-}
-
-/* SetVTable */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
-#if PY_VERSION_HEX >= 0x02070000
-    PyObject *ob = PyCapsule_New(vtable, 0, 0);
-#else
-    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
-#endif
-    if (!ob)
-        goto bad;
-    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
-        goto bad;
-    Py_DECREF(ob);
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
     return 0;
-bad:
-    Py_XDECREF(ob);
-    return -1;
 }
 
 /* PyErrExceptionMatches */
@@ -12364,6 +14779,24 @@ __PYX_GOOD:
     Py_XDECREF(setstate);
     Py_XDECREF(setstate_cython);
     return ret;
+}
+
+/* SetVTable */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
+#else
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
+#endif
+    if (!ob)
+        goto bad;
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
+    return 0;
+bad:
+    Py_XDECREF(ob);
+    return -1;
 }
 
 /* Import */
@@ -12915,6 +15348,86 @@ bad:
     }
 
 /* BaseCaseSigned */
+static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow) {
+    if ((sizeof(int) < sizeof(long))) {
+        long big_r = ((long) a) + ((long) b);
+        int r = (int) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(int) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
+        int r = (int) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        int r = (int) ((unsigned int) a + (unsigned int) b);
+        int sign_a = __PYX_SIGN_BIT(int) & a;
+        int sign_b = __PYX_SIGN_BIT(int) & b;
+        int sign_r = __PYX_SIGN_BIT(int) & r;
+        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
+        return r;
+    }
+}
+static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow) {
+    if (b > 0) {
+        *overflow |= a > __PYX_MAX(int) - b;
+    } else if (b < 0) {
+        *overflow |= a < __PYX_MIN(int) - b;
+    }
+    return a + b;
+}
+static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow) {
+    *overflow |= b == __PYX_MIN(int);
+    return __Pyx_add_int_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow) {
+    *overflow |= b == __PYX_MIN(int);
+    return __Pyx_add_const_int_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow) {
+    if ((sizeof(int) < sizeof(long))) {
+        long big_r = ((long) a) * ((long) b);
+        int r = (int) big_r;
+        *overflow |= big_r != r;
+        return (int) r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(int) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
+        int r = (int) big_r;
+        *overflow |= big_r != r;
+        return (int) r;
+#endif
+    } else {
+        int prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(int) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(int) / b;
+        *overflow |= a < __PYX_MIN(int) / b;
+    } else if (b == -1) {
+        *overflow |= a == __PYX_MIN(int);
+    } else if (b < -1) {
+        *overflow |= a > __PYX_MIN(int) / b;
+        *overflow |= a < __PYX_MAX(int) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    *overflow |= (a == __PYX_MIN(int)) & (b == -1);
+    return a / b;
+}
+
+/* BaseCaseSigned */
 static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
     if ((sizeof(long) < sizeof(long))) {
         long big_r = ((long) a) + ((long) b);
@@ -12994,41 +15507,249 @@ static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *
     return a / b;
 }
 
-/* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-    const int neg_one = (int) -1, const_zero = (int) 0;
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic pop
-#endif
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(int) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(int) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
+/* BaseCaseSigned */
+static CYTHON_INLINE long long __Pyx_add_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    if ((sizeof(long long) < sizeof(long))) {
+        long big_r = ((long) a) + ((long) b);
+        long long r = (long long) big_r;
+        *overflow |= big_r != r;
+        return r;
 #ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+    } else if ((sizeof(long long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
+        long long r = (long long) big_r;
+        *overflow |= big_r != r;
+        return r;
 #endif
+    } else {
+        long long r = (long long) ((unsigned long long) a + (unsigned long long) b);
+        long long sign_a = __PYX_SIGN_BIT(long long) & a;
+        long long sign_b = __PYX_SIGN_BIT(long long) & b;
+        long long sign_r = __PYX_SIGN_BIT(long long) & r;
+        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
+        return r;
+    }
+}
+static CYTHON_INLINE long long __Pyx_add_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    if (b > 0) {
+        *overflow |= a > __PYX_MAX(long long) - b;
+    } else if (b < 0) {
+        *overflow |= a < __PYX_MIN(long long) - b;
+    }
+    return a + b;
+}
+static CYTHON_INLINE long long __Pyx_sub_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long long);
+    return __Pyx_add_long_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long long __Pyx_sub_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long long);
+    return __Pyx_add_const_long_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long long __Pyx_mul_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    if ((sizeof(long long) < sizeof(long))) {
+        long big_r = ((long) a) * ((long) b);
+        long long r = (long long) big_r;
+        *overflow |= big_r != r;
+        return (long long) r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
+        long long r = (long long) big_r;
+        *overflow |= big_r != r;
+        return (long long) r;
+#endif
+    } else {
+        long long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE long long __Pyx_mul_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(long long) / b;
+        *overflow |= a < __PYX_MIN(long long) / b;
+    } else if (b == -1) {
+        *overflow |= a == __PYX_MIN(long long);
+    } else if (b < -1) {
+        *overflow |= a > __PYX_MIN(long long) / b;
+        *overflow |= a < __PYX_MAX(long long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE long long __Pyx_div_long_long_checking_overflow(long long a, long long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    *overflow |= (a == __PYX_MIN(long long)) & (b == -1);
+    return a / b;
+}
+
+/* BaseCaseUnsigned */
+static CYTHON_INLINE unsigned int __Pyx_add_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
+    unsigned int r = a + b;
+    *overflow |= r < a;
+    return r;
+}
+static CYTHON_INLINE unsigned int __Pyx_sub_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
+    unsigned int r = a - b;
+    *overflow |= r > a;
+    return r;
+}
+static CYTHON_INLINE unsigned int __Pyx_mul_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
+    if ((sizeof(unsigned int) < sizeof(unsigned long))) {
+        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
+        unsigned int r = (unsigned int) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(unsigned int) < sizeof(unsigned PY_LONG_LONG))) {
+        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
+        unsigned int r = (unsigned int) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        unsigned int prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned int) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE unsigned int __Pyx_mul_const_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(unsigned int) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE unsigned int __Pyx_div_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    return a / b;
+}
+
+/* BaseCaseUnsigned */
+static CYTHON_INLINE unsigned long __Pyx_add_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
+    unsigned long r = a + b;
+    *overflow |= r < a;
+    return r;
+}
+static CYTHON_INLINE unsigned long __Pyx_sub_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
+    unsigned long r = a - b;
+    *overflow |= r > a;
+    return r;
+}
+static CYTHON_INLINE unsigned long __Pyx_mul_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
+    if ((sizeof(unsigned long) < sizeof(unsigned long))) {
+        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
+        unsigned long r = (unsigned long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(unsigned long) < sizeof(unsigned PY_LONG_LONG))) {
+        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
+        unsigned long r = (unsigned long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        unsigned long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE unsigned long __Pyx_mul_const_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(unsigned long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE unsigned long __Pyx_div_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    return a / b;
+}
+
+/* BaseCaseUnsigned */
+static CYTHON_INLINE unsigned long long __Pyx_add_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
+    unsigned long long r = a + b;
+    *overflow |= r < a;
+    return r;
+}
+static CYTHON_INLINE unsigned long long __Pyx_sub_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
+    unsigned long long r = a - b;
+    *overflow |= r > a;
+    return r;
+}
+static CYTHON_INLINE unsigned long long __Pyx_mul_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
+    if ((sizeof(unsigned long long) < sizeof(unsigned long))) {
+        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
+        unsigned long long r = (unsigned long long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(unsigned long long) < sizeof(unsigned PY_LONG_LONG))) {
+        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
+        unsigned long long r = (unsigned long long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        unsigned long long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned long long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE unsigned long long __Pyx_mul_const_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(unsigned long long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE unsigned long long __Pyx_div_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    return a / b;
+}
+
+/* Binop */
+static CYTHON_INLINE Py_ssize_t __Pyx_sub_const_Py_ssize_t_checking_overflow(Py_ssize_t a, Py_ssize_t b, int *overflow) {
+    if ((sizeof(Py_ssize_t) < sizeof(int))) {
+        return __Pyx_sub_const_no_overflow(a, b, overflow);
+    } else if (__PYX_IS_UNSIGNED(Py_ssize_t)) {
+        if ((sizeof(Py_ssize_t) == sizeof(unsigned int))) {
+            return (Py_ssize_t) __Pyx_sub_const_unsigned_int_checking_overflow(a, b, overflow);
+        } else if ((sizeof(Py_ssize_t) == sizeof(unsigned long))) {
+            return (Py_ssize_t) __Pyx_sub_const_unsigned_long_checking_overflow(a, b, overflow);
+#ifdef HAVE_LONG_LONG
+        } else if ((sizeof(Py_ssize_t) == sizeof(unsigned PY_LONG_LONG))) {
+            return (Py_ssize_t) __Pyx_sub_const_unsigned_long_long_checking_overflow(a, b, overflow);
+#endif
+        } else {
+            abort(); return 0;
         }
     } else {
-        if (sizeof(int) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
+        if ((sizeof(Py_ssize_t) == sizeof(int))) {
+            return (Py_ssize_t) __Pyx_sub_const_int_checking_overflow(a, b, overflow);
+        } else if ((sizeof(Py_ssize_t) == sizeof(long))) {
+            return (Py_ssize_t) __Pyx_sub_const_long_checking_overflow(a, b, overflow);
 #ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        } else if ((sizeof(Py_ssize_t) == sizeof(PY_LONG_LONG))) {
+            return (Py_ssize_t) __Pyx_sub_const_long_long_checking_overflow(a, b, overflow);
 #endif
+        } else {
+            abort(); return 0;
         }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(int),
-                                     little, !is_unsigned);
     }
 }
 
@@ -13226,6 +15947,44 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to int");
     return (int) -1;
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const int neg_one = (int) -1, const_zero = (int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntToPy */
@@ -13461,106 +16220,6 @@ raise_neg_overflow:
         "can't convert negative value to long");
     return (long) -1;
 }
-
-/* FastTypeChecks */
-#if CYTHON_COMPILING_IN_CPYTHON
-static int __Pyx_InBases(PyTypeObject *a, PyTypeObject *b) {
-    while (a) {
-        a = a->tp_base;
-        if (a == b)
-            return 1;
-    }
-    return b == &PyBaseObject_Type;
-}
-static CYTHON_INLINE int __Pyx_IsSubtype(PyTypeObject *a, PyTypeObject *b) {
-    PyObject *mro;
-    if (a == b) return 1;
-    mro = a->tp_mro;
-    if (likely(mro)) {
-        Py_ssize_t i, n;
-        n = PyTuple_GET_SIZE(mro);
-        for (i = 0; i < n; i++) {
-            if (PyTuple_GET_ITEM(mro, i) == (PyObject *)b)
-                return 1;
-        }
-        return 0;
-    }
-    return __Pyx_InBases(a, b);
-}
-#if PY_MAJOR_VERSION == 2
-static int __Pyx_inner_PyErr_GivenExceptionMatches2(PyObject *err, PyObject* exc_type1, PyObject* exc_type2) {
-    PyObject *exception, *value, *tb;
-    int res;
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&exception, &value, &tb);
-    res = exc_type1 ? PyObject_IsSubclass(err, exc_type1) : 0;
-    if (unlikely(res == -1)) {
-        PyErr_WriteUnraisable(err);
-        res = 0;
-    }
-    if (!res) {
-        res = PyObject_IsSubclass(err, exc_type2);
-        if (unlikely(res == -1)) {
-            PyErr_WriteUnraisable(err);
-            res = 0;
-        }
-    }
-    __Pyx_ErrRestore(exception, value, tb);
-    return res;
-}
-#else
-static CYTHON_INLINE int __Pyx_inner_PyErr_GivenExceptionMatches2(PyObject *err, PyObject* exc_type1, PyObject *exc_type2) {
-    int res = exc_type1 ? __Pyx_IsSubtype((PyTypeObject*)err, (PyTypeObject*)exc_type1) : 0;
-    if (!res) {
-        res = __Pyx_IsSubtype((PyTypeObject*)err, (PyTypeObject*)exc_type2);
-    }
-    return res;
-}
-#endif
-static int __Pyx_PyErr_GivenExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
-    Py_ssize_t i, n;
-    assert(PyExceptionClass_Check(exc_type));
-    n = PyTuple_GET_SIZE(tuple);
-#if PY_MAJOR_VERSION >= 3
-    for (i=0; i<n; i++) {
-        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
-    }
-#endif
-    for (i=0; i<n; i++) {
-        PyObject *t = PyTuple_GET_ITEM(tuple, i);
-        #if PY_MAJOR_VERSION < 3
-        if (likely(exc_type == t)) return 1;
-        #endif
-        if (likely(PyExceptionClass_Check(t))) {
-            if (__Pyx_inner_PyErr_GivenExceptionMatches2(exc_type, NULL, t)) return 1;
-        } else {
-        }
-    }
-    return 0;
-}
-static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches(PyObject *err, PyObject* exc_type) {
-    if (likely(err == exc_type)) return 1;
-    if (likely(PyExceptionClass_Check(err))) {
-        if (likely(PyExceptionClass_Check(exc_type))) {
-            return __Pyx_inner_PyErr_GivenExceptionMatches2(err, NULL, exc_type);
-        } else if (likely(PyTuple_Check(exc_type))) {
-            return __Pyx_PyErr_GivenExceptionMatchesTuple(err, exc_type);
-        } else {
-        }
-    }
-    return PyErr_GivenExceptionMatches(err, exc_type);
-}
-static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObject *exc_type1, PyObject *exc_type2) {
-    assert(PyExceptionClass_Check(exc_type1));
-    assert(PyExceptionClass_Check(exc_type2));
-    if (likely(err == exc_type1 || err == exc_type2)) return 1;
-    if (likely(PyExceptionClass_Check(err))) {
-        return __Pyx_inner_PyErr_GivenExceptionMatches2(err, exc_type1, exc_type2);
-    }
-    return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
-}
-#endif
 
 /* CheckBinaryVersion */
 static int __Pyx_check_binary_version(void) {

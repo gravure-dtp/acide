@@ -26,7 +26,7 @@ gi.require_version('Graphene', '1.0')
 from gi.repository import Gdk, GLib, Gio, GObject, Graphene
 
 from acide.measure import Measurable, GObjectMeasurableMeta, Unit
-from acide.types import Number, Rectangle, BufferProtocol
+from acide.types import Number, Rectangle, Pixbuf
 from acide.asyncop import AsyncReadyCallback
 from acide.tiles import TilesPool, SuperTile, Clip
 from acide import format_size
@@ -68,7 +68,7 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
     ):
         if not isinstance(mem_format, Gdk.MemoryFormat):
             raise TypeError(
-                "mem_format should be a mamber of Gdk.MemoryFormat "
+                "mem_format should be a member of Gdk.MemoryFormat "
                 f"not {mem_format.__class__.__name__}"
             )
         GObject.GObject.__init__(self)
@@ -142,13 +142,13 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         self.emit("scaled", self._scales[self._scale_index])
         return self._scales[self._scale_index]
 
-    @property
-    def virtual_dpi(self) -> int:
+    def virtual_dpi(self, scale: int = None) -> int:
         """The :attr:`scale` dependant dpi.
 
         This is computed as round(self.dpi * self.scale) (read only).
         """
-        return round(self.dpi * self._scales[self._scale_index])
+        scale = scale if scale else self._scales[self._scale_index]
+        return round(self.dpi * scale)
 
     @property
     def mem_format(self) -> Gdk.MemoryFormat:
@@ -251,17 +251,22 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         return self.tiles_pool.render_finish(result)
 
     @abstractmethod
-    def get_pixbuf(self, rect: Graphene.Rect) -> BufferProtocol:
-        """Get pixbuf at clip rect.
+    def get_pixbuf(self, rect: Graphene.Rect, scale: int) -> Pixbuf:
+        """Get Pixbuf at clip rect.
 
-        Implementation should return a pixmap buffer clipped to the region
-        described by the parameter :obj:`rect` (defined in :attr:`acide.measure.Measurable.unit`
-        of measure for this :class:`Graphic`).
-        The returned object should implements the buffer protocol and should
-        hold a c-contigous buffer with only one dimension for all its data.
-        The pixel data should conform to the :attr:`Graphic.mem_format` property.
-        When rendering the pixmap, subclass could consider using the
-        :attr:`scale` and :attr:`virtual_dpi` properties to achieve expected
-        result.
+        Implementation should build a pixmap buffer clipped
+        to the region described by the parameter :obj:`rect`
+        (defined in :attr:`acide.measure.Measurable.unit` of measure
+        for this :class:`Graphic`).
+        The buffer attribute of the returned :class:`acide.types.Pixbuf`
+        should be filled with an object implementing the buffer protocol.
+        This object should hold a c-contigous buffer with only one dimension
+        for all its data. The pixel data should conform to the
+        :attr:`Graphic.mem_format` property. When rendering the pixmap,
+        subclass could consider using the :obj:`scale` argument and/or
+        the :meth:`virtual_dpi` method to achieve expected result.
+
+        Returns:
+            A :class:`acide.types.Pixbuf` holding the buffer with basic informations.
         """
         pass

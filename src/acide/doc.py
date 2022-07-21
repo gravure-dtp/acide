@@ -17,10 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Acide doc module.
 
-NOTES ON PYMUDF COORDINATES:
-Methods require coordinates (points, rectangles) to put content
-in desired places. Please be aware that since MuPdf v1.17.0 these coordinates
-must always be provided relative to the unrotated page.
+Note:
+    ON PYMUDF COORDINATES - Methods require coordinates (points, rectangles)
+    to put content in desired places. Please be aware that since MuPdf v1.17.0
+    these coordinates must always be provided relative to the unrotated page.
 
 The reverse is also true: except Page.rect, resp. Page.bound()
 (both reflect when the page is rotated), all coordinates returned by methods
@@ -46,11 +46,13 @@ coordinates as the /MediaBox key in a page’s object definition. For all
 other rectangles, MuPDF transforms coordinates such that the top-left corner
 is the point of reference. This can sometimes be confusing – you may for example
 encounter a situation like this one:
-  * The page definition contains the following identical values:
-    /MediaBox [ 36 45 607.5 765 ], /CropBox [ 36 45 607.5 765 ].
-  * PyMuPDF accordingly shows page.mediabox = Rect(36.0, 45.0, 607.5, 765.0).
-  * BUT: page.cropbox = Rect(36.0, 0.0, 607.5, 720.0), because the two y-coordinates
-    have been transformed (45 subtracted from both of them).
+    * The page definition contains the following identical values:
+      /MediaBox [ 36 45 607.5 765 ], /CropBox [ 36 45 607.5 765 ].
+
+    * PyMuPDF accordingly shows page.mediabox = Rect(36.0, 45.0, 607.5, 765.0).
+
+    * BUT: page.cropbox = Rect(36.0, 0.0, 607.5, 720.0), because the two y-coordinates
+      have been transformed (45 subtracted from both of them).
 """
 from pathlib import Path
 from typing import List, Union, Optional, Any, Sequence
@@ -65,31 +67,32 @@ import fitz
 
 from acide.graphic import Graphic
 from acide.measure import Unit, Measurable
-from acide.types import BufferProtocol
+from acide.types import BufferProtocol, Pixbuf
 
 
 class Document():
     """Acide Document.
 
-    NOTE ON PYMUPDF USAGE:
-    Never access a Page object, after you have closed (or deleted
-    or set to None) the owning Document. Or, less obvious: never access
-    a page or any of its children (links or annotations) after you have
-    executed one of the document methods select(), delete_page(),
-    insert_page() … and more.
+    Note:
+        ON PYMUPDF USAGE - Never access a Page object, after you have closed
+        (or deleted or set to None) the owning Document. Or, less obvious: never access
+        a page or any of its children (links or annotations) after you have
+        executed one of the document methods select(), delete_page(),
+        insert_page() … and more.
 
     The required logic has therefore been built into PyMuPDF
     itself in the following way:
-       * If a page “loses” its owning document or is being deleted itself,
-         all of its currently existing annotations and links will be made
-         unusable in Python, and their C-level counterparts will be deleted
-         and deallocated.
-       * If a document is closed (or deleted or set to None) or if its
-         structure has changed, then similarly all currently existing pages
-         and their children will be made unusable, and corresponding C-level
-         deletions will take place. “Structure changes” include methods like
-         select(), delePage(), insert_page(), insert_pdf() and so on:
-         all of these will result in a cascade of object deletions.
+        * If a page “loses” its owning document or is being deleted itself,
+          all of its currently existing annotations and links will be made
+          unusable in Python, and their C-level counterparts will be deleted
+          and deallocated.
+
+        * If a document is closed (or deleted or set to None) or if its
+          structure has changed, then similarly all currently existing pages
+          and their children will be made unusable, and corresponding C-level
+          deletions will take place. “Structure changes” include methods like
+          select(), delePage(), insert_page(), insert_pdf() and so on:
+          all of these will result in a cascade of object deletions.
 
     The programmer will normally not realize any of this. If he, however,
     tries to access invalidated objects, exceptions will be raised.
@@ -188,15 +191,14 @@ class Page(Graphic):
             raise TypeError(
                 f"page should be a fitz.Page not {page.__class__.__name__}"
             )
+        self._page = page
+        self._displaylist: fitz.DisplayList = page.get_displaylist()
+        self._cs = fitz.Colorspace(fitz.CS_RGB)
         super().__init__(
             rect=(page.rect.x0, page.rect.y0, page.rect.width, page.rect.height),
             mem_format=Gdk.MemoryFormat.R8G8B8,
             unit=Unit.PS_POINT,
         )
-        self._page = page
-        self._display_list: fitz.DisplayList = page.get_displaylist()
-        self._clip: fitz.Rect = fitz.Rect(page.rect)
-        self._pm = None
 
     def on_added(self, viewport: Measurable) -> None:
         super().on_added(viewport)
@@ -206,25 +208,16 @@ class Page(Graphic):
         self.dpi = self.viewport.dpi
         super().on_updated()
 
-    def get_pixbuf(self, rect: Graphene.Rect) -> BufferProtocol:
-        # FIXME: return type
+    def get_pixbuf(self, rect: Graphene.Rect, scale: int) -> Pixbuf:
         _tl = rect.get_top_left()
         _br = rect.get_bottom_right()
-        self._clip.x0 = _tl.x
-        self._clip.y0 = _tl.y
-        self._clip.x1 = _br.x
-        self._clip.y1 = _br.y
-
-        # FIXME: display_list.get_pixmap() dont take dpi as arg
-        # FIXME: should release self._pm
-        self._pm = self._page.get_pixmap(
-            matrix=None,
-            dpi=self.virtual_dpi,
-            colorspace="rgb",
+        _scale = (self.dpi * scale) / 72
+        pxm = self._displaylist.get_pixmap(
+            matrix=fitz.Matrix(_scale, _scale),
+            colorspace=self._cs,
             alpha=False,
-            clip=self._clip,
-            annots=False,
+            clip=fitz.Rect(_tl.x, _tl.y, _br.x, _br.y),
         )
-        return (self._pm.samples_mv, (self._pm.width, self._pm.height))
+        return Pixbuf(pxm.samples_mv, pxm.width, pxm.height, pxm)
 
 

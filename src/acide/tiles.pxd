@@ -18,7 +18,8 @@
 import cython
 
 from cython.view cimport array as Carray
-from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin, cimax
+from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin
+from acide.types cimport cimax, Pixbuf
 from acide.asyncop cimport Scheduler
 from acide.measure cimport _CMeasurable, Extents_s
 
@@ -66,7 +67,7 @@ cdef class Tile(_CMeasurable):
 
     # C METHODS
     cpdef object compress(
-        Tile self, object buffer, object size, object format
+        Tile self, Pixbuf pixbuf, object format
     )
     cpdef object invalidate(Tile self)
 
@@ -81,8 +82,6 @@ cdef class TilesGrid(TypedGrid):
 
     # C METHODS
     cpdef object invalidate(TilesGrid self)
-    cpdef compress(TilesGrid self, object pixbuff_cb)
-    cpdef compress_async(TilesGrid self, object pixbuff_cb)
     cdef compute_extents(TilesGrid self)
     cdef bint contains_point(TilesGrid self, double x, double y)
     cdef bint contains_extents(
@@ -130,14 +129,16 @@ cdef class TilesPool():
     cdef object graphic
     cdef object viewport
     cdef object memory_format
-    cdef object pixbuff_cb
+    cdef object pixbuf_cb
     cdef Clip null_clip
+    cdef object render_task
 
     # C METHODS
     cdef int make_tiles_grid(TilesPool self, unsigned int scale)
     cdef object init_tiles_grid(
         TilesPool self, TilesGrid tg,  unsigned int scale
     )
+    cdef object schedule_compression(TilesPool self)
     cpdef set_rendering(
         TilesPool self, double x, double y, int depth=?
     )

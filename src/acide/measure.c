@@ -1023,6 +1023,7 @@ typedef struct {
 
 
 /*--- Type declarations ---*/
+struct __pyx_obj_5acide_5types_Pixbuf;
 struct __pyx_obj_5acide_5types_TypedGrid;
 struct __pyx_obj_5acide_7measure__CMeasurable;
 struct __pyx_array_obj;
@@ -1064,7 +1065,23 @@ struct __pyx_defaults {
   PyObject *__pyx_arg_unit;
 };
 
-/* "acide/types.pxd":57
+/* "acide/types.pxd":56
+ * 
+ * 
+ * cdef class Pixbuf():             # <<<<<<<<<<<<<<
+ *     cdef readonly object buffer
+ *     cdef readonly int width
+ */
+struct __pyx_obj_5acide_5types_Pixbuf {
+  PyObject_HEAD
+  PyObject *buffer;
+  int width;
+  int height;
+  PyObject *obj;
+};
+
+
+/* "acide/types.pxd":63
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1216,7 +1233,7 @@ struct __pyx_vtabstruct_memoryview {
 static struct __pyx_vtabstruct_memoryview *__pyx_vtabptr_memoryview;
 
 
-/* "acide/types.pxd":57
+/* "acide/types.pxd":63
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -2104,6 +2121,7 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
 /* Module declarations from 'cython.view' */
 
 /* Module declarations from 'acide.types' */
+static PyTypeObject *__pyx_ptype_5acide_5types_Pixbuf = 0;
 static PyTypeObject *__pyx_ptype_5acide_5types_TypedGrid = 0;
 static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double); /*proto*/
 static int (*__pyx_f_5acide_5types_test_sequence)(PyObject *, PyObject *); /*proto*/
@@ -29589,11 +29607,13 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 57, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5acide_5types_Pixbuf = __Pyx_ImportType(__pyx_t_1, "acide.types", "Pixbuf", sizeof(struct __pyx_obj_5acide_5types_Pixbuf), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5acide_5types_Pixbuf) __PYX_ERR(3, 56, __pyx_L1_error)
   __pyx_ptype_5acide_5types_TypedGrid = __Pyx_ImportType(__pyx_t_1, "acide.types", "TypedGrid", sizeof(struct __pyx_obj_5acide_5types_TypedGrid), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 57, __pyx_L1_error)
-  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 57, __pyx_L1_error)
+   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 63, __pyx_L1_error)
+  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

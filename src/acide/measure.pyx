@@ -621,8 +621,3 @@ class Measurable(metaclass=_MeasurableMeta):
         return (<_CMeasurable> self._proxy).__str__()
 
 
-# cdef class Duplex():
-#     cdef float ps_x = 0
-#     cdef float ps_y = 0
-#     cdef int ds_x = 0
-#     cdef int ds_y = 0

@@ -86,7 +86,7 @@ apidoc_extra_args = ['--implicit-namespaces']
 autodoc_default_options = {
     'members': True,
     #'ignore-module-all': False,
-    'member-order': 'bysource',
+    #'member-order': 'bysource',
     #'special-members': '__fake__',
     'undoc-members': True,
     'exclude-members': '__init__',
@@ -96,6 +96,8 @@ autodoc_default_options = {
 autodoc_docstring_signature = True
 autodoc_typehints = 'description'
 autodoc_class_signature = 'mixed'
+#autodoc_member_order = 'bysource'
+autodoc_member_order = 'groupwise'
 
 
 # Boolean indicating whether to scan all found documents

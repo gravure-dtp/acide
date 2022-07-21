@@ -15,10 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+"""
+This module provides utilities to manage *Asynchronous Operations* (coroutines
+and tasks) inside the context of a *main event loop* application. It was designed
+to work with the `glib event loop <https://docs.gtk.org/glib/main-loop.html>`_
+in mind and tested using the `Gbulb python package <https://github.com/beeware/gbulb>`_
+as an interface with glib.
+"""
+
 import asyncio
 import functools
 from typing import Any, Awaitable, Callable, Coroutine, Optional
-from enum import Enum, unique
+from enum import Enum, IntEnum, unique, auto
 
 from gi.repository import Gio
 
@@ -29,30 +37,105 @@ AsyncReadyCallback = Callable[[Any, Gio.Task, Any], None]
 
 
 @unique
-class Priority(Enum):
-    HIGHEST = 0
-    LOWEST = 999
-    NEXT = 888
+class Run(Enum):
+    """Enumeration of running mode for the :class:`Scheduler`'s loop.
+    """
+    ONCE = auto()
+    UNTIL_COMPLETE = auto()
+    FOREVER = auto()
+    LAST = auto()
+
+@unique
+class Priority(IntEnum):
+    """Enumeration of level of priority for scheuled task.
+    """
+    HIGH = 0
+    NEXT = auto()
+    LOW = -1
+
+
+cdef int _id[1]
+_id[0] = 0
+cdef int _unique_id():
+    _id[0] += 1
+    return _id[0]
+
+@cython.final
+cdef class PriorityQueue():
+
+    def __cinit__(self, id = None):
+        if id is None:
+            self.id = _unique_id()
+        else:
+            self.id = int(id)
+        self.queue = set()
+        self.pendings = set()
+        self.dones = set()
+        self.event = asyncio.Event()
+
+    def __len__(self):
+        return len(self.queue)
+
+    def __nonzero__(self):
+        return <bint> len(self.queue)
+
+    @property
+    def completed(self):
+        return (len(self.pendings) == 0)
+
+    def add(self, task):
+        self.queue.add(task)
+
+    def feed(self):
+        self.pendings |= self.queue
+        self.queue.clear()
+
+    def clear_queue(self):
+         self.queue.clear()
+
+    def clear_dones(self):
+         self.dones.clear()
+
+    def set(self):
+        self.event.set()
+
+    def clear(self):
+        self.event.clear()
+
+    def is_set(self):
+        return self.event.is_set()
+
+    def check(self):
+        for task in self.pendings.copy():
+            if task.done():
+                self.dones.add(task)
+                self.pendings.remove(task)
+
+    async def wait(self):
+        await self.event.wait()
+
+    def __repr__(self):
+        return f"PriorityQueue #{self.id} q({len(self)})"
 
 
 cdef Scheduler _sched_singleton = None
 cdef Scheduler get_singleton():
     return _sched_singleton
-
-cdef set_singleton(Scheduler sched):
+cdef void set_singleton(Scheduler sched):
     _sched_singleton = sched
-
 
 @cython.final
 cdef class Scheduler():
+    """Schedule *coroutines* and *awaitable* concurently as prioritized *Tasks*.
+
+    """
     def __cinit__(self):
-        self.queues = [set(), set()]
-        self.priorities = [asyncio.Event(), asyncio.Event()]
-        #self.priorities[0].set()  # priority 0 is always ready to start
-        self.lowest = 1
-        self.dones = set()
+        self.priorities = [PriorityQueue(Priority.HIGH),
+                           PriorityQueue(Priority.LOW)]
         self.task_id = 0
         self.rate = 0.001
+        self.last_mode = Run.ONCE
+        self.loop_run = False
 
     @staticmethod
     def new() -> 'Scheduler':
@@ -63,156 +146,270 @@ cdef class Scheduler():
             set_singleton(sch)
         return sch
 
+    def __len__(self):
+        return sum([len(p) for p in self.properties])
+
+    @property
+    def priority_levels(self):
+        """A :class:`int` as the actual level of priority in this
+        :class:`Scheduler` (read only)."""
+        return len(self.priorities)
+
     @property
     def pendings(self):
-        return set().union(*self.queues)
+        """A :class:`set` of scheduled pendings :class:`Task` (read only)."""
+        pendings = set()
+        for p in self.priorities:
+           pendings |= (<PriorityQueue>p).queue
+        return pendings
 
     @property
     def dones(self):
-        return self.dones.copy()
+        """A :class:`set` of scheduled and completed :class:`Task` (read only).
+        Note that this set is clened at the begining of each :class:`Scheduler`
+        loop iteraton.
+        """
+        dones = set()
+        for p in self.priorities:
+           dones |= (<PriorityQueue>p).dones
+        return dones
+
+    @property
+    def is_running(self):
+        """A boolean indicating if the :class:`Scheduler` loop is running (read only).
+        """
+        return self.loop_run
+
+    @property
+    def rate(self):
+        """A :class:`float` as the time in second between each :class:`Scheduler`
+        loop iteraton (default to 0.001sec.).
+        """
+        return self.rate
+
+    @rate.setter
+    def rate(self, value):
+        if value > 0:
+            self.rate = float(value)
+
+    cpdef int add_priority(self):
+        """Add a priority level to the :class:`Scheduler`.
+
+        The new priority will be inserted just before :attr:`Priority.LOW`
+        and should be referred in :meth:`Scheduler.add` with the value
+        returned by this method.
+
+        Caution:
+            This method will stop the :class:`Scheduler` running loop
+            and it should be restarted after scheduling new coroutines
+            with the :meth:`Scheduler.add` method. Restarting could
+            be done with scheduler.run(Run.LAST).
+            Validity of the index value returned by this method is tight
+            to the scheduler pause and should not be used after calling
+            scheduler.run(Run.LAST).
+
+        Returns:
+            index of the added Priority
+        """
+        self.stop()
+        self.priorities.insert(-1, PriorityQueue())
+        return len(self.priorities) - 2
+
+    cpdef object add(
+        self,
+        co: Coroutine,
+        priority: int,
+        callback: Optional[Callable] = None,
+        name: Optional[str] = None,
+    ):
+        """Add coroutine :obj:`co` as a scheduled :class:`asyncio.Task`
+        with :obj:`priority`.
+
+        Args:
+            co: The coroutine or awaitable to schedule.
+            priority: A member of enum :class:`Priority` or an int as
+                      the priority of completion for the task.
+            callback: Any function to call after the task complete.
+            name: A string to explicitly name the :class:`asyncio.Task`
+                  if :obj:`None` name will be build around coroutine.__name__
+
+        Returns:
+            an :class:`asyncio.Task` as the scheduled coroutine.
+        """
+        cdef int i, _prio, lowest
+        lowest = len(self.priorities) - 1
+        if priority is Priority.LOW:
+            _prio = lowest
+        elif priority is Priority.NEXT:
+            _prio = lowest
+            self.priorities.insert(-1, PriorityQueue())
+            lowest += 1
+        elif priority is Priority.HIGH:
+            _prio = 0
+        elif priority > lowest or priority < 0:
+            raise ValueError(f"priority #{priority} unset")
+        else:
+            _prio = priority
+        name = name
+        if name is not None:
+            name = f"{name}_{self.task_id}"
+        else:
+            name = f"{co.__name__}_{self.task_id}"
+        task = asyncio.create_task(
+            Scheduler._scheduled(
+                co, self.priorities[_prio], callback, name
+            )
+        )
+        task.set_name(name)
+        self.task_id += 1
+        if _prio < lowest:
+            for i in range(_prio + 1, lowest + 1):
+                self.priorities[i].clear()
+        self.priorities[_prio].add(task)
+        return task
 
     @staticmethod
     async def _scheduled(
         awt: Awaitable,
-        result: asyncio.Future,
-        priority: asyncio.Event,
-        callback: Callable
+        priority: PriorityQueue,
+        callback: Callable,
+        name: str
     ) -> Coroutine:
-        name = awt.__name__
-        loop = asyncio.get_running_loop()
-        # print(f"{name} scheduled at {loop.time()} ...")
-        await priority.wait()
-        result.set_result(await awt)
-        #print(f"{name} done at {loop.time()}")
-        if callback:
-            callback()
-
-    cpdef object schedule(
-        self, co: Coroutine, priority: int, callback: Callable=None
-    ):
-        cdef int i, _prio
-        if priority is Priority.LOWEST:
-            _prio = self.lowest
-        elif priority is Priority.NEXT:
-            _prio = self.lowest
-            self.priorities.insert(-1, asyncio.Event())
-            self.queues.insert(-1, set())
-            self.lowest += 1
-        elif priority is Priority.HIGHEST:
-            _prio = 0
-        elif priority > self.lowest:
-            raise ValueError(f"priority #{priority} unset")
+        try:
+            loop = asyncio.get_running_loop()
+            start = loop.time()
+            print(f"{name} scheduled for #{priority.id} at {start} ...")
+            await priority.wait()
+            result = await awt
+        except asyncio.CancelledError:
+            print(f"scheduled {name} cancelled")
+            raise
         else:
-            _prio = priority
-        future = asyncio.get_running_loop().create_future()
-        task = asyncio.create_task(
-            Scheduler._scheduled(
-                co, future, self.priorities[_prio], callback
-            )
-        )
-        task.set_name(f"{co.__name__}_{self.task_id}")
-        self.task_id += 1
-        if _prio < self.lowest:
-            for i in range(_prio + 1, self.lowest + 1):
-                self.priorities[i].clear()
-        self.queues[_prio].add(task)
-        return task
+            print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+            if callback:
+                callback()
+            return result
+        finally:
+            pass
 
-    async def _runner(self, priority_id: int, policy) -> Coroutine:
-        if self.queues[priority_id]:
-            if priority_id == 0:
-                policy = asyncio.ALL_COMPLETED
-            done, pending = await asyncio.wait(
-                self.queues[priority_id],
-                timeout = 0,
-                return_when = policy
-            )
-            self.queues[priority_id] -= done
-            self.dones |= done
+    cdef control(self, PriorityQueue priority):
+        priority.check() # put pending tasks done in dones
+        if priority.is_set():
+            priority.feed() # put tasks from queue to pendings
+            if priority.id != Priority.LOW and priority.completed:
+                _next = self.priorities[self.priorities.index(priority) + 1]
+                _next.set()
+            if priority.id != Priority.HIGH:
+                priority.clear()
 
-    async def _task(
-        self,
-        runner: Coroutine,
-        priority_id: int
-    )  -> Coroutine:
-        await runner
-        if priority_id < self.lowest:
-            if len(self.queues[priority_id]) == 0:
-                # print(f"set priority to {priority_id + 1}")
-                if priority_id != 0:
-                    self.queues.pop(priority_id)
-                    self.priorities.pop(priority_id)
-                    self.lowest -= 1
-                    self.priorities[priority_id].set()
-                else:
-                    self.priorities[priority_id + 1].set()
-
-    async def _scheduler(
-        self,
-        priority_id: int,
-        policy=asyncio.FIRST_COMPLETED
-    )  -> Coroutine:
-        await self._task(
-            self._runner(priority_id, policy), priority_id
-        )
-
-    async def run_once(self)  -> Coroutine:
-        self.dones.clear()
-        self.priorities[0].set()
-        for i in range(len(self.queues)):
-            asyncio.create_task(self._scheduler(i))
-        await asyncio.sleep(self.rate)
-        self.priorities[0].clear()
-        print(f"scheduler completed {self}")
-
-    async def run_completed(self)  -> Coroutine:
-        self.dones.clear()
-        self.priorities[0].set()
-        while len(self.pendings) > 0:
-            scheduler = [self._scheduler(i) for i in range(len(self.queues))]
-            await asyncio.gather(*scheduler)
-            #print(f"Scheduler loop {self}")
-            await asyncio.sleep(self.rate)
-        self.priorities[0].clear()
-        print(f"scheduler completed {self}")
+    cdef clear(self):
+        cdef int i, r
+        r = 0
+        for i in range(1, len(self.priorities) - 1):
+            if not self.priorities[i - r]:
+                self.priorities.pop(i - r)
+                r += 1
 
     async def run_forever(self)  -> Coroutine:
-        self.priorities[0].set()
-        while True:
-            try:
-                self.dones.clear()
-                scheduler = [self._scheduler(i) for i in range(len(self.queues))]
-                await asyncio.gather(*scheduler)
-                #print(f"Scheduler loop {self}")
-                await asyncio.sleep(self.rate)
-            except:
-                raise
-                break
-        self.priorities[0].clear()
-        print(f"scheduler stopped {self}")
+        try:
+            self.loop_run = True
+            self.priorities[0].set()
+            while True:
+                for p in self.priorities:
+                    await asyncio.sleep(self.rate)
+                    p.clear_dones()
+                    self.control(p)
+                self.clear()
+        except asyncio.CancelledError:
+            print("runner cancelled")
+            raise
+        finally:
+            self.priorities[0].clear()
+            self.loop_run = False
+            return
 
-    def run(self, mode: Optional[str] = None) -> None:
-        if mode is None:
-            asyncio.ensure_future(self.run_once())
-        elif mode == "completed":
-            asyncio.ensure_future(self.run_completed())
-        elif mode == "forever":
-            asyncio.ensure_future(self.run_forever())
+    async def run_once(self)  -> Coroutine:
+        print("run_once")
+        # try:
+        #     loop = asyncio.get_running_loop()
+        #     self.loop_run = True
+        #     self.priorities[0].set()
+        #     for p in self.priorities:
+        #         p.clear_dones()
+        #         self.time = loop.time()
+        #         asyncio.create_task(self._runner(p))
+        #     await asyncio.sleep(self.rate)
+        #     self.clear()
+        # except asyncio.CancelledError:
+        #     raise
+        # finally:
+        #     self.priorities[0].clear()
+        #     self.loop_run = False
+
+    async def run_until_complete(self)  -> Coroutine:
+        print("run_until_complete")
+        # try:
+        #     loop = asyncio.get_running_loop()
+        #     self.loop_run = True
+        #     for p in self.priorities:
+        #         p.clear_dones()
+        #     self.priorities[0].set()
+        #     while all(self.priorities) and self.loop_run == True:
+        #         self.time = loop.time()
+        #         await asyncio.gather(
+        #             *[self._runner(p) for p in self.priorities]
+        #         )
+        #         await asyncio.sleep(self.rate)
+        #         self.clear()
+        # except asyncio.CancelledError:
+        #     raise
+        # finally:
+        #     self.priorities[0].clear()
+        #     self.loop_run = False
+
+    def run(self, mode: Optional[Run] = Run.ONCE) -> None:
+        """Start the :class:`Scheduler`'s loop and run the scheduled
+        tasks concurently respecting their priority.
+        """
+        if not self.loop_run:
+            if mode is Run.LAST:
+                mode = self.last_mode
+            if mode is Run.ONCE:
+                self.last_mode = Run.ONCE
+                self.runner = asyncio.ensure_future(self.run_once())
+            elif mode == Run.UNTIL_COMPLETE:
+                self.last_mode = Run.UNTIL_COMPLETE
+                self.runner = asyncio.ensure_future(self.run_until_complete())
+            elif mode == Run.FOREVER:
+                self.last_mode = Run.FOREVER
+                self.runner = asyncio.ensure_future(self.run_forever())
+            else:
+                raise ValueError(f"Unavailable mode {mode}")
         else:
-            raise ValueError(f"Unavailable mode {mode}")
+            print("scheduler already running")
+
+    def stop(self) -> None:
+        """Stop the :class:`Scheduler`'s loop at the end of the current iteration."""
+        self.loop_run = False
+        if self.runner:
+            self.runner.cancel()
+
+    def _short_dump(self):
+        return (
+            f"Scheduler state {self.is_running}: pendings({len(self.pendings)}) "
+            f"| dones({len(self.dones)}) "
+            f"| levels({self.priority_levels})"
+        )
 
     def __str__(self) -> str:
         st = do = ""
-        for i, q in enumerate(self.queues):
-            st += f"#{i}[ "
-            for t in q:
+        for p in self.priorities:
+            st += f"{p}[ "
+            for t in (<PriorityQueue> p).queue:
                 st+=  f"{t.get_name()}, "
             st += "], "
-        for d in self.dones:
-            do += f"{d.get_name()}, "
-
         return (
-            f"Scheduler state: pendings({st}) | dones({do})"
+            f"Scheduler state: pendings({st})"
         )
 
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from typing import Any, Union, Optional, NoReturn, Sequence, Tuple
+from typing import Any, Union, Optional, NoReturn, Sequence, Tuple, Callable
 from decimal import Decimal
 
 import gi
@@ -28,6 +28,7 @@ import cython
 BufferProtocol = Any
 Number = Union[int, float, Decimal]
 Rectangle = Union[Graphene.Rect, Sequence[Number]]
+PixbufCallback = Callable[[Graphene.Rect, int], Pixbuf]
 
 
 cdef bint test_sequence(object seq, tuple _types):
@@ -41,6 +42,23 @@ cdef bint test_sequence(object seq, tuple _types):
                 return False
         return True
     return False
+
+
+@cython.final
+@cython.freelist(16)
+cdef class Pixbuf():
+
+    def __cinit__(
+        self,
+        buffer: BufferProtocol,
+        width: int,
+        height: int,
+        obj: Optional[Any] = None,
+    ):
+        self.buffer = buffer
+        self.width = width
+        self.height = height
+        self.obj = obj
 
 
 cdef class TypedGrid():
