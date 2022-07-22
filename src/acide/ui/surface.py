@@ -581,7 +581,7 @@ class GraphicViewport(
             self.props.graphic.get_render_async(
                 cancellable=None, callback=self._on_get_render_cb, user_data=None
             )
-        #self.queue_draw()
+        self.queue_draw()
 
     def _on_get_render_cb(
         self, src: Graphic, result: Gio.Task, user_data: Any

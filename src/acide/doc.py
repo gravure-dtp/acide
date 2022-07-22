@@ -218,6 +218,6 @@ class Page(Graphic):
             alpha=False,
             clip=fitz.Rect(_tl.x, _tl.y, _br.x, _br.y),
         )
-        return Pixbuf(pxm.samples_mv, pxm.width, pxm.height, pxm)
-
+        # return Pixbuf(pxm.samples_mv, pxm.width, pxm.height, pxm)
+        return Pixbuf(pxm.samples, pxm.width, pxm.height, pxm)
 

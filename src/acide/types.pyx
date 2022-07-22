@@ -74,6 +74,7 @@ cdef class Pixbuf():
         pass
 
 
+
 cdef bint _log_timer[1]
 _log_timer[0] = 0
 cdef void _set_log_timer(bint val):
@@ -229,7 +230,7 @@ cdef class TypedGrid():
                 v += f"{self.getitem_at(x,y)}@{self.view[x,y]}"
         if v: v += " ]"
         return (
-            f"[{v}]"
+            # f"[{v}]"
             f"\ntype: {self.pytype.__name__}"
             f"\nshape{shape}"
             f"\nlen: {self.__len__()}"

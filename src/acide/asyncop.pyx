@@ -278,14 +278,14 @@ cdef class Scheduler():
         try:
             loop = asyncio.get_running_loop()
             start = loop.time()
-            print(f"{name} scheduled for #{priority.id} at {start} ...")
+            # print(f"{name} scheduled for #{priority.id} at {start} ...")
             await priority.wait()
             result = await awt
         except asyncio.CancelledError:
-            print(f"scheduled {name} cancelled")
+            # print(f"scheduled {name} cancelled")
             raise
         else:
-            print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+            # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
             if callback:
                 callback()
             return result
@@ -321,7 +321,7 @@ cdef class Scheduler():
                     self.control(p)
                 self.clear()
         except asyncio.CancelledError:
-            print("runner cancelled")
+            # print("runner cancelled")
             raise
         finally:
             self.priorities[0].clear()

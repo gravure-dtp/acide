@@ -43,7 +43,7 @@ from acide.measure import Measurable, Unit
 
 BLOSC_MAX_BYTES_CHUNK = 2**31
 
-Timer.set_logging(False)
+Timer.set_logging(True)
 
 cdef object gdk_memory_format_mapping():
     mapping = dict()
@@ -147,6 +147,7 @@ cdef class Tile(_CMeasurable):
         cdef Py_buffer view
         cdef Py_buffer* p_view = &view
         cdef char* ptr
+        cdef int ret
 
         if pixbuf is None:
             raise ValueError("argument pixbuf couldn´t be None")
@@ -154,7 +155,7 @@ cdef class Tile(_CMeasurable):
         if isinstance(pixbuf.buffer, memoryview):
             p_view = PyMemoryView_GET_BUFFER(pixbuf.buffer)
         elif PyObject_CheckBuffer(pixbuf.buffer):
-            PyObject_GetBuffer(pixbuf.buffer, p_view, PyBUF_SIMPLE)
+            ret = PyObject_GetBuffer(pixbuf.buffer, p_view, PyBUF_CONTIG_RO)
         else:
             raise TypeError(
                 "buffer should be either a memoryview"
@@ -208,8 +209,11 @@ cdef class Tile(_CMeasurable):
         )
         self._z = len(self.buffer)
         self._r = self._u / float(self._z)
-        PyBuffer_Release(p_view)
-        del pixbuf
+        if isinstance(pixbuf.buffer, memoryview):
+            pixbuf.buffer.release()
+        else:
+            PyBuffer_Release(p_view)
+        del(pixbuf)
 
     cpdef _dump_props(self):
         return (
@@ -559,7 +563,9 @@ cdef class RenderTile(SuperTile):
     def __cinit__(self, grid, *args, **kwargs):
         self.is_valid = False
         self.buffer = None
+        self.glib_bytes = None
         self._clip = Clip.__new__(Clip)
+        self._r_clip = Clip.__new__(Clip)
 
     def __init__(self, grid: TilesGrid):
         pass
@@ -574,11 +580,12 @@ cdef class RenderTile(SuperTile):
          x, y: indices for the top-left :class:`Tile` relatif
                to the :attr:`TilesGrid.base` :class:`TilesGrid`.
         """
+        cdef Clip clip
         if SuperTile.move_to(self, x, y):
-            self._clip._x = self.extents.x0
-            self._clip._y = self.extents.y0
-            self.buffer = None
             self.invalidate()
+            clip = self._clip if self.switch else self._r_clip
+            clip._x = self.extents.x0
+            clip._y = self.extents.y0
             return True
         return False
 
@@ -590,9 +597,10 @@ cdef class RenderTile(SuperTile):
         :meth:`RenderTile.render_texture`,
         :meth:`RenderTile.render_texture_async`.
         """
-        self._clip._texture = None
-        self.glib_bytes = None
-        self.buffer = None
+        # self._clip._texture = None
+        # self.glib_bytes = None
+        # self.buffer = None
+        self.switch = not self.switch
         self.is_valid = False
 
     cdef int allocate_buffer(self):
@@ -600,6 +608,7 @@ cdef class RenderTile(SuperTile):
         of the resulting union of compressed subtiles."""
         cdef Tile tile0, tile1, tile2, tile3
         cdef Py_ssize_t sh
+        cdef Clip clip
         try:
             tile0 = <Tile?> self.getitem_at(0,0)
             tile1 = <Tile?> self.getitem_at(1,0)
@@ -630,8 +639,10 @@ cdef class RenderTile(SuperTile):
                     f"memory: {format_size(sh * tile0.u_itemsize)}"
                 )
                 return -3
-            self._clip._w = tile0._size[0] + tile1._size[0]
-            self._clip._h = tile0._size[1] + tile2._size[1]
+
+            clip = self._clip if self.switch else self._r_clip
+            clip._w = tile0._size[0] + tile1._size[0]
+            clip._h = tile0._size[1] + tile2._size[1]
             self._z = tile0._z + tile1._z + tile2._z + tile3._z
             self._u = tile0._u + tile1._u + tile2._u + tile3._u
             self._r = self._u / float(self._z)
@@ -642,7 +653,7 @@ cdef class RenderTile(SuperTile):
 
     cdef int fill_buffer(self):
         """Actually decompress the subtiles buffers in the RenderTile.buffer."""
-        _T = Timer("decompress buffers")
+        _T = Timer("prepare decompression")
         cdef Carray buffer_west
         cdef Carray buffer_east
         cdef Py_ssize_t w_buf, rows, x_in, x_out, y
@@ -684,7 +695,8 @@ cdef class RenderTile(SuperTile):
             except MemoryError:
                 self.msg = "can´t allocate temporary buffers"
                 return -3
-
+            _T.stop()
+            _T = Timer("decompress buffers")
             # decompress tiles in two temporary buffers
             blosc.decompress_ptr(
                 tile0.buffer,
@@ -712,6 +724,8 @@ cdef class RenderTile(SuperTile):
                 rows, tile0._size[0] * tile0.format_size,
                 tile1._size[0] * tile0.format_size
             )
+            del(buffer_west)
+            del(buffer_east)
             _T.stop()
             return 1
         else:
@@ -740,18 +754,22 @@ cdef class RenderTile(SuperTile):
     cpdef render_texture(self):
         cdef int ret
         if not self.is_valid:
-            if self.buffer is None:
-                _T = Timer("allocate_buffer")
-                ret = self.allocate_buffer()
-                _T.stop()
-                if ret < 0:
-                    raise MemoryError(f"{self.msg}")
+            _T = Timer("allocate_buffer")
+            ret = self.allocate_buffer()
+            _T.stop()
+            if ret < 0:
+                raise MemoryError(f"{self.msg}")
+
             if self.fill_buffer() > 0:
+                _T = Timer("PyBytes_FromObject")
+                _bytes = PyBytes_FromObject(self.buffer)
+                _T.stop()
                 _T = Timer("glib.bytes")
                 #FIXME: here data is copied 2 times !!!
                 self.glib_bytes = GLib.Bytes.new_take(
-                    PyBytes_FromObject(self.buffer)
+                    _bytes
                 )
+                self.buffer = None
                 _T.stop()
                 _T = Timer("Gdk.Texture")
                 self._clip._texture = Gdk.MemoryTexture.new(
@@ -768,44 +786,48 @@ cdef class RenderTile(SuperTile):
 
     async def render_texture_async(self) -> Coroutine:
         cdef int ret
+        cdef Clip clip
         if not self.is_valid:
-            if self.buffer is None:
-                _T = Timer("allocate_buffer")
-                ret = self.allocate_buffer()
-                _T.stop()
-                await asyncio.sleep(0)
+            ret = self.allocate_buffer()
+            clip = self._clip if self.switch else self._r_clip
 
-                if ret < 0:
-                    raise MemoryError(f"{self.msg}")
+            if ret < 0:
+                raise MemoryError(f"{self.msg}")
+
             if self.fill_buffer() > 0:
-                await asyncio.sleep(0)
-
+                # await asyncio.sleep(0)
+                _T = Timer("PyBytes_FromObject")
+                _bytes = PyBytes_FromObject(self.buffer)
+                _T.stop()
                 _T = Timer("glib.bytes")
                 #FIXME: here data is copied 2 times !!!
-                self.glib_bytes = GLib.Bytes.new_take(
-                    PyBytes_FromObject(self.buffer)
+                glib_bytes = GLib.Bytes.new_take(
+                    _bytes
                 )
+                self.buffer = None
                 _T.stop()
-                await asyncio.sleep(0)
-
-                _T = Timer("Gdk.Texture")
-                self._clip._texture = Gdk.MemoryTexture.new(
-                    self._clip._w,
-                    self._clip._h,
+                # await asyncio.sleep(0)
+                clip._texture = Gdk.MemoryTexture.new(
+                    clip._w,
+                    clip._h,
                     self.memory_format,
-                    self.glib_bytes,
-                    3 * self._clip._w,
+                    glib_bytes,
+                    3 * clip._w,
                 )
-                _T.stop()
                 self.is_valid = True
             else:
                 self.invalidate()
+        else:
+            clip = self._r_clip if self.switch else self._clip
+            clip._texture = None
 
     @property
     def clip(self) -> Clip:
         """A :class:`Clip` holding a :class:`Gdk.Texture` filled with
         the uncompressed data buffer of the subtiles (read only)."""
-        return self._clip
+        cdef Clip clip
+        clip = self._clip if self.switch else self._r_clip
+        return clip
 
     def __str__(self):
         return (
@@ -831,9 +853,11 @@ cdef class TilesPool():
                  :class:`TilesPool`
         viewport: the rendering widget for :obj:`graphic`, should
                   implement :class:`acide.measure.Measurable`
+        scales: A sequences of positive int as the available scale factors
         mem_format: a enum's member of :class:`Gdk.MemoryFormat`
-        pixbuf_cb: a callback function to retrieve parts of a pixmap in
-                   the form pixbuf_cb(rect: Graphene.Rect, scale: int) -> :class:`acide.types.Pixbuf`
+        pixbuf_cb: a callback function to retrieve parts of a pixmap with
+                   the signature: pixbuf_cb(rect: Graphene.Rect, scale: int)
+                   -> :class:`acide.types.Pixbuf`
     """
 
     def __cinit__(self, graphic, viewport, scales, mem_format, pixbuf_cb):
@@ -985,6 +1009,7 @@ cdef class TilesPool():
                    :class:`TilesPool` initialzation
         """
         cdef int i, j
+        _T = Timer("set_rendering")
         i, j = self.stack[self.current].get_tile_indices(x, y)
 
         if depth != self.current:
@@ -992,10 +1017,11 @@ cdef class TilesPool():
             # keep all compressed buffer or an in beetween
             # (<TilesGrid> self.stack[self.current]).invalidate()
             self.current = depth
-            self.invalid_render = self.render_tile
+            # self.invalid_render = self.render_tile
             self.render_tile = RenderTile(self.stack[self.current])
             self.schedule_compression()
         self.render_tile.move_to(i, j)
+        _T.stop()
 
     cpdef render(self):
         """Request rendering on the :class:`RenderTile`.
@@ -1046,10 +1072,12 @@ cdef class TilesPool():
 
     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
         try:
+            _T = Timer("_render_super_tile_co")
             await self.render_tile.compress_async(
                 self.pixbuf_cb, self.graphic.scale
             )
             await self.render_tile.render_texture_async()
+            _T.stop()
         except asyncio.CancelledError:
             print("render cancelled")
             raise
@@ -1061,25 +1089,37 @@ cdef class TilesPool():
     def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:
         # complete the gtask calling the render_async callback
         gtask.return_boolean(True)
+        # self.dump_stack()
 
     def render_finish(self, result: Gio.Task, data: any = None):
         if result.propagate_boolean():
-            if self.invalid_render is not None:
-                self.invalid_render.invalidate()
-                self.invalid_render = None
-            return self.render_tile._clip
+            # if self.invalid_render is not None:
+            #     self.invalid_render.invalidate()
+            #     self.invalid_render = None
+            return self.render_tile.clip
         else:
             return self.null_clip
 
-    cpdef int memory_print(self):
-        cdef int mem = 0
+    def dump_stack(self):
+        # for tg in self.stack:
+        #     print(tg)
+        # print(self.render_tile)
+        z, u = self.memory_print()
+        print(f"memory footprint: {format_size(z)} | {format_size(u)}")
+
+    cpdef memory_print(self):
+        cdef unsigned long mem = 0
+        cdef unsigned long u_mem = 0
         if self.render_tile is not None:
-            mem += self.render_tile._u * 2  # cause of gbytes
+            mem += self.render_tile._u
+            u_mem = mem
         if self.invalid_render is not None:
-            mem += self.invalid_render._u * 2  # cause of gbytes
+            mem += self.invalid_render._u
+            u_mem = mem
         for tg in self.stack:
             (<TilesGrid> tg).stats()
             mem += (<TilesGrid> tg)._z
-        return mem
+            u_mem += (<TilesGrid> tg)._u
+        return (mem, u_mem)
 
 

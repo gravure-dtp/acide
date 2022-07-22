@@ -22,6 +22,7 @@ from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin
 from acide.types cimport cimax, Pixbuf
 from acide.asyncop cimport Scheduler
 from acide.measure cimport _CMeasurable, Extents_s
+from python_ref cimport Py_INCREF, Py_XDECREF
 
 cdef extern from "Python.h":
     ctypedef struct PyObject
@@ -45,6 +46,8 @@ cdef extern from "Python.h":
         PyBUF_C_CONTIGUOUS,
         PyBUF_F_CONTIGUOUS,
         PyBUF_ANY_CONTIGUOUS
+        PyBUF_CONTIG
+        PyBUF_CONTIG_RO
 
     cdef bytes PyBytes_FromObject(object o)
     cdef bytearray PyByteArray_FromObject(object o)
@@ -110,8 +113,8 @@ cdef class RenderTile(SuperTile):
     # MEMBERS
     cdef Carray buffer
     cdef object glib_bytes
-    cdef bint is_valid
-    cdef Clip _clip
+    cdef bint is_valid, switch
+    cdef Clip _clip, _r_clip
     cdef unicode msg
 
     # C METHODS
@@ -152,5 +155,5 @@ cdef class TilesPool():
     )
     cpdef object render(TilesPool self)
     cdef object validate_scales(TilesPool self, list scales)
-    cpdef int memory_print(TilesPool self)
+    cpdef object memory_print(TilesPool self)
 

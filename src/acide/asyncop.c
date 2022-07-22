@@ -1539,9 +1539,6 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
         __Pyx__ArgTypeTest(obj, type, name, exact))
 static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
 
-/* PyUnicode_Unicode.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj);
-
 /* ReturnWithStopIteration.proto */
 #define __Pyx_ReturnWithStopIteration(value)\
     if (value == Py_None) PyErr_SetNone(PyExc_StopIteration); else __Pyx__ReturnWithStopIteration(value)
@@ -1844,33 +1841,28 @@ static PyObject *__pyx_builtin_print;
 static const char __pyx_k_[] = ")";
 static const char __pyx_k_q[] = " q(";
 static const char __pyx_k__4[] = "_";
-static const char __pyx_k__6[] = " ...";
-static const char __pyx_k_at[] = " at ";
 static const char __pyx_k_co[] = "co";
 static const char __pyx_k_id[] = "id";
-static const char __pyx_k_in[] = " in ";
 static const char __pyx_k_Any[] = "Any";
 static const char __pyx_k_Gio[] = "Gio";
 static const char __pyx_k_LOW[] = "LOW";
 static const char __pyx_k_Run[] = "Run";
-static const char __pyx_k__12[] = "";
-static const char __pyx_k__13[] = "[ ";
-static const char __pyx_k__14[] = ", ";
-static const char __pyx_k__15[] = "], ";
+static const char __pyx_k__10[] = "";
+static const char __pyx_k__11[] = "[ ";
+static const char __pyx_k__12[] = ", ";
+static const char __pyx_k__13[] = "], ";
 static const char __pyx_k_add[] = "add";
 static const char __pyx_k_awt[] = "awt";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_new[] = "new";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_sch[] = "sch";
-static const char __pyx_k_sec[] = " sec.";
 static const char __pyx_k_set[] = "set";
 static const char __pyx_k_sum[] = "sum";
 static const char __pyx_k_Enum[] = "Enum";
 static const char __pyx_k_HIGH[] = "HIGH";
 static const char __pyx_k_LAST[] = "LAST";
 static const char __pyx_k_NEXT[] = "NEXT";
-static const char __pyx_k_None[] = "None";
 static const char __pyx_k_ONCE[] = "ONCE";
 static const char __pyx_k_Task[] = "Task";
 static const char __pyx_k_args[] = "args";
@@ -1922,7 +1914,6 @@ static const char __pyx_k_Callable[] = "Callable";
 static const char __pyx_k_Optional[] = "Optional";
 static const char __pyx_k_Priority[] = "Priority";
 static const char __pyx_k_callback[] = "callback";
-static const char __pyx_k_done_for[] = " done for #";
 static const char __pyx_k_get_name[] = "get_name";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_pendings[] = ": pendings(";
@@ -1935,7 +1926,6 @@ static const char __pyx_k_Awaitable[] = "Awaitable";
 static const char __pyx_k_Coroutine[] = "Coroutine";
 static const char __pyx_k_Scheduler[] = "Scheduler";
 static const char __pyx_k_TypeError[] = "TypeError";
-static const char __pyx_k_cancelled[] = " cancelled";
 static const char __pyx_k_completed[] = "completed";
 static const char __pyx_k_functools[] = "functools";
 static const char __pyx_k_metaclass[] = "__metaclass__";
@@ -1950,7 +1940,6 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_clear_dones[] = "clear_dones";
 static const char __pyx_k_create_task[] = "create_task";
 static const char __pyx_k_run_forever[] = "run_forever";
-static const char __pyx_k_scheduled_2[] = "scheduled ";
 static const char __pyx_k_staticmethod[] = "staticmethod";
 static const char __pyx_k_PriorityQueue[] = "PriorityQueue #";
 static const char __pyx_k_acide_asyncop[] = "acide.asyncop";
@@ -1958,7 +1947,6 @@ static const char __pyx_k_asyncio_tasks[] = "asyncio.tasks";
 static const char __pyx_k_ensure_future[] = "ensure_future";
 static const char __pyx_k_gi_repository[] = "gi.repository";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
-static const char __pyx_k_scheduled_for[] = " scheduled for #";
 static const char __pyx_k_CancelledError[] = "CancelledError";
 static const char __pyx_k_UNTIL_COMPLETE[] = "UNTIL_COMPLETE";
 static const char __pyx_k_PriorityQueue_2[] = "PriorityQueue";
@@ -1967,7 +1955,6 @@ static const char __pyx_k_priority_levels[] = "priority_levels";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_Unavailable_mode[] = "Unavailable mode ";
 static const char __pyx_k_get_running_loop[] = "get_running_loop";
-static const char __pyx_k_runner_cancelled[] = "runner cancelled";
 static const char __pyx_k_acide_asyncop_pyx[] = "acide/asyncop.pyx";
 static const char __pyx_k_AsyncReadyCallback[] = "AsyncReadyCallback";
 static const char __pyx_k_PriorityQueue_wait[] = "PriorityQueue.wait";
@@ -2002,7 +1989,6 @@ static PyObject *__pyx_n_s_IntEnum;
 static PyObject *__pyx_n_s_LAST;
 static PyObject *__pyx_n_s_LOW;
 static PyObject *__pyx_n_s_NEXT;
-static PyObject *__pyx_kp_u_None;
 static PyObject *__pyx_n_s_ONCE;
 static PyObject *__pyx_n_s_Optional;
 static PyObject *__pyx_n_s_Priority;
@@ -2022,12 +2008,11 @@ static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_UNTIL_COMPLETE;
 static PyObject *__pyx_kp_u_Unavailable_mode;
 static PyObject *__pyx_n_s_ValueError;
+static PyObject *__pyx_kp_u__10;
+static PyObject *__pyx_kp_u__11;
 static PyObject *__pyx_kp_u__12;
 static PyObject *__pyx_kp_u__13;
-static PyObject *__pyx_kp_u__14;
-static PyObject *__pyx_kp_u__15;
 static PyObject *__pyx_n_u__4;
-static PyObject *__pyx_kp_u__6;
 static PyObject *__pyx_n_s_acide_asyncop;
 static PyObject *__pyx_kp_s_acide_asyncop_pyx;
 static PyObject *__pyx_n_s_add;
@@ -2035,13 +2020,11 @@ static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_asyncio;
 static PyObject *__pyx_n_s_asyncio_coroutines;
 static PyObject *__pyx_n_s_asyncio_tasks;
-static PyObject *__pyx_kp_u_at;
 static PyObject *__pyx_n_s_auto;
 static PyObject *__pyx_n_s_await;
 static PyObject *__pyx_n_s_awt;
 static PyObject *__pyx_n_s_callback;
 static PyObject *__pyx_n_s_cancel;
-static PyObject *__pyx_kp_u_cancelled;
 static PyObject *__pyx_n_s_check;
 static PyObject *__pyx_n_s_clear;
 static PyObject *__pyx_n_s_clear_dones;
@@ -2053,7 +2036,6 @@ static PyObject *__pyx_n_s_copy;
 static PyObject *__pyx_n_s_create_task;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_done;
-static PyObject *__pyx_kp_u_done_for;
 static PyObject *__pyx_kp_u_dones;
 static PyObject *__pyx_n_s_dones_2;
 static PyObject *__pyx_n_s_ensure_future;
@@ -2066,7 +2048,6 @@ static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_gi_repository;
 static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_kp_u_in;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_inspect;
 static PyObject *__pyx_n_s_is_running;
@@ -2104,13 +2085,9 @@ static PyObject *__pyx_n_s_run_once;
 static PyObject *__pyx_n_u_run_once;
 static PyObject *__pyx_n_s_run_until_complete;
 static PyObject *__pyx_n_u_run_until_complete;
-static PyObject *__pyx_kp_u_runner_cancelled;
 static PyObject *__pyx_n_s_sch;
 static PyObject *__pyx_n_s_scheduled;
-static PyObject *__pyx_kp_u_scheduled_2;
-static PyObject *__pyx_kp_u_scheduled_for;
 static PyObject *__pyx_kp_u_scheduler_already_running;
-static PyObject *__pyx_kp_u_sec;
 static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_s_set;
 static PyObject *__pyx_n_s_set_name;
@@ -2155,7 +2132,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_4rate___get__(struct __pyx_
 static int __pyx_pf_5acide_7asyncop_9Scheduler_4rate_2__set__(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_6add_priority(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_8add(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self, PyObject *__pyx_v_co, PyObject *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name); /* proto */
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name); /* proto */
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, CYTHON_UNUSED PyObject *__pyx_v_name); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_13run_forever(struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_16run_once(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_19run_until_complete(CYTHON_UNUSED struct __pyx_obj_5acide_7asyncop_Scheduler *__pyx_v_self); /* proto */
@@ -2175,19 +2152,18 @@ static PyObject *__pyx_tp_new_5acide_7asyncop___pyx_scope_struct_4_run_until_com
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_neg_1;
-static PyObject *__pyx_k__10;
+static PyObject *__pyx_k__8;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
+static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
-static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_tuple__11;
+static PyObject *__pyx_tuple__14;
+static PyObject *__pyx_tuple__15;
 static PyObject *__pyx_tuple__16;
-static PyObject *__pyx_tuple__17;
 static PyObject *__pyx_tuple__18;
-static PyObject *__pyx_tuple__20;
 static PyObject *__pyx_codeobj__5;
-static PyObject *__pyx_codeobj__19;
+static PyObject *__pyx_codeobj__17;
 /* Late includes */
 
 /* "acide/asyncop.pyx":59
@@ -5902,7 +5878,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled(CYTHON_UNUSED 
   PyObject *__pyx_v_awt = 0;
   struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority = 0;
   PyObject *__pyx_v_callback = 0;
-  PyObject *__pyx_v_name = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_name = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5988,7 +5964,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_11_scheduled(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, PyObject *__pyx_v_name) {
+static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_10_scheduled(PyObject *__pyx_v_awt, struct __pyx_obj_5acide_7asyncop_PriorityQueue *__pyx_v_priority, PyObject *__pyx_v_callback, CYTHON_UNUSED PyObject *__pyx_v_name) {
   struct __pyx_obj_5acide_7asyncop___pyx_scope_struct_1__scheduled *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -6043,18 +6019,16 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
-  Py_ssize_t __pyx_t_7;
-  Py_UCS4 __pyx_t_8;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   int __pyx_t_10;
-  PyObject *__pyx_t_11 = NULL;
-  int __pyx_t_12;
-  int __pyx_t_13;
-  char const *__pyx_t_14;
+  int __pyx_t_11;
+  char const *__pyx_t_12;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
   PyObject *__pyx_t_15 = NULL;
   PyObject *__pyx_t_16 = NULL;
-  PyObject *__pyx_t_17 = NULL;
-  PyObject *__pyx_t_18 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6091,7 +6065,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
  *         try:
  *             loop = asyncio.get_running_loop()             # <<<<<<<<<<<<<<
  *             start = loop.time()
- *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             # print(f"{name} scheduled for #{priority.id} at {start} ...")
  */
         __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 279, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_5);
@@ -6121,7 +6095,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
  *         try:
  *             loop = asyncio.get_running_loop()
  *             start = loop.time()             # <<<<<<<<<<<<<<
- *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             # print(f"{name} scheduled for #{priority.id} at {start} ...")
  *             await priority.wait()
  */
         __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_time); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 280, __pyx_L7_error)
@@ -6145,60 +6119,9 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
         __pyx_cur_scope->__pyx_v_start = __pyx_t_4;
         __pyx_t_4 = 0;
 
-        /* "acide/asyncop.pyx":281
- *             loop = asyncio.get_running_loop()
- *             start = loop.time()
- *             print(f"{name} scheduled for #{priority.id} at {start} ...")             # <<<<<<<<<<<<<<
- *             await priority.wait()
- *             result = await awt
- */
-        __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_7 = 0;
-        __pyx_t_8 = 127;
-        __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_scheduled_for);
-        __pyx_t_7 += 16;
-        __Pyx_GIVEREF(__pyx_kp_u_scheduled_for);
-        PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_kp_u_scheduled_for);
-        __pyx_t_6 = __Pyx_PyUnicode_From_int(__pyx_cur_scope->__pyx_v_priority->id, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_at);
-        __pyx_t_7 += 4;
-        __Pyx_GIVEREF(__pyx_kp_u_at);
-        PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_kp_u_at);
-        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_start, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 4, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u__6);
-        __pyx_t_7 += 4;
-        __Pyx_GIVEREF(__pyx_kp_u__6);
-        PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_kp_u__6);
-        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_4, 6, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
         /* "acide/asyncop.pyx":282
  *             start = loop.time()
- *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             # print(f"{name} scheduled for #{priority.id} at {start} ...")
  *             await priority.wait()             # <<<<<<<<<<<<<<
  *             result = await awt
  *         except asyncio.CancelledError:
@@ -6256,11 +6179,11 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
         }
 
         /* "acide/asyncop.pyx":283
- *             print(f"{name} scheduled for #{priority.id} at {start} ...")
+ *             # print(f"{name} scheduled for #{priority.id} at {start} ...")
  *             await priority.wait()
  *             result = await awt             # <<<<<<<<<<<<<<
  *         except asyncio.CancelledError:
- *             print(f"scheduled {name} cancelled")
+ *             # print(f"scheduled {name} cancelled")
  */
         __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_cur_scope->__pyx_v_awt);
         __Pyx_XGOTREF(__pyx_r);
@@ -6307,91 +6230,19 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
  */
       }
 
-      /* "acide/asyncop.pyx":288
- *             raise
+      /* "acide/asyncop.pyx":289
  *         else:
- *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")             # <<<<<<<<<<<<<<
- *             if callback:
- *                 callback()
- */
-      /*else:*/ {
-        __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_7 = 0;
-        __pyx_t_8 = 127;
-        __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_done_for);
-        __pyx_t_7 += 11;
-        __Pyx_GIVEREF(__pyx_kp_u_done_for);
-        PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_kp_u_done_for);
-        __pyx_t_6 = __Pyx_PyUnicode_From_int(__pyx_cur_scope->__pyx_v_priority->id, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_in);
-        __pyx_t_7 += 4;
-        __Pyx_GIVEREF(__pyx_kp_u_in);
-        PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_kp_u_in);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_time); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_9 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-          __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_5);
-          if (likely(__pyx_t_9)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-            __Pyx_INCREF(__pyx_t_9);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_5, function);
-          }
-        }
-        __pyx_t_6 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = PyNumber_Subtract(__pyx_t_6, __pyx_cur_scope->__pyx_v_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_4, 4, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_sec);
-        __pyx_t_7 += 5;
-        __Pyx_GIVEREF(__pyx_kp_u_sec);
-        PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_kp_u_sec);
-        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_4, 6, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-        /* "acide/asyncop.pyx":289
- *         else:
- *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
  *             if callback:             # <<<<<<<<<<<<<<
  *                 callback()
  *             return result
  */
-        __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_callback); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 289, __pyx_L9_except_error)
-        if (__pyx_t_10) {
+      /*else:*/ {
+        __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_callback); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 289, __pyx_L9_except_error)
+        if (__pyx_t_7) {
 
           /* "acide/asyncop.pyx":290
- *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
  *             if callback:
  *                 callback()             # <<<<<<<<<<<<<<
  *             return result
@@ -6417,7 +6268,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
 
           /* "acide/asyncop.pyx":289
  *         else:
- *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
  *             if callback:             # <<<<<<<<<<<<<<
  *                 callback()
  *             return result
@@ -6444,66 +6295,32 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
  *             await priority.wait()
  *             result = await awt
  *         except asyncio.CancelledError:             # <<<<<<<<<<<<<<
- *             print(f"scheduled {name} cancelled")
+ *             # print(f"scheduled {name} cancelled")
  *             raise
  */
       __Pyx_ErrFetch(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5);
-      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 284, __pyx_L9_except_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 284, __pyx_L9_except_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 284, __pyx_L9_except_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 284, __pyx_L9_except_error)
-      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __pyx_t_10 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_4, __pyx_t_9);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_12 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_4, __pyx_t_11);
-      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_ErrRestore(__pyx_t_4, __pyx_t_6, __pyx_t_5);
       __pyx_t_4 = 0; __pyx_t_6 = 0; __pyx_t_5 = 0;
-      if (__pyx_t_12) {
+      if (__pyx_t_10) {
         __Pyx_AddTraceback("acide.asyncop.Scheduler._scheduled", __pyx_clineno, __pyx_lineno, __pyx_filename);
         if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_6, &__pyx_t_4) < 0) __PYX_ERR(0, 284, __pyx_L9_except_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_GOTREF(__pyx_t_4);
 
-        /* "acide/asyncop.pyx":285
- *             result = await awt
- *         except asyncio.CancelledError:
- *             print(f"scheduled {name} cancelled")             # <<<<<<<<<<<<<<
- *             raise
- *         else:
- */
-        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 285, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_7 = 0;
-        __pyx_t_8 = 127;
-        __Pyx_INCREF(__pyx_kp_u_scheduled_2);
-        __pyx_t_7 += 10;
-        __Pyx_GIVEREF(__pyx_kp_u_scheduled_2);
-        PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_kp_u_scheduled_2);
-        __pyx_t_9 = __Pyx_PyUnicode_Unicode(__pyx_cur_scope->__pyx_v_name); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 285, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) : __pyx_t_8;
-        __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
-        __Pyx_GIVEREF(__pyx_t_9);
-        PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_9);
-        __pyx_t_9 = 0;
-        __Pyx_INCREF(__pyx_kp_u_cancelled);
-        __pyx_t_7 += 10;
-        __Pyx_GIVEREF(__pyx_kp_u_cancelled);
-        PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_kp_u_cancelled);
-        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 285, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_11 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_9); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 285, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-
         /* "acide/asyncop.pyx":286
  *         except asyncio.CancelledError:
- *             print(f"scheduled {name} cancelled")
+ *             # print(f"scheduled {name} cancelled")
  *             raise             # <<<<<<<<<<<<<<
  *         else:
- *             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+ *             # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
  */
         __Pyx_GIVEREF(__pyx_t_5);
         __Pyx_GIVEREF(__pyx_t_6);
@@ -6547,63 +6364,63 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
     __pyx_L5_error:;
     /*exception exit:*/{
       __Pyx_PyThreadState_assign
-      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0; __pyx_t_17 = 0;
-      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0; __pyx_t_15 = 0;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_15, &__pyx_t_16, &__pyx_t_17);
+      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_13, &__pyx_t_14, &__pyx_t_15);
       if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1) < 0)) __Pyx_ErrFetch(&__pyx_t_3, &__pyx_t_2, &__pyx_t_1);
       __Pyx_XGOTREF(__pyx_t_3);
       __Pyx_XGOTREF(__pyx_t_2);
       __Pyx_XGOTREF(__pyx_t_1);
+      __Pyx_XGOTREF(__pyx_t_13);
+      __Pyx_XGOTREF(__pyx_t_14);
       __Pyx_XGOTREF(__pyx_t_15);
-      __Pyx_XGOTREF(__pyx_t_16);
-      __Pyx_XGOTREF(__pyx_t_17);
-      __pyx_t_12 = __pyx_lineno; __pyx_t_13 = __pyx_clineno; __pyx_t_14 = __pyx_filename;
+      __pyx_t_10 = __pyx_lineno; __pyx_t_11 = __pyx_clineno; __pyx_t_12 = __pyx_filename;
       {
       }
       if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_13);
+        __Pyx_XGIVEREF(__pyx_t_14);
         __Pyx_XGIVEREF(__pyx_t_15);
-        __Pyx_XGIVEREF(__pyx_t_16);
-        __Pyx_XGIVEREF(__pyx_t_17);
-        __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
+        __Pyx_ExceptionReset(__pyx_t_13, __pyx_t_14, __pyx_t_15);
       }
       __Pyx_XGIVEREF(__pyx_t_3);
       __Pyx_XGIVEREF(__pyx_t_2);
       __Pyx_XGIVEREF(__pyx_t_1);
       __Pyx_ErrRestore(__pyx_t_3, __pyx_t_2, __pyx_t_1);
-      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0; __pyx_t_17 = 0;
-      __pyx_lineno = __pyx_t_12; __pyx_clineno = __pyx_t_13; __pyx_filename = __pyx_t_14;
+      __pyx_t_3 = 0; __pyx_t_2 = 0; __pyx_t_1 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0; __pyx_t_15 = 0;
+      __pyx_lineno = __pyx_t_10; __pyx_clineno = __pyx_t_11; __pyx_filename = __pyx_t_12;
       goto __pyx_L1_error;
     }
     __pyx_L4_return: {
       __Pyx_PyThreadState_assign
-      __pyx_t_17 = 0; __pyx_t_16 = 0; __pyx_t_15 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
+      __pyx_t_15 = 0; __pyx_t_14 = 0; __pyx_t_13 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
       if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
-      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_17, &__pyx_t_16, &__pyx_t_15) < 0)) __Pyx_ErrFetch(&__pyx_t_17, &__pyx_t_16, &__pyx_t_15);
-      __Pyx_XGOTREF(__pyx_t_17);
-      __Pyx_XGOTREF(__pyx_t_16);
+      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_15, &__pyx_t_14, &__pyx_t_13) < 0)) __Pyx_ErrFetch(&__pyx_t_15, &__pyx_t_14, &__pyx_t_13);
       __Pyx_XGOTREF(__pyx_t_15);
+      __Pyx_XGOTREF(__pyx_t_14);
+      __Pyx_XGOTREF(__pyx_t_13);
       __Pyx_XGOTREF(__pyx_t_1);
       __Pyx_XGOTREF(__pyx_t_2);
       __Pyx_XGOTREF(__pyx_t_3);
-      __pyx_t_18 = __pyx_r;
+      __pyx_t_16 = __pyx_r;
       __pyx_r = 0;
-      __pyx_r = __pyx_t_18;
-      __pyx_t_18 = 0;
+      __pyx_r = __pyx_t_16;
+      __pyx_t_16 = 0;
       if (PY_MAJOR_VERSION >= 3) {
         __Pyx_XGIVEREF(__pyx_t_1);
         __Pyx_XGIVEREF(__pyx_t_2);
         __Pyx_XGIVEREF(__pyx_t_3);
         __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
       }
-      __Pyx_XGIVEREF(__pyx_t_17);
-      __Pyx_XGIVEREF(__pyx_t_16);
       __Pyx_XGIVEREF(__pyx_t_15);
-      __Pyx_ErrRestore(__pyx_t_17, __pyx_t_16, __pyx_t_15);
-      __pyx_t_17 = 0; __pyx_t_16 = 0; __pyx_t_15 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
+      __Pyx_XGIVEREF(__pyx_t_14);
+      __Pyx_XGIVEREF(__pyx_t_13);
+      __Pyx_ErrRestore(__pyx_t_15, __pyx_t_14, __pyx_t_13);
+      __pyx_t_15 = 0; __pyx_t_14 = 0; __pyx_t_13 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_3 = 0;
       goto __pyx_L0;
     }
   }
@@ -6622,8 +6439,8 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_12generator1(__pyx_Coroutin
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("_scheduled", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
@@ -7390,7 +7207,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_15generator2(__pyx_Coroutin
  *                     self.control(p)
  *                 self.clear()             # <<<<<<<<<<<<<<
  *         except asyncio.CancelledError:
- *             print("runner cancelled")
+ *             # print("runner cancelled")
  */
           __pyx_t_4 = __pyx_f_5acide_7asyncop_9Scheduler_clear(__pyx_cur_scope->__pyx_v_self); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_4);
@@ -7420,7 +7237,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_15generator2(__pyx_Coroutin
  *                     self.control(p)
  *                 self.clear()
  *         except asyncio.CancelledError:             # <<<<<<<<<<<<<<
- *             print("runner cancelled")
+ *             # print("runner cancelled")
  *             raise
  */
       __Pyx_ErrFetch(&__pyx_t_4, &__pyx_t_6, &__pyx_t_8);
@@ -7440,20 +7257,9 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_15generator2(__pyx_Coroutin
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_GOTREF(__pyx_t_4);
 
-        /* "acide/asyncop.pyx":324
- *                 self.clear()
- *         except asyncio.CancelledError:
- *             print("runner cancelled")             # <<<<<<<<<<<<<<
- *             raise
- *         finally:
- */
-        __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 324, __pyx_L9_except_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-
         /* "acide/asyncop.pyx":325
  *         except asyncio.CancelledError:
- *             print("runner cancelled")
+ *             # print("runner cancelled")
  *             raise             # <<<<<<<<<<<<<<
  *         finally:
  *             self.priorities[0].clear()
@@ -7751,7 +7557,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_18generator3(__pyx_Coroutin
  *         # try:
  *         #     loop = asyncio.get_running_loop()
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -7866,7 +7672,7 @@ static PyObject *__pyx_gb_5acide_7asyncop_9Scheduler_21generator4(__pyx_Coroutin
  *         # try:
  *         #     loop = asyncio.get_running_loop()
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -7918,7 +7724,7 @@ static PyObject *__pyx_pw_5acide_7asyncop_9Scheduler_23run(PyObject *__pyx_v_sel
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_mode,0};
     PyObject* values[1] = {0};
-    values[0] = __pyx_k__10;
+    values[0] = __pyx_k__8;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -8358,7 +8164,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_22run(struct __pyx_obj_5aci
  *     def stop(self) -> None:
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -8718,10 +8524,10 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_
  *         for p in self.priorities:
  *             st += f"{p}[ "
  */
-  __Pyx_INCREF(__pyx_kp_u__12);
-  __pyx_v_st = __pyx_kp_u__12;
-  __Pyx_INCREF(__pyx_kp_u__12);
-  __pyx_v_do = __pyx_kp_u__12;
+  __Pyx_INCREF(__pyx_kp_u__10);
+  __pyx_v_st = __pyx_kp_u__10;
+  __Pyx_INCREF(__pyx_kp_u__10);
+  __pyx_v_do = __pyx_kp_u__10;
 
   /* "acide/asyncop.pyx":406
  *     def __str__(self) -> str:
@@ -8755,7 +8561,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_
  */
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_p, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
@@ -8840,7 +8646,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_
       __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 409, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_7, __pyx_kp_u__14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_t_7, __pyx_kp_u__12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 409, __pyx_L1_error)
@@ -8866,7 +8672,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_28__str__(struct __pyx_obj_
  *         return (
  *             f"Scheduler state: pendings({st})"
  */
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_kp_u__15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 410, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_v_st, __pyx_kp_u__13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 410, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_st, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
@@ -8983,7 +8789,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_30__reduce_cython__(CYTHON_
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -9040,7 +8846,7 @@ static PyObject *__pyx_pf_5acide_7asyncop_9Scheduler_32__setstate_cython__(CYTHO
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -10168,7 +9974,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_LAST, __pyx_k_LAST, sizeof(__pyx_k_LAST), 0, 0, 1, 1},
   {&__pyx_n_s_LOW, __pyx_k_LOW, sizeof(__pyx_k_LOW), 0, 0, 1, 1},
   {&__pyx_n_s_NEXT, __pyx_k_NEXT, sizeof(__pyx_k_NEXT), 0, 0, 1, 1},
-  {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
   {&__pyx_n_s_ONCE, __pyx_k_ONCE, sizeof(__pyx_k_ONCE), 0, 0, 1, 1},
   {&__pyx_n_s_Optional, __pyx_k_Optional, sizeof(__pyx_k_Optional), 0, 0, 1, 1},
   {&__pyx_n_s_Priority, __pyx_k_Priority, sizeof(__pyx_k_Priority), 0, 0, 1, 1},
@@ -10188,12 +9993,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_UNTIL_COMPLETE, __pyx_k_UNTIL_COMPLETE, sizeof(__pyx_k_UNTIL_COMPLETE), 0, 0, 1, 1},
   {&__pyx_kp_u_Unavailable_mode, __pyx_k_Unavailable_mode, sizeof(__pyx_k_Unavailable_mode), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
+  {&__pyx_kp_u__10, __pyx_k__10, sizeof(__pyx_k__10), 0, 1, 0, 0},
+  {&__pyx_kp_u__11, __pyx_k__11, sizeof(__pyx_k__11), 0, 1, 0, 0},
   {&__pyx_kp_u__12, __pyx_k__12, sizeof(__pyx_k__12), 0, 1, 0, 0},
   {&__pyx_kp_u__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0, 0},
-  {&__pyx_kp_u__14, __pyx_k__14, sizeof(__pyx_k__14), 0, 1, 0, 0},
-  {&__pyx_kp_u__15, __pyx_k__15, sizeof(__pyx_k__15), 0, 1, 0, 0},
   {&__pyx_n_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 1},
-  {&__pyx_kp_u__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0, 0},
   {&__pyx_n_s_acide_asyncop, __pyx_k_acide_asyncop, sizeof(__pyx_k_acide_asyncop), 0, 0, 1, 1},
   {&__pyx_kp_s_acide_asyncop_pyx, __pyx_k_acide_asyncop_pyx, sizeof(__pyx_k_acide_asyncop_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_add, __pyx_k_add, sizeof(__pyx_k_add), 0, 0, 1, 1},
@@ -10201,13 +10005,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_asyncio, __pyx_k_asyncio, sizeof(__pyx_k_asyncio), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_tasks, __pyx_k_asyncio_tasks, sizeof(__pyx_k_asyncio_tasks), 0, 0, 1, 1},
-  {&__pyx_kp_u_at, __pyx_k_at, sizeof(__pyx_k_at), 0, 1, 0, 0},
   {&__pyx_n_s_auto, __pyx_k_auto, sizeof(__pyx_k_auto), 0, 0, 1, 1},
   {&__pyx_n_s_await, __pyx_k_await, sizeof(__pyx_k_await), 0, 0, 1, 1},
   {&__pyx_n_s_awt, __pyx_k_awt, sizeof(__pyx_k_awt), 0, 0, 1, 1},
   {&__pyx_n_s_callback, __pyx_k_callback, sizeof(__pyx_k_callback), 0, 0, 1, 1},
   {&__pyx_n_s_cancel, __pyx_k_cancel, sizeof(__pyx_k_cancel), 0, 0, 1, 1},
-  {&__pyx_kp_u_cancelled, __pyx_k_cancelled, sizeof(__pyx_k_cancelled), 0, 1, 0, 0},
   {&__pyx_n_s_check, __pyx_k_check, sizeof(__pyx_k_check), 0, 0, 1, 1},
   {&__pyx_n_s_clear, __pyx_k_clear, sizeof(__pyx_k_clear), 0, 0, 1, 1},
   {&__pyx_n_s_clear_dones, __pyx_k_clear_dones, sizeof(__pyx_k_clear_dones), 0, 0, 1, 1},
@@ -10219,7 +10021,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_create_task, __pyx_k_create_task, sizeof(__pyx_k_create_task), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_done, __pyx_k_done, sizeof(__pyx_k_done), 0, 0, 1, 1},
-  {&__pyx_kp_u_done_for, __pyx_k_done_for, sizeof(__pyx_k_done_for), 0, 1, 0, 0},
   {&__pyx_kp_u_dones, __pyx_k_dones, sizeof(__pyx_k_dones), 0, 1, 0, 0},
   {&__pyx_n_s_dones_2, __pyx_k_dones_2, sizeof(__pyx_k_dones_2), 0, 0, 1, 1},
   {&__pyx_n_s_ensure_future, __pyx_k_ensure_future, sizeof(__pyx_k_ensure_future), 0, 0, 1, 1},
@@ -10232,7 +10033,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_gi_repository, __pyx_k_gi_repository, sizeof(__pyx_k_gi_repository), 0, 0, 1, 1},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_kp_u_in, __pyx_k_in, sizeof(__pyx_k_in), 0, 1, 0, 0},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_inspect, __pyx_k_inspect, sizeof(__pyx_k_inspect), 0, 0, 1, 1},
   {&__pyx_n_s_is_running, __pyx_k_is_running, sizeof(__pyx_k_is_running), 0, 0, 1, 1},
@@ -10270,13 +10070,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_run_once, __pyx_k_run_once, sizeof(__pyx_k_run_once), 0, 1, 0, 1},
   {&__pyx_n_s_run_until_complete, __pyx_k_run_until_complete, sizeof(__pyx_k_run_until_complete), 0, 0, 1, 1},
   {&__pyx_n_u_run_until_complete, __pyx_k_run_until_complete, sizeof(__pyx_k_run_until_complete), 0, 1, 0, 1},
-  {&__pyx_kp_u_runner_cancelled, __pyx_k_runner_cancelled, sizeof(__pyx_k_runner_cancelled), 0, 1, 0, 0},
   {&__pyx_n_s_sch, __pyx_k_sch, sizeof(__pyx_k_sch), 0, 0, 1, 1},
   {&__pyx_n_s_scheduled, __pyx_k_scheduled, sizeof(__pyx_k_scheduled), 0, 0, 1, 1},
-  {&__pyx_kp_u_scheduled_2, __pyx_k_scheduled_2, sizeof(__pyx_k_scheduled_2), 0, 1, 0, 0},
-  {&__pyx_kp_u_scheduled_for, __pyx_k_scheduled_for, sizeof(__pyx_k_scheduled_for), 0, 1, 0, 0},
   {&__pyx_kp_u_scheduler_already_running, __pyx_k_scheduler_already_running, sizeof(__pyx_k_scheduler_already_running), 0, 1, 0, 0},
-  {&__pyx_kp_u_sec, __pyx_k_sec, sizeof(__pyx_k_sec), 0, 1, 0, 0},
   {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_s_set, __pyx_k_set, sizeof(__pyx_k_set), 0, 0, 1, 1},
   {&__pyx_n_s_set_name, __pyx_k_set_name, sizeof(__pyx_k_set_name), 0, 0, 1, 1},
@@ -10302,7 +10098,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 150, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 266, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 332, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -10331,17 +10127,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "acide/asyncop.pyx":324
- *                 self.clear()
- *         except asyncio.CancelledError:
- *             print("runner cancelled")             # <<<<<<<<<<<<<<
- *             raise
- *         finally:
- */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_runner_cancelled); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 324, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-
   /* "acide/asyncop.pyx":332
  * 
  *     async def run_once(self)  -> Coroutine:
@@ -10349,9 +10134,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         # try:
  *         #     loop = asyncio.get_running_loop()
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_u_run_once); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 332, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_u_run_once); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
 
   /* "acide/asyncop.pyx":350
  * 
@@ -10360,9 +10145,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         # try:
  *         #     loop = asyncio.get_running_loop()
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_u_run_until_complete); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 350, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_n_u_run_until_complete); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
 
   /* "acide/asyncop.pyx":389
  *                 raise ValueError(f"Unavailable mode {mode}")
@@ -10371,9 +10156,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *     def stop(self) -> None:
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_scheduler_already_running); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 389, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_scheduler_already_running); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 389, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -10381,18 +10166,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
 
   /* "acide/asyncop.pyx":141
  * 
@@ -10401,10 +10186,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         cdef Scheduler sch
  *         sch = get_singleton()
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_sch); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 141, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_new, 141, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_sch); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_new, 141, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 141, __pyx_L1_error)
 
   /* "acide/asyncop.pyx":272
  * 
@@ -10413,10 +10198,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         awt: Awaitable,
  *         priority: PriorityQueue,
  */
-  __pyx_tuple__20 = PyTuple_Pack(7, __pyx_n_s_awt, __pyx_n_s_priority_2, __pyx_n_s_callback, __pyx_n_s_name_2, __pyx_n_s_loop, __pyx_n_s_start, __pyx_n_s_result); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 272, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_scheduled, 272, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(7, __pyx_n_s_awt, __pyx_n_s_priority_2, __pyx_n_s_callback, __pyx_n_s_name_2, __pyx_n_s_loop, __pyx_n_s_start, __pyx_n_s_result); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_acide_asyncop_pyx, __pyx_n_s_scheduled, 272, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -11335,7 +11120,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ONCE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_k__10 = __pyx_t_3;
+  __pyx_k__8 = __pyx_t_3;
   __Pyx_GIVEREF(__pyx_t_3);
   __pyx_t_3 = 0;
 
@@ -14224,13 +14009,6 @@ static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *nam
         "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
         name, type->tp_name, Py_TYPE(obj)->tp_name);
     return 0;
-}
-
-/* PyUnicode_Unicode */
-static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj) {
-    if (unlikely(obj == Py_None))
-        obj = __pyx_kp_u_None;
-    return __Pyx_NewRef(obj);
 }
 
 /* ReturnWithStopIteration */
