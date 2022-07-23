@@ -508,12 +508,13 @@ cdef class SuperTile(TilesGrid):
         height: an :class:`int` as the height of this view (default to 2).
     """
 
-    def __cinit__(self, grid, width = 2, height = 2, *args, **kwargs):
+    def __cinit__(self, grid, shape=(2, 2), *args, **kwargs):
         if grid is None or not isinstance(grid, TilesGrid):
             raise TypeError("grid should be a TilesGrid instance")
-        if width < 0: width = 0
+        width, height = shape
+        if width < 1: width = 1
         else: width = cimin(width, (<TilesGrid> grid).view.shape[0])
-        if height < 0: height = 0
+        if height < 1: height = 1
         else: height = cimin(height, (<TilesGrid> grid).view.shape[1])
         self._ref = grid
         self.memory_format = (<TilesGrid> grid).memory_format
@@ -521,7 +522,7 @@ cdef class SuperTile(TilesGrid):
         self.compute_extents()
         self.stats()
 
-    def __init__(self, grid: TilesGrid, width: int = 2, height: int = 2):
+    def __init__(self, grid: TilesGrid, shape=(2, 2)):
         pass
 
     cpdef bint move_to(self, int x, int y):
@@ -534,13 +535,13 @@ cdef class SuperTile(TilesGrid):
          x, y: indices for the top-left :class:`Tile` relatif
                to the :attr:`TilesGrid.base` :class:`TilesGrid`.
         """
-        cdef int rw, rh, sw, sh
+        cdef int rw, rh, sw, sh, xo, yo
         sw, sh = self.view.shape
         rw, rh = self._ref.view.shape
-        x = (x - (sw - 1)) if x >= (rw - (sw - 1)) else x
-        y = (y - (sh - 1)) if y >= (rh - (sh - 1)) else y
-        if self._ref.view[x, y] != self.view[0, 0]:
-            self.slice_ref(slice(x, x + sw, 1), slice(y, y + sh, 1))
+        xo = (rw - sw) if x >= (rw - sw) else x
+        yo = (rh - sh) if y >= (rh - sh) else y
+        if self._ref.view[xo, yo] != self.view[0, 0]:
+            self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))
             self.compute_extents()
             self.stats()
             return True
@@ -560,14 +561,14 @@ cdef class RenderTile(SuperTile):
         grid: a :class:`TilesGrid` that this RenderTile will refer to.
     """
 
-    def __cinit__(self, grid, width = 2, height = 2, *args, **kwargs):
+    def __cinit__(self, grid, shape=(2, 2), *args, **kwargs):
         self.is_valid = False
         self.buffer = None
         self.glib_bytes = None
         self._clip = Clip.__new__(Clip)
         self._r_clip = Clip.__new__(Clip)
 
-    def __init__(self, grid: TilesGrid, width: int = 2, height: int = 2):
+    def __init__(self, grid: TilesGrid, shape=(2, 2)):
         pass
 
     cpdef bint move_to(self, int x, int y):
@@ -654,10 +655,10 @@ cdef class RenderTile(SuperTile):
         cdef list vbands = []
         cdef list vbands_shape = []
         cdef Py_ssize_t w_buf, rows
-        cdef Py_ssize_t offset, ww, ew, x, y
+        cdef Py_ssize_t offset, ww, x, y
+        cdef Py_ssize_t buf_width = 0
         cdef char* ptr
         cdef bint isvalid
-        cdef tuple sh
 
         _T = Timer("prepare decompression")
         # is it safe for pixmap's buffer to be merged ?
@@ -667,24 +668,25 @@ cdef class RenderTile(SuperTile):
             vbands_shape.append(0)
             for y in range (self.view.shape[1] - 1):
                 isvalid &= (
-                    (<Tile> self[x, y])._size[0] == (<Tile> self[x, y + 1])._size[0]
+                    (<Tile> self.getitem_at(x, y))._size[0] == \
+                    (<Tile> self.getitem_at(x, y + 1))._size[0]
                 )
-                vbands_shape[x] += (<Tile> self[x, y]).u_shape
-            vbands_shape[x] += (<Tile> self[x, y + 1]).u_shape
+                vbands_shape[x] += (<Tile> self.getitem_at(x, y)).u_shape
+            vbands_shape[x] += (<Tile> self.getitem_at(x, y + 1)).u_shape
         for y in range (self.view.shape[1]):
             for x in range (self.view.shape[0] - 1):
                 isvalid &= (
-                    (<Tile> self[x, y])._size[1] == (<Tile> self[x + 1, y])._size[1]
+                    (<Tile> self.getitem_at(x, y))._size[1] == \
+                    (<Tile> self.getitem_at(x + 1, y))._size[1]
                 )
 
         if self.buffer and isvalid:
             try:
                 for x in range(self.view.shape[0]):
-                    sh = (vbands_shape[x], )
                     vbands.append(
                         Carray.__new__(
                             Carray,
-                            shape=sh,
+                            shape=(vbands_shape[x], ),
                             itemsize=self.buffer.itemsize,
                             format=self.buffer.format,
                             mode='c',
@@ -699,28 +701,28 @@ cdef class RenderTile(SuperTile):
             _T = Timer("decompress buffers")
             rows = 0
             for x in range(self.view.shape[0]):
+                buf_width += (<Tile> self.getitem_at(x, 0))._size[0] * \
+                             (<Tile> self.getitem_at(x, 0)).format_size
                 offset = 0
                 for y in range(self.view.shape[1]):
                     if x == 0:
-                        rows += (<Tile> self[x, y])._size[1]
+                        rows += (<Tile> self.getitem_at(x, y))._size[1]
                     ptr = (<Carray> vbands[x]).data
                     blosc.decompress_ptr(
-                        (<Tile> self[x, y]).buffer,
+                        (<Tile> self.getitem_at(x, y)).buffer,
                         address=<Py_ssize_t> &ptr[offset],
                     )
-                    offset += (<Tile> self[x, y]).u_shape
+                    offset += (<Tile> self.getitem_at(x, y)).u_shape
             _T.stop()
 
             _T = Timer("merge_side_buffers")
             offset = 0
-            for x in range(self.view.shape[0] - 1):
-                ww = (<Tile> self[x, 0])._size[0] * \
-                     (<Tile> self[x, 0]).format_size
-                ew = (<Tile> self[x + 1, 0])._size[0] * \
-                     (<Tile> self[x + 1, 0]).format_size
-                RenderTile.merge_side_buffers(
-                    vbands[x], vbands[x + 1],
-                    self.buffer, rows, ww, ew, offset
+            for x in range(self.view.shape[0]):
+                ww = (<Tile> self.getitem_at(x, 0))._size[0] * \
+                     (<Tile> self.getitem_at(x, 0)).format_size
+                RenderTile.copy_vband(
+                    vbands[x], self.buffer, rows,
+                    ww, buf_width, offset
                 )
                 offset += ww
             _T.stop()
@@ -733,17 +735,29 @@ cdef class RenderTile(SuperTile):
     @cython.boundscheck(False)
     @cython.wraparound(False)
     @staticmethod
+    cdef void copy_vband(
+        const uc8[:] vband, uc8[:] buffer, Py_ssize_t rows,
+        Py_ssize_t vband_width, Py_ssize_t buf_width, Py_ssize_t x_offset
+    ) nogil:
+        cdef Py_ssize_t x_in, x_out, y
+        for y in range(rows):
+            x_in = vband_width * y
+            x_out = (buf_width * y) + x_offset
+            buffer[x_out:x_out + vband_width] = vband[x_in:x_in + vband_width]
+
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
+    @staticmethod
     cdef void merge_side_buffers(
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
         Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width,
-        Py_ssize_t x_offset
     ) nogil:
         cdef Py_ssize_t x_in, x_out, y
         cdef Py_ssize_t buf_width = east_width + west_width
         for y in range(rows):
             # copy west
             x_in = west_width * y
-            x_out = (buf_width * y) + x_offset
+            x_out = buf_width * y
             buffer[x_out:x_out + west_width] = west[x_in:x_in + west_width]
             # copy east
             x_in = east_width * y
@@ -853,13 +867,16 @@ cdef class TilesPool():
         viewport: the rendering widget for :obj:`graphic`, should
                   implement :class:`acide.measure.Measurable`
         scales: A sequences of positive int as the available scale factors
+        render_shape : A 2 lenght int sequence as the shape of the render tile
         mem_format: a enum's member of :class:`Gdk.MemoryFormat`
         pixbuf_cb: a callback function to retrieve parts of a pixmap with
                    the signature: pixbuf_cb(rect: Graphene.Rect, scale: int)
                    -> :class:`acide.types.Pixbuf`
     """
 
-    def __cinit__(self, graphic, viewport, scales, mem_format, pixbuf_cb):
+    def __cinit__(
+        self, graphic, viewport, scales, render_shape, mem_format, pixbuf_cb
+    ):
         if (
             not isinstance(graphic, Measurable) or \
             not isinstance(viewport, Measurable)
@@ -870,6 +887,11 @@ cdef class TilesPool():
             )
         self.graphic = graphic
         self.viewport = viewport
+        if not test_sequence(render_shape, (int, int)):
+            raise ValueError(
+                f"render_shape should be a 2 lenght sequence of int not {render_shape}"
+            )
+        self.render_shape = tuple(render_shape)
         self.memory_format = mem_format
         self.pixbuf_cb = pixbuf_cb
         self.render_tile = None
@@ -883,6 +905,7 @@ cdef class TilesPool():
         graphic: Measurable,
         viewport: Measurable,
         scales: Sequence[int],
+        render_shape: Sequence[int],
         mem_format: Gdk.MemoryFormat,
         pixbuf_cb: PixbufCallback,
     ):
@@ -927,15 +950,16 @@ cdef class TilesPool():
 
     cdef int make_tiles_grid(self, unsigned int scale):
         cdef double vw, vh, gw, gh, trs
-        cdef int width, height
+        cdef int width, height, rw, rh
         vw, vh = self.viewport.size
+        rw, rh = self.render_shape
         trs = self.viewport.get_transform(self.graphic.unit)
         if vw!=0 and vh!=0:
             gw, gh = self.graphic.size
             gw *= scale
             gh *= scale
-            width = cimax(2, ciceil(gw / (vw * trs)))
-            height = cimax(2, ciceil(gh / (vh * trs)))
+            width = cimax(rw, ciceil(gw / (vw * trs)))
+            height = cimax(rh, ciceil(gh / (vh * trs)))
             self.stack.append(
                 TilesGrid(
                     shape=(width, height),
@@ -1017,7 +1041,9 @@ cdef class TilesPool():
             # (<TilesGrid> self.stack[self.current]).invalidate()
             self.current = depth
             # self.invalid_render = self.render_tile
-            self.render_tile = RenderTile(self.stack[self.current])
+            self.render_tile = RenderTile(
+                self.stack[self.current], self.render_shape
+            )
             self.schedule_compression()
         self.render_tile.move_to(i, j)
         _T.stop()

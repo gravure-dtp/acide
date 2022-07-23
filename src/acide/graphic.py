@@ -35,6 +35,7 @@ from acide import format_size
 class _GraphicMeta(ABCMeta, GObjectMeasurableMeta):
     pass
 
+RENDER_SHAPE = (3, 3)
 
 class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
     """Graphic Interface, extends :class:`GObject` implements
@@ -182,7 +183,8 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         """
         self._viewport = viewport
         self.tiles_pool = TilesPool(
-            self, viewport, self._scales, self._format, self.get_pixbuf
+            self, viewport, self._scales, RENDER_SHAPE,
+            self._format, self.get_pixbuf
         )
         self.emit("ready", self.tiles_pool.is_ready)
 
@@ -194,7 +196,8 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         super().on_updated().
         """
         self.tiles_pool.__init__(
-            self, self.viewport, self._scales, self._format, self.get_pixbuf
+            self, self.viewport, self._scales, RENDER_SHAPE,
+            self._format, self.get_pixbuf
         )
         self.emit("ready", self.tiles_pool.is_ready)
 

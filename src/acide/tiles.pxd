@@ -122,11 +122,17 @@ cdef class RenderTile(SuperTile):
     cpdef bint move_to(RenderTile self, int x, int y)
     cdef int allocate_buffer(RenderTile self)
     cdef int fill_buffer(RenderTile self)
+
+    @staticmethod
+    cdef void copy_vband(
+        const uc8[:] vband, uc8[:] buffer, Py_ssize_t rows,
+        Py_ssize_t vband_width, Py_ssize_t buf_width, Py_ssize_t x_offset
+    ) nogil
+
     @staticmethod
     cdef void merge_side_buffers(
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
         Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width,
-        Py_ssize_t offset
     ) nogil
     cpdef render_texture(RenderTile self)
 
@@ -137,6 +143,7 @@ cdef class TilesPool():
     cdef Scheduler scheduler
     cdef int depth
     cdef int current
+    cdef tuple render_shape
     cdef RenderTile render_tile, invalid_render
     cdef object graphic
     cdef object viewport
