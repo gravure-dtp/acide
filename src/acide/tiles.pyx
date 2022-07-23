@@ -560,14 +560,14 @@ cdef class RenderTile(SuperTile):
         grid: a :class:`TilesGrid` that this RenderTile will refer to.
     """
 
-    def __cinit__(self, grid, *args, **kwargs):
+    def __cinit__(self, grid, width = 2, height = 2, *args, **kwargs):
         self.is_valid = False
         self.buffer = None
         self.glib_bytes = None
         self._clip = Clip.__new__(Clip)
         self._r_clip = Clip.__new__(Clip)
 
-    def __init__(self, grid: TilesGrid):
+    def __init__(self, grid: TilesGrid, width: int = 2, height: int = 2):
         pass
 
     cpdef bint move_to(self, int x, int y):
@@ -606,127 +606,125 @@ cdef class RenderTile(SuperTile):
     cdef int allocate_buffer(self):
         """Allocate self.buffer to host offscreen image
         of the resulting union of compressed subtiles."""
-        cdef Tile tile0, tile1, tile2, tile3
-        cdef Py_ssize_t sh
+        cdef Py_ssize_t sh = 0
+        cdef int i
         cdef Clip clip
+
+        self._z = self._u = self._r = 0
+        for tile in self:
+            if tile is None:
+                self.msg = "Invalid Tiles to allocate buffer's RenderTile"
+                return -1
+            if (<Tile> tile).buffer:
+                sh += (<Tile> tile).u_shape
+                self._z += (<Tile> tile)._z
+                self._u += (<Tile> tile)._u
+            else:
+                self.msg = "Invalid Tile's buffer to allocate buffer's RenderTile"
+                self._z = self._u = self._r = 0
+                return -2
+        self._r = self._u / float(self._z)
+
         try:
-            tile0 = <Tile?> self.getitem_at(0,0)
-            tile1 = <Tile?> self.getitem_at(1,0)
-            tile2 = <Tile?> self.getitem_at(0,1)
-            tile3 = <Tile?> self.getitem_at(1,1)
-        except TypeError:
-            self.msg = "Invalid Tiles to allocate buffer's RenderTile"
-            return -1
+            self.buffer = Carray.__new__(
+                Carray,
+                shape=(sh,),
+                itemsize=(<Tile> self[0, 0]).u_itemsize,
+                format=(<Tile> self[0, 0]).u_format,
+                mode='c',
+                allocate_buffer=True,
+            )
+        except MemoryError as m:
+            self.msg = (
+                f"{m}: "
+                f"shape({sh},), "
+            )
+            return -3
 
-        if tile0.buffer and tile1.buffer and \
-           tile2.buffer and tile3.buffer:
-            sh = tile0.u_shape + tile1.u_shape + \
-                 tile2.u_shape + tile3.u_shape
-            try:
-                self.buffer = Carray.__new__(
-                    Carray,
-                    shape=(sh,),
-                    itemsize=tile0.u_itemsize,
-                    format=tile0.u_format,
-                    mode='c',
-                    allocate_buffer=True,
-                )
-            except MemoryError as m:
-                self.msg = (
-                    f"{m}: "
-                    f"shape({sh},), "
-                    f"itemsize: {tile0.u_itemsize}, format: {tile0.u_format}, "
-                    f"memory: {format_size(sh * tile0.u_itemsize)}"
-                )
-                return -3
-
-            clip = self._clip if self.switch else self._r_clip
-            clip._w = tile0._size[0] + tile1._size[0]
-            clip._h = tile0._size[1] + tile2._size[1]
-            self._z = tile0._z + tile1._z + tile2._z + tile3._z
-            self._u = tile0._u + tile1._u + tile2._u + tile3._u
-            self._r = self._u / float(self._z)
-            return 1
-        else:
-            self.msg = "Invalid Tile's buffer to allocate buffer's RenderTile"
-            return -2
+        clip = self._clip if self.switch else self._r_clip
+        clip._w = clip._h = 0
+        for i in range(self.view.shape[0]):
+            clip._w += (<Tile> self[i, 0])._size[0]
+        for i in range(self.view.shape[1]):
+            clip._h += (<Tile> self[0, i])._size[1]
+        return 1
 
     cdef int fill_buffer(self):
         """Actually decompress the subtiles buffers in the RenderTile.buffer."""
-        _T = Timer("prepare decompression")
-        cdef Carray buffer_west
-        cdef Carray buffer_east
-        cdef Py_ssize_t w_buf, rows, x_in, x_out, y
-        cdef Tile tile0, tile1, tile2, tile3
+        cdef list vbands = []
+        cdef list vbands_shape = []
+        cdef Py_ssize_t w_buf, rows
+        cdef Py_ssize_t offset, ww, ew, x, y
+        cdef char* ptr
         cdef bint isvalid
-        try:
-            tile0 = <Tile?> self.getitem_at(0,0)
-            tile1 = <Tile?> self.getitem_at(1,0)
-            tile2 = <Tile?> self.getitem_at(0,1)
-            tile3 = <Tile?> self.getitem_at(1,1)
-        except TypeError:
-            self.msg = "Invalid Tiles to fill buffer"
-            return -1
+        cdef tuple sh
 
+        _T = Timer("prepare decompression")
         # is it safe for pixmap's buffer to be merged ?
-        isvalid = (tile0._size[0] == tile2._size[0]) and \
-                  (tile1._size[0] == tile3._size[0]) and \
-                  (tile0._size[1] == tile1._size[1]) and \
-                  (tile2._size[1] == tile3._size[1])
+        isvalid = True
+        y = 0
+        for x in range (self.view.shape[0]):
+            vbands_shape.append(0)
+            for y in range (self.view.shape[1] - 1):
+                isvalid &= (
+                    (<Tile> self[x, y])._size[0] == (<Tile> self[x, y + 1])._size[0]
+                )
+                vbands_shape[x] += (<Tile> self[x, y]).u_shape
+            vbands_shape[x] += (<Tile> self[x, y + 1]).u_shape
+        for y in range (self.view.shape[1]):
+            for x in range (self.view.shape[0] - 1):
+                isvalid &= (
+                    (<Tile> self[x, y])._size[1] == (<Tile> self[x + 1, y])._size[1]
+                )
 
         if self.buffer and isvalid:
             try:
-                buffer_west = Carray.__new__(
-                    Carray,
-                    shape=(tile0.u_shape + tile2.u_shape,),
-                    itemsize=tile0.u_itemsize,
-                    format=tile0.u_format,
-                    mode='c',
-                    allocate_buffer=True,
-                )
-                buffer_east = Carray.__new__(
-                    Carray,
-                    shape=(tile1.u_shape + tile3.u_shape,),
-                    itemsize=tile1.u_itemsize,
-                    format=tile1.u_format,
-                    mode='c',
-                    allocate_buffer=True,
-                )
+                for x in range(self.view.shape[0]):
+                    sh = (vbands_shape[x], )
+                    vbands.append(
+                        Carray.__new__(
+                            Carray,
+                            shape=sh,
+                            itemsize=self.buffer.itemsize,
+                            format=self.buffer.format,
+                            mode='c',
+                            allocate_buffer=True,
+                        )
+                    )
             except MemoryError:
                 self.msg = "can´t allocate temporary buffers"
                 return -3
             _T.stop()
+
             _T = Timer("decompress buffers")
-            # decompress tiles in two temporary buffers
-            blosc.decompress_ptr(
-                tile0.buffer,
-                address=<Py_ssize_t> &buffer_west.data[0],
-            )
-            blosc.decompress_ptr(
-                tile2.buffer,
-                address=<Py_ssize_t> &buffer_west.data[tile0.u_shape],
-            )
-            blosc.decompress_ptr(
-                tile1.buffer,
-                address=<Py_ssize_t> &buffer_east.data[0],
-            )
-            blosc.decompress_ptr(
-                tile3.buffer,
-                address=<Py_ssize_t> &buffer_east.data[tile1.u_shape],
-            )
+            rows = 0
+            for x in range(self.view.shape[0]):
+                offset = 0
+                for y in range(self.view.shape[1]):
+                    if x == 0:
+                        rows += (<Tile> self[x, y])._size[1]
+                    ptr = (<Carray> vbands[x]).data
+                    blosc.decompress_ptr(
+                        (<Tile> self[x, y]).buffer,
+                        address=<Py_ssize_t> &ptr[offset],
+                    )
+                    offset += (<Tile> self[x, y]).u_shape
             _T.stop()
 
-            # fusion of the east and west buffers
             _T = Timer("merge_side_buffers")
-            rows = tile0._size[1] + tile2._size[1]
-            RenderTile.merge_side_buffers(
-                buffer_west, buffer_east, self.buffer,
-                rows, tile0._size[0] * tile0.format_size,
-                tile1._size[0] * tile0.format_size
-            )
-            del(buffer_west)
-            del(buffer_east)
+            offset = 0
+            for x in range(self.view.shape[0] - 1):
+                ww = (<Tile> self[x, 0])._size[0] * \
+                     (<Tile> self[x, 0]).format_size
+                ew = (<Tile> self[x + 1, 0])._size[0] * \
+                     (<Tile> self[x + 1, 0]).format_size
+                RenderTile.merge_side_buffers(
+                    vbands[x], vbands[x + 1],
+                    self.buffer, rows, ww, ew, offset
+                )
+                offset += ww
             _T.stop()
+
             return 1
         else:
             self.msg = "Invalid buffer or Tile's format to fill buffer"
@@ -737,14 +735,15 @@ cdef class RenderTile(SuperTile):
     @staticmethod
     cdef void merge_side_buffers(
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
-        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width
+        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width,
+        Py_ssize_t x_offset
     ) nogil:
         cdef Py_ssize_t x_in, x_out, y
         cdef Py_ssize_t buf_width = east_width + west_width
         for y in range(rows):
             # copy west
             x_in = west_width * y
-            x_out = buf_width * y
+            x_out = (buf_width * y) + x_offset
             buffer[x_out:x_out + west_width] = west[x_in:x_in + west_width]
             # copy east
             x_in = east_width * y

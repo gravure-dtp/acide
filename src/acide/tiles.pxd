@@ -22,7 +22,7 @@ from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin
 from acide.types cimport cimax, Pixbuf
 from acide.asyncop cimport Scheduler
 from acide.measure cimport _CMeasurable, Extents_s
-from python_ref cimport Py_INCREF, Py_XDECREF
+from cpython cimport Py_INCREF, Py_XDECREF
 
 cdef extern from "Python.h":
     ctypedef struct PyObject
@@ -125,7 +125,8 @@ cdef class RenderTile(SuperTile):
     @staticmethod
     cdef void merge_side_buffers(
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
-        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width
+        Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width,
+        Py_ssize_t offset
     ) nogil
     cpdef render_texture(RenderTile self)
 
