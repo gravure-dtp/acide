@@ -43,7 +43,7 @@ from acide.measure import Measurable, Unit
 
 BLOSC_MAX_BYTES_CHUNK = 2**31
 
-Timer.set_logging(True)
+Timer.set_logging(False)
 
 cdef object gdk_memory_format_mapping():
     mapping = dict()
@@ -538,8 +538,8 @@ cdef class SuperTile(TilesGrid):
         cdef int rw, rh, sw, sh, xo, yo
         sw, sh = self.view.shape
         rw, rh = self._ref.view.shape
-        xo = (rw - sw) if x >= (rw - sw) else x
-        yo = (rh - sh) if y >= (rh - sh) else y
+        xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
+        yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
         if self._ref.view[xo, yo] != self.view[0, 0]:
             self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))
             self.compute_extents()
@@ -1031,7 +1031,7 @@ cdef class TilesPool():
             depth: a positive integer as an index of scales given at
                    :class:`TilesPool` initialzation
         """
-        cdef int i, j
+        cdef int i, j, cx, cy
         _T = Timer("set_rendering")
         i, j = self.stack[self.current].get_tile_indices(x, y)
 
@@ -1045,7 +1045,9 @@ cdef class TilesPool():
                 self.stack[self.current], self.render_shape
             )
             self.schedule_compression()
-        self.render_tile.move_to(i, j)
+
+        cx, cy = self.render_tile.get_center()
+        self.render_tile.move_to(i - cx, j - cy)
         _T.stop()
 
     cpdef render(self):

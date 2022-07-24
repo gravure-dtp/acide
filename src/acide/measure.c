@@ -1248,6 +1248,7 @@ struct __pyx_vtabstruct_5acide_5types_TypedGrid {
   struct __pyx_obj_5acide_5types_TypedGrid *(*get_slice)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_inplace)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_ref)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
+  PyObject *(*get_center)(struct __pyx_obj_5acide_5types_TypedGrid *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5acide_5types_TypedGrid *__pyx_vtabptr_5acide_5types_TypedGrid;
 

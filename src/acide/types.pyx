@@ -355,6 +355,16 @@ cdef class TypedGrid():
     def __iter__(self):
         return __TypedGridIterator(self)
 
+    cpdef tuple get_center(self):
+        """Return indices for this grid center."
+
+        Returns:
+            a 2 lenght int tuple (x, y) as the coordinates of the center.
+        """
+        cdef int w, h
+        w, h = self.view.shape
+        return ((w // 2) - ((w + 1) % 2), (h // 2) - ((h + 1) % 2))
+
 
 @cython.final
 @cython.freelist(4)

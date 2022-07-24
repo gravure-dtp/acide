@@ -50,7 +50,7 @@ class AcideApplication(Adw.Application):
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def load_pdf(self, window):
-        window.set_document(Document("/home/gilles/PDF/FLIGHT_TEST5.pdf"))
+        window.set_document(Document("/home/gilles/PDF/colon_F4.pdf"))
 
     def do_startup(self):
         """This function is called when the application is first started.

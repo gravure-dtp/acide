@@ -75,3 +75,4 @@ cdef class TypedGrid:
     cdef TypedGrid get_slice(TypedGrid self, object slice_x, object slice_y)
     cdef slice_inplace(TypedGrid self, object slx, object sly)
     cdef slice_ref(TypedGrid self, object slx, object sly)
+    cpdef tuple get_center(TypedGrid self)

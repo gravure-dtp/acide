@@ -1393,7 +1393,7 @@ struct __pyx_obj_5acide_5tiles___pyx_scope_struct_3_render_texture_async {
 };
 
 
-/* "acide/tiles.pyx":1098
+/* "acide/tiles.pyx":1101
  *         self.scheduler.run(Run.LAST)
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):             # <<<<<<<<<<<<<<
@@ -1538,6 +1538,7 @@ struct __pyx_vtabstruct_5acide_5types_TypedGrid {
   struct __pyx_obj_5acide_5types_TypedGrid *(*get_slice)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_inplace)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_ref)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
+  PyObject *(*get_center)(struct __pyx_obj_5acide_5types_TypedGrid *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5acide_5types_TypedGrid *__pyx_vtabptr_5acide_5types_TypedGrid;
 
@@ -2945,7 +2946,7 @@ static const char __pyx_k__14[] = "):\n";
 static const char __pyx_k__15[] = ", ";
 static const char __pyx_k__24[] = ",), ";
 static const char __pyx_k__29[] = "][";
-static const char __pyx_k__31[] = " | ";
+static const char __pyx_k__30[] = " | ";
 static const char __pyx_k__52[] = "\n\n";
 static const char __pyx_k_any[] = "any";
 static const char __pyx_k_dpi[] = "dpi";
@@ -3077,6 +3078,7 @@ static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_TypedGrid[] = "TypedGrid";
 static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_functools[] = "functools";
+static const char __pyx_k_move_to_2[] = "move to ";
 static const char __pyx_k_pixbuf_cb[] = "pixbuf_cb";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
@@ -3301,7 +3303,7 @@ static PyObject *__pyx_kp_u__14;
 static PyObject *__pyx_kp_u__15;
 static PyObject *__pyx_kp_u__24;
 static PyObject *__pyx_kp_u__29;
-static PyObject *__pyx_kp_u__31;
+static PyObject *__pyx_kp_u__30;
 static PyObject *__pyx_kp_u__6;
 static PyObject *__pyx_kp_u__7;
 static PyObject *__pyx_n_s_acide;
@@ -3400,6 +3402,7 @@ static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_u_merge_side_buffers;
 static PyObject *__pyx_n_s_mode;
 static PyObject *__pyx_n_s_move_to;
+static PyObject *__pyx_kp_u_move_to_2;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_ndim;
@@ -3651,7 +3654,7 @@ static PyObject *__pyx_tuple__25;
 static PyObject *__pyx_tuple__26;
 static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_tuple__28;
-static PyObject *__pyx_tuple__30;
+static PyObject *__pyx_tuple__31;
 static PyObject *__pyx_tuple__32;
 static PyObject *__pyx_tuple__33;
 static PyObject *__pyx_tuple__34;
@@ -3684,7 +3687,7 @@ static PyObject *__pyx_codeobj__62;
 /* Late includes */
 
 /* "acide/tiles.pyx":48
- * Timer.set_logging(True)
+ * Timer.set_logging(False)
  * 
  * cdef object gdk_memory_format_mapping():             # <<<<<<<<<<<<<<
  *     mapping = dict()
@@ -3895,7 +3898,7 @@ static PyObject *__pyx_f_5acide_5tiles_gdk_memory_format_mapping(void) {
   goto __pyx_L0;
 
   /* "acide/tiles.pyx":48
- * Timer.set_logging(True)
+ * Timer.set_logging(False)
  * 
  * cdef object gdk_memory_format_mapping():             # <<<<<<<<<<<<<<
  *     mapping = dict()
@@ -11033,7 +11036,7 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
  *         cdef int rw, rh, sw, sh, xo, yo
  *         sw, sh = self.view.shape             # <<<<<<<<<<<<<<
  *         rw, rh = self._ref.view.shape
- *         xo = (rw - sw) if x >= (rw - sw) else x
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->__pyx_base.__pyx_base.view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -11094,8 +11097,8 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
  *         cdef int rw, rh, sw, sh, xo, yo
  *         sw, sh = self.view.shape
  *         rw, rh = self._ref.view.shape             # <<<<<<<<<<<<<<
- *         xo = (rw - sw) if x >= (rw - sw) else x
- *         yo = (rh - sh) if y >= (rh - sh) else y
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->__pyx_base.__pyx_base._ref->view), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -11155,8 +11158,8 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
   /* "acide/tiles.pyx":541
  *         sw, sh = self.view.shape
  *         rw, rh = self._ref.view.shape
- *         xo = (rw - sw) if x >= (rw - sw) else x             # <<<<<<<<<<<<<<
- *         yo = (rh - sh) if y >= (rh - sh) else y
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)             # <<<<<<<<<<<<<<
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
  *         if self._ref.view[xo, yo] != self.view[0, 0]:
  */
   __pyx_t_11 = 0;
@@ -11176,12 +11179,12 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
   } else {
     __pyx_t_7 = __pyx_v_x;
   }
-  __pyx_v_xo = __pyx_t_7;
+  __pyx_v_xo = __pyx_f_5acide_5types_cimax(__pyx_t_7, 0);
 
   /* "acide/tiles.pyx":542
  *         rw, rh = self._ref.view.shape
- *         xo = (rw - sw) if x >= (rw - sw) else x
- *         yo = (rh - sh) if y >= (rh - sh) else y             # <<<<<<<<<<<<<<
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)             # <<<<<<<<<<<<<<
  *         if self._ref.view[xo, yo] != self.view[0, 0]:
  *             self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))
  */
@@ -11202,11 +11205,11 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
   } else {
     __pyx_t_7 = __pyx_v_y;
   }
-  __pyx_v_yo = __pyx_t_7;
+  __pyx_v_yo = __pyx_f_5acide_5types_cimax(__pyx_t_7, 0);
 
   /* "acide/tiles.pyx":543
- *         xo = (rw - sw) if x >= (rw - sw) else x
- *         yo = (rh - sh) if y >= (rh - sh) else y
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
  *         if self._ref.view[xo, yo] != self.view[0, 0]:             # <<<<<<<<<<<<<<
  *             self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))
  *             self.compute_extents()
@@ -11236,7 +11239,7 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
   if (__pyx_t_9) {
 
     /* "acide/tiles.pyx":544
- *         yo = (rh - sh) if y >= (rh - sh) else y
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
  *         if self._ref.view[xo, yo] != self.view[0, 0]:
  *             self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))             # <<<<<<<<<<<<<<
  *             self.compute_extents()
@@ -11309,8 +11312,8 @@ static int __pyx_f_5acide_5tiles_9SuperTile_move_to(struct __pyx_obj_5acide_5til
     goto __pyx_L0;
 
     /* "acide/tiles.pyx":543
- *         xo = (rw - sw) if x >= (rw - sw) else x
- *         yo = (rh - sh) if y >= (rh - sh) else y
+ *         xo = cimax((rw - sw) if x >= (rw - sw) else x, 0)
+ *         yo = cimax((rh - sh) if y >= (rh - sh) else y, 0)
  *         if self._ref.view[xo, yo] != self.view[0, 0]:             # <<<<<<<<<<<<<<
  *             self.slice_ref(slice(xo, xo + sw, 1), slice(yo, yo + sh, 1))
  *             self.compute_extents()
@@ -18909,6 +18912,8 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
   int __pyx_v_depth = ((int)0);
   int __pyx_v_i;
   int __pyx_v_j;
+  int __pyx_v_cx;
+  int __pyx_v_cy;
   PyObject *__pyx_v__T = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -18922,6 +18927,9 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
   PyObject *(*__pyx_t_8)(PyObject *);
   int __pyx_t_9;
   int __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_UCS4 __pyx_t_12;
+  int __pyx_t_13;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -18934,7 +18942,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
 
   /* "acide/tiles.pyx":1035
  *         """
- *         cdef int i, j
+ *         cdef int i, j, cx, cy
  *         _T = Timer("set_rendering")             # <<<<<<<<<<<<<<
  *         i, j = self.stack[self.current].get_tile_indices(x, y)
  * 
@@ -18960,7 +18968,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
   __pyx_t_1 = 0;
 
   /* "acide/tiles.pyx":1036
- *         cdef int i, j
+ *         cdef int i, j, cx, cy
  *         _T = Timer("set_rendering")
  *         i, j = self.stack[self.current].get_tile_indices(x, y)             # <<<<<<<<<<<<<<
  * 
@@ -19142,8 +19150,8 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
  *                 self.stack[self.current], self.render_shape
  *             )
  *             self.schedule_compression()             # <<<<<<<<<<<<<<
- *         self.render_tile.move_to(i, j)
- *         _T.stop()
+ * 
+ *         cx, cy = self.render_tile.get_center()
  */
     __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_schedule_compression(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1047, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -19158,23 +19166,160 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
  */
   }
 
-  /* "acide/tiles.pyx":1048
- *             )
+  /* "acide/tiles.pyx":1049
  *             self.schedule_compression()
- *         self.render_tile.move_to(i, j)             # <<<<<<<<<<<<<<
+ * 
+ *         cx, cy = self.render_tile.get_center()             # <<<<<<<<<<<<<<
+ *         print(f"move to {i - cx}, {j - cy} | {self.render_tile.shape} | {self.stack[self.current].shape}")
+ *         self.render_tile.move_to(i - cx, j - cy)
+ */
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5acide_5tiles_RenderTile *)__pyx_v_self->render_tile->__pyx_base.__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.__pyx_base.__pyx_base.get_center(((struct __pyx_obj_5acide_5types_TypedGrid *)__pyx_v_self->render_tile), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1049, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (likely(__pyx_t_1 != Py_None)) {
+    PyObject* sequence = __pyx_t_1;
+    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+    if (unlikely(size != 2)) {
+      if (size > 2) __Pyx_RaiseTooManyValuesError(2);
+      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+      __PYX_ERR(0, 1049, __pyx_L1_error)
+    }
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
+    __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
+    __Pyx_INCREF(__pyx_t_7);
+    __Pyx_INCREF(__pyx_t_3);
+    #else
+    __pyx_t_7 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1049, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1049, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    #endif
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  } else {
+    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 1049, __pyx_L1_error)
+  }
+  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1049, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1049, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_cx = __pyx_t_9;
+  __pyx_v_cy = __pyx_t_6;
+
+  /* "acide/tiles.pyx":1050
+ * 
+ *         cx, cy = self.render_tile.get_center()
+ *         print(f"move to {i - cx}, {j - cy} | {self.render_tile.shape} | {self.stack[self.current].shape}")             # <<<<<<<<<<<<<<
+ *         self.render_tile.move_to(i - cx, j - cy)
+ *         _T.stop()
+ */
+  __pyx_t_1 = PyTuple_New(8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 127;
+  __Pyx_INCREF(__pyx_kp_u_move_to_2);
+  __pyx_t_11 += 8;
+  __Pyx_GIVEREF(__pyx_kp_u_move_to_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_move_to_2);
+  __pyx_t_6 = 0;
+  __pyx_t_9 = __Pyx_sub_int_checking_overflow(__pyx_v_i, __pyx_v_cx, &__pyx_t_6);
+  if (unlikely(__pyx_t_6)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 1050, __pyx_L1_error)
+  }
+  __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_t_9, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_11 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __Pyx_INCREF(__pyx_kp_u__15);
+  __pyx_t_11 += 2;
+  __Pyx_GIVEREF(__pyx_kp_u__15);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__15);
+  __pyx_t_9 = 0;
+  __pyx_t_6 = __Pyx_sub_int_checking_overflow(__pyx_v_j, __pyx_v_cy, &__pyx_t_9);
+  if (unlikely(__pyx_t_9)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 1050, __pyx_L1_error)
+  }
+  __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_t_6, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_11 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __Pyx_INCREF(__pyx_kp_u__30);
+  __pyx_t_11 += 3;
+  __Pyx_GIVEREF(__pyx_kp_u__30);
+  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u__30);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->render_tile), __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_12;
+  __pyx_t_11 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_7);
+  __pyx_t_7 = 0;
+  __Pyx_INCREF(__pyx_kp_u__30);
+  __pyx_t_11 += 3;
+  __Pyx_GIVEREF(__pyx_kp_u__30);
+  PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u__30);
+  if (unlikely(__pyx_v_self->stack == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 1050, __pyx_L1_error)
+  }
+  __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_self->stack, __pyx_v_self->current, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_12;
+  __pyx_t_11 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_t_7);
+  __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_1, 8, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1050, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "acide/tiles.pyx":1051
+ *         cx, cy = self.render_tile.get_center()
+ *         print(f"move to {i - cx}, {j - cy} | {self.render_tile.shape} | {self.stack[self.current].shape}")
+ *         self.render_tile.move_to(i - cx, j - cy)             # <<<<<<<<<<<<<<
  *         _T.stop()
  * 
  */
-  (void)(((struct __pyx_vtabstruct_5acide_5tiles_RenderTile *)__pyx_v_self->render_tile->__pyx_base.__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.move_to(((struct __pyx_obj_5acide_5tiles_SuperTile *)__pyx_v_self->render_tile), __pyx_v_i, __pyx_v_j, 0));
+  __pyx_t_6 = 0;
+  __pyx_t_9 = __Pyx_sub_int_checking_overflow(__pyx_v_i, __pyx_v_cx, &__pyx_t_6);
+  if (unlikely(__pyx_t_6)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 1051, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_13 = __Pyx_sub_int_checking_overflow(__pyx_v_j, __pyx_v_cy, &__pyx_t_6);
+  if (unlikely(__pyx_t_6)) {
+    PyErr_SetString(PyExc_OverflowError, "value too large");
+    __PYX_ERR(0, 1051, __pyx_L1_error)
+  }
+  (void)(((struct __pyx_vtabstruct_5acide_5tiles_RenderTile *)__pyx_v_self->render_tile->__pyx_base.__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.move_to(((struct __pyx_obj_5acide_5tiles_SuperTile *)__pyx_v_self->render_tile), __pyx_t_9, __pyx_t_13, 0));
 
-  /* "acide/tiles.pyx":1049
- *             self.schedule_compression()
- *         self.render_tile.move_to(i, j)
+  /* "acide/tiles.pyx":1052
+ *         print(f"move to {i - cx}, {j - cy} | {self.render_tile.shape} | {self.stack[self.current].shape}")
+ *         self.render_tile.move_to(i - cx, j - cy)
  *         _T.stop()             # <<<<<<<<<<<<<<
  * 
  *     cpdef render(self):
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v__T, __pyx_n_s_stop); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1049, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v__T, __pyx_n_s_stop); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1052, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -19188,7 +19333,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_set_rendering(struct __pyx_obj
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1049, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -19332,7 +19477,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_4set_rendering(struct __pyx_o
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1051
+/* "acide/tiles.pyx":1054
  *         _T.stop()
  * 
  *     cpdef render(self):             # <<<<<<<<<<<<<<
@@ -19354,7 +19499,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("render", 0);
 
-  /* "acide/tiles.pyx":1057
+  /* "acide/tiles.pyx":1060
  *             a :class:`Clip` holding a :class:`Gdk.Tetxure`
  *         """
  *         if self.render_tile is not None:             # <<<<<<<<<<<<<<
@@ -19365,7 +19510,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "acide/tiles.pyx":1058
+    /* "acide/tiles.pyx":1061
  *         """
  *         if self.render_tile is not None:
  *             (<TilesGrid> self.stack[self.current]).compress(self.pixbuf_cb)             # <<<<<<<<<<<<<<
@@ -19374,11 +19519,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
  */
     if (unlikely(__pyx_v_self->stack == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 1058, __pyx_L1_error)
+      __PYX_ERR(0, 1061, __pyx_L1_error)
     }
-    __pyx_t_4 = __Pyx_GetItemInt_List(__pyx_v_self->stack, __pyx_v_self->current, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1058, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt_List(__pyx_v_self->stack, __pyx_v_self->current, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1061, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_compress); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1058, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_compress); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1061, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -19393,23 +19538,23 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
     }
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_v_self->pixbuf_cb) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_self->pixbuf_cb);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1058, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1061, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "acide/tiles.pyx":1059
+    /* "acide/tiles.pyx":1062
  *         if self.render_tile is not None:
  *             (<TilesGrid> self.stack[self.current]).compress(self.pixbuf_cb)
  *             self.render_tile.render_texture()             # <<<<<<<<<<<<<<
  *             return self.render_tile._clip
  *         else:
  */
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5acide_5tiles_RenderTile *)__pyx_v_self->render_tile->__pyx_base.__pyx_base.__pyx_base.__pyx_vtab)->render_texture(__pyx_v_self->render_tile, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1059, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5acide_5tiles_RenderTile *)__pyx_v_self->render_tile->__pyx_base.__pyx_base.__pyx_base.__pyx_vtab)->render_texture(__pyx_v_self->render_tile, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1062, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "acide/tiles.pyx":1060
+    /* "acide/tiles.pyx":1063
  *             (<TilesGrid> self.stack[self.current]).compress(self.pixbuf_cb)
  *             self.render_tile.render_texture()
  *             return self.render_tile._clip             # <<<<<<<<<<<<<<
@@ -19421,7 +19566,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
     __pyx_r = ((PyObject *)__pyx_v_self->render_tile->_clip);
     goto __pyx_L0;
 
-    /* "acide/tiles.pyx":1057
+    /* "acide/tiles.pyx":1060
  *             a :class:`Clip` holding a :class:`Gdk.Tetxure`
  *         """
  *         if self.render_tile is not None:             # <<<<<<<<<<<<<<
@@ -19430,7 +19575,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
  */
   }
 
-  /* "acide/tiles.pyx":1062
+  /* "acide/tiles.pyx":1065
  *             return self.render_tile._clip
  *         else:
  *             return self.null_clip             # <<<<<<<<<<<<<<
@@ -19444,7 +19589,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_render(struct __pyx_obj_5acide
     goto __pyx_L0;
   }
 
-  /* "acide/tiles.pyx":1051
+  /* "acide/tiles.pyx":1054
  *         _T.stop()
  * 
  *     cpdef render(self):             # <<<<<<<<<<<<<<
@@ -19488,7 +19633,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_6render(struct __pyx_obj_5aci
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("render", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_render(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1051, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_render(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -19505,7 +19650,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_6render(struct __pyx_obj_5aci
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1064
+/* "acide/tiles.pyx":1067
  *             return self.null_clip
  * 
  *     def render_async(             # <<<<<<<<<<<<<<
@@ -19551,17 +19696,17 @@ static PyObject *__pyx_pw_5acide_5tiles_9TilesPool_9render_async(PyObject *__pyx
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_callback)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, 1); __PYX_ERR(0, 1064, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, 1); __PYX_ERR(0, 1067, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_user_data)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, 2); __PYX_ERR(0, 1064, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, 2); __PYX_ERR(0, 1067, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "render_async") < 0)) __PYX_ERR(0, 1064, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "render_async") < 0)) __PYX_ERR(0, 1067, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -19576,7 +19721,7 @@ static PyObject *__pyx_pw_5acide_5tiles_9TilesPool_9render_async(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1064, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("render_async", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1067, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("acide.tiles.TilesPool.render_async", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -19607,7 +19752,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("render_async", 0);
 
-  /* "acide/tiles.pyx":1081
+  /* "acide/tiles.pyx":1084
  *             user_data:
  *         """
  *         if self.render_task is not None and \             # <<<<<<<<<<<<<<
@@ -19622,14 +19767,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "acide/tiles.pyx":1082
+  /* "acide/tiles.pyx":1085
  *         """
  *         if self.render_task is not None and \
  *            not self.render_task.done():             # <<<<<<<<<<<<<<
  *             self.render_task.cancel()
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->render_task, __pyx_n_s_done); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1082, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->render_task, __pyx_n_s_done); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1085, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -19643,16 +19788,16 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   }
   __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1082, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1085, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 1082, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 1085, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = ((!__pyx_t_3) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
 
-  /* "acide/tiles.pyx":1081
+  /* "acide/tiles.pyx":1084
  *             user_data:
  *         """
  *         if self.render_task is not None and \             # <<<<<<<<<<<<<<
@@ -19661,14 +19806,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
  */
   if (__pyx_t_1) {
 
-    /* "acide/tiles.pyx":1083
+    /* "acide/tiles.pyx":1086
  *         if self.render_task is not None and \
  *            not self.render_task.done():
  *             self.render_task.cancel()             # <<<<<<<<<<<<<<
  * 
  *         if isinstance(user_data, Gio.Task):
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->render_task, __pyx_n_s_cancel); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1083, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->render_task, __pyx_n_s_cancel); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1086, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -19682,12 +19827,12 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1083, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1086, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "acide/tiles.pyx":1081
+    /* "acide/tiles.pyx":1084
  *             user_data:
  *         """
  *         if self.render_task is not None and \             # <<<<<<<<<<<<<<
@@ -19696,24 +19841,24 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
  */
   }
 
-  /* "acide/tiles.pyx":1085
+  /* "acide/tiles.pyx":1088
  *             self.render_task.cancel()
  * 
  *         if isinstance(user_data, Gio.Task):             # <<<<<<<<<<<<<<
  *             gtask = user_data
  *         else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Gio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1085, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Gio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1088, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Task); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1085, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Task); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1088, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_1 = PyObject_IsInstance(__pyx_v_user_data, __pyx_t_5); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 1085, __pyx_L1_error)
+  __pyx_t_1 = PyObject_IsInstance(__pyx_v_user_data, __pyx_t_5); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 1088, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "acide/tiles.pyx":1086
+    /* "acide/tiles.pyx":1089
  * 
  *         if isinstance(user_data, Gio.Task):
  *             gtask = user_data             # <<<<<<<<<<<<<<
@@ -19723,7 +19868,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     __Pyx_INCREF(__pyx_v_user_data);
     __pyx_v_gtask = __pyx_v_user_data;
 
-    /* "acide/tiles.pyx":1085
+    /* "acide/tiles.pyx":1088
  *             self.render_task.cancel()
  * 
  *         if isinstance(user_data, Gio.Task):             # <<<<<<<<<<<<<<
@@ -19733,7 +19878,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     goto __pyx_L6;
   }
 
-  /* "acide/tiles.pyx":1088
+  /* "acide/tiles.pyx":1091
  *             gtask = user_data
  *         else:
  *             gtask = Gio.Task.new(self, cancellable, callback, user_data)             # <<<<<<<<<<<<<<
@@ -19741,12 +19886,12 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
  *         self.render_task = self.scheduler.add(
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Gio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1088, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Gio); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1091, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Task); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1088, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Task); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1091, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_new); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1088, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_new); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1091, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -19764,7 +19909,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[5] = {__pyx_t_6, ((PyObject *)__pyx_v_self), __pyx_v_cancellable, __pyx_v_callback, __pyx_v_user_data};
-      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 4+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1088, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 4+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1091, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_5);
     } else
@@ -19772,13 +19917,13 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[5] = {__pyx_t_6, ((PyObject *)__pyx_v_self), __pyx_v_cancellable, __pyx_v_callback, __pyx_v_user_data};
-      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 4+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1088, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 4+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1091, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_5);
     } else
     #endif
     {
-      __pyx_t_8 = PyTuple_New(4+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1088, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(4+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1091, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -19795,7 +19940,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
       __Pyx_INCREF(__pyx_v_user_data);
       __Pyx_GIVEREF(__pyx_v_user_data);
       PyTuple_SET_ITEM(__pyx_t_8, 3+__pyx_t_7, __pyx_v_user_data);
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1088, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1091, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
@@ -19805,14 +19950,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   }
   __pyx_L6:;
 
-  /* "acide/tiles.pyx":1089
+  /* "acide/tiles.pyx":1092
  *         else:
  *             gtask = Gio.Task.new(self, cancellable, callback, user_data)
  *         self.scheduler.stop()             # <<<<<<<<<<<<<<
  *         self.render_task = self.scheduler.add(
  *             self._render_super_tile_co(gtask),
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->scheduler), __pyx_n_s_stop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1089, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->scheduler), __pyx_n_s_stop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1092, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_8 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -19826,19 +19971,19 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   }
   __pyx_t_5 = (__pyx_t_8) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_8) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1089, __pyx_L1_error)
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1092, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "acide/tiles.pyx":1091
+  /* "acide/tiles.pyx":1094
  *         self.scheduler.stop()
  *         self.render_task = self.scheduler.add(
  *             self._render_super_tile_co(gtask),             # <<<<<<<<<<<<<<
  *             Priority.HIGH,
  *             callback=None,
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_render_super_tile_co); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1091, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_render_super_tile_co); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1094, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_8 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -19852,24 +19997,24 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   }
   __pyx_t_5 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_8, __pyx_v_gtask) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_gtask);
   __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1091, __pyx_L1_error)
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/tiles.pyx":1092
+  /* "acide/tiles.pyx":1095
  *         self.render_task = self.scheduler.add(
  *             self._render_super_tile_co(gtask),
  *             Priority.HIGH,             # <<<<<<<<<<<<<<
  *             callback=None,
  *             name="render_tile",
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Priority); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1092, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_Priority); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1095, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_HIGH); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1092, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_HIGH); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1095, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/tiles.pyx":1090
+  /* "acide/tiles.pyx":1093
  *             gtask = Gio.Task.new(self, cancellable, callback, user_data)
  *         self.scheduler.stop()
  *         self.render_task = self.scheduler.add(             # <<<<<<<<<<<<<<
@@ -19879,7 +20024,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   __pyx_t_9.__pyx_n = 2;
   __pyx_t_9.callback = Py_None;
   __pyx_t_9.name = __pyx_n_u_render_tile;
-  __pyx_t_4 = ((struct __pyx_vtabstruct_5acide_7asyncop_Scheduler *)__pyx_v_self->scheduler->__pyx_vtab)->add(__pyx_v_self->scheduler, __pyx_t_5, __pyx_t_8, 0, &__pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1090, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_5acide_7asyncop_Scheduler *)__pyx_v_self->scheduler->__pyx_vtab)->add(__pyx_v_self->scheduler, __pyx_t_5, __pyx_t_8, 0, &__pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1093, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -19889,18 +20034,18 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   __pyx_v_self->render_task = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "acide/tiles.pyx":1096
+  /* "acide/tiles.pyx":1099
  *             name="render_tile",
  *         )
  *         self.scheduler.run(Run.LAST)             # <<<<<<<<<<<<<<
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->scheduler), __pyx_n_s_run); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1096, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->scheduler), __pyx_n_s_run); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Run); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1096, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Run); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LAST); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1096, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LAST); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -19916,12 +20061,12 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "acide/tiles.pyx":1064
+  /* "acide/tiles.pyx":1067
  *             return self.null_clip
  * 
  *     def render_async(             # <<<<<<<<<<<<<<
@@ -19947,7 +20092,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_8render_async(struct __pyx_ob
 }
 static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "acide/tiles.pyx":1098
+/* "acide/tiles.pyx":1101
  *         self.scheduler.run(Run.LAST)
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):             # <<<<<<<<<<<<<<
@@ -19981,7 +20126,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_10_render_super_tile_co(struc
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5acide_5tiles___pyx_scope_struct_4__render_super_tile_co *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 1098, __pyx_L1_error)
+    __PYX_ERR(0, 1101, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -19992,7 +20137,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_10_render_super_tile_co(struc
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_gtask);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_gtask);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_5tiles_9TilesPool_12generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_render_super_tile_co, __pyx_n_s_TilesPool__render_super_tile_co, __pyx_n_s_acide_tiles); if (unlikely(!gen)) __PYX_ERR(0, 1098, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5acide_5tiles_9TilesPool_12generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_render_super_tile_co, __pyx_n_s_TilesPool__render_super_tile_co, __pyx_n_s_acide_tiles); if (unlikely(!gen)) __PYX_ERR(0, 1101, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -20040,9 +20185,9 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1098, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1101, __pyx_L1_error)
 
-  /* "acide/tiles.pyx":1099
+  /* "acide/tiles.pyx":1102
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
  *         try:             # <<<<<<<<<<<<<<
@@ -20057,14 +20202,14 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
       __Pyx_XGOTREF(__pyx_t_3);
       /*try:*/ {
 
-        /* "acide/tiles.pyx":1100
+        /* "acide/tiles.pyx":1103
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
  *         try:
  *             _T = Timer("_render_super_tile_co")             # <<<<<<<<<<<<<<
  *             await self.render_tile.compress_async(
  *                 self.pixbuf_cb, self.graphic.scale
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Timer); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1100, __pyx_L7_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_Timer); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1103, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -20078,31 +20223,31 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         }
         __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_n_u_render_super_tile_co) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_n_u_render_super_tile_co);
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1100, __pyx_L7_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1103, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_GIVEREF(__pyx_t_4);
         __pyx_cur_scope->__pyx_v__T = __pyx_t_4;
         __pyx_t_4 = 0;
 
-        /* "acide/tiles.pyx":1101
+        /* "acide/tiles.pyx":1104
  *         try:
  *             _T = Timer("_render_super_tile_co")
  *             await self.render_tile.compress_async(             # <<<<<<<<<<<<<<
  *                 self.pixbuf_cb, self.graphic.scale
  *             )
  */
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self->render_tile), __pyx_n_s_compress_async); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1101, __pyx_L7_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self->render_tile), __pyx_n_s_compress_async); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1104, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_5);
 
-        /* "acide/tiles.pyx":1102
+        /* "acide/tiles.pyx":1105
  *             _T = Timer("_render_super_tile_co")
  *             await self.render_tile.compress_async(
  *                 self.pixbuf_cb, self.graphic.scale             # <<<<<<<<<<<<<<
  *             )
  *             await self.render_tile.render_texture_async()
  */
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->graphic, __pyx_n_s_scale); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1102, __pyx_L7_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->graphic, __pyx_n_s_scale); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1105, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = NULL;
         __pyx_t_8 = 0;
@@ -20119,7 +20264,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_self->pixbuf_cb, __pyx_t_6};
-          __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1101, __pyx_L7_error)
+          __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1104, __pyx_L7_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -20128,14 +20273,14 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
           PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_self->pixbuf_cb, __pyx_t_6};
-          __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1101, __pyx_L7_error)
+          __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1104, __pyx_L7_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         } else
         #endif
         {
-          __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1101, __pyx_L7_error)
+          __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1104, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_9);
           if (__pyx_t_7) {
             __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -20146,7 +20291,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
           __Pyx_GIVEREF(__pyx_t_6);
           PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_6);
           __pyx_t_6 = 0;
-          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_9, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1101, __pyx_L7_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_9, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1104, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -20177,23 +20322,23 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
           __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
           __pyx_cur_scope->__pyx_t_2 = 0;
           __Pyx_XGOTREF(__pyx_t_3);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1101, __pyx_L7_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1104, __pyx_L7_error)
         } else {
           PyObject* exc_type = __Pyx_PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-            else __PYX_ERR(0, 1101, __pyx_L7_error)
+            else __PYX_ERR(0, 1104, __pyx_L7_error)
           }
         }
 
-        /* "acide/tiles.pyx":1104
+        /* "acide/tiles.pyx":1107
  *                 self.pixbuf_cb, self.graphic.scale
  *             )
  *             await self.render_tile.render_texture_async()             # <<<<<<<<<<<<<<
  *             _T.stop()
  *         except asyncio.CancelledError:
  */
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self->render_tile), __pyx_n_s_render_texture_async); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1104, __pyx_L7_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self->render_tile), __pyx_n_s_render_texture_async); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1107, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -20207,7 +20352,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1104, __pyx_L7_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1107, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_4);
@@ -20236,23 +20381,23 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
           __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
           __pyx_cur_scope->__pyx_t_2 = 0;
           __Pyx_XGOTREF(__pyx_t_3);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1104, __pyx_L7_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 1107, __pyx_L7_error)
         } else {
           PyObject* exc_type = __Pyx_PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-            else __PYX_ERR(0, 1104, __pyx_L7_error)
+            else __PYX_ERR(0, 1107, __pyx_L7_error)
           }
         }
 
-        /* "acide/tiles.pyx":1105
+        /* "acide/tiles.pyx":1108
  *             )
  *             await self.render_tile.render_texture_async()
  *             _T.stop()             # <<<<<<<<<<<<<<
  *         except asyncio.CancelledError:
  *             print("render cancelled")
  */
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v__T, __pyx_n_s_stop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1105, __pyx_L7_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v__T, __pyx_n_s_stop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1108, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -20266,12 +20411,12 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1105, __pyx_L7_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1108, __pyx_L7_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "acide/tiles.pyx":1099
+        /* "acide/tiles.pyx":1102
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
  *         try:             # <<<<<<<<<<<<<<
@@ -20280,7 +20425,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
  */
       }
 
-      /* "acide/tiles.pyx":1110
+      /* "acide/tiles.pyx":1113
  *             raise
  *         else:
  *             self._on_render_ready_cb(gtask)             # <<<<<<<<<<<<<<
@@ -20288,7 +20433,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
  *             pass
  */
       /*else:*/ {
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_on_render_ready_cb); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1110, __pyx_L9_except_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_on_render_ready_cb); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1113, __pyx_L9_except_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -20302,7 +20447,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_9, __pyx_cur_scope->__pyx_v_gtask) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_gtask);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1110, __pyx_L9_except_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1113, __pyx_L9_except_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -20318,7 +20463,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "acide/tiles.pyx":1106
+      /* "acide/tiles.pyx":1109
  *             await self.render_tile.render_texture_async()
  *             _T.stop()
  *         except asyncio.CancelledError:             # <<<<<<<<<<<<<<
@@ -20326,9 +20471,9 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
  *             raise
  */
       __Pyx_ErrFetch(&__pyx_t_4, &__pyx_t_5, &__pyx_t_9);
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1106, __pyx_L9_except_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_asyncio); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1109, __pyx_L9_except_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1106, __pyx_L9_except_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_CancelledError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1109, __pyx_L9_except_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_8 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_4, __pyx_t_7);
@@ -20337,23 +20482,23 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
       __pyx_t_4 = 0; __pyx_t_5 = 0; __pyx_t_9 = 0;
       if (__pyx_t_8) {
         __Pyx_AddTraceback("acide.tiles.TilesPool._render_super_tile_co", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_9, &__pyx_t_5, &__pyx_t_4) < 0) __PYX_ERR(0, 1106, __pyx_L9_except_error)
+        if (__Pyx_GetException(&__pyx_t_9, &__pyx_t_5, &__pyx_t_4) < 0) __PYX_ERR(0, 1109, __pyx_L9_except_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_GOTREF(__pyx_t_4);
 
-        /* "acide/tiles.pyx":1107
+        /* "acide/tiles.pyx":1110
  *             _T.stop()
  *         except asyncio.CancelledError:
  *             print("render cancelled")             # <<<<<<<<<<<<<<
  *             raise
  *         else:
  */
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1107, __pyx_L9_except_error)
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1110, __pyx_L9_except_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "acide/tiles.pyx":1108
+        /* "acide/tiles.pyx":1111
  *         except asyncio.CancelledError:
  *             print("render cancelled")
  *             raise             # <<<<<<<<<<<<<<
@@ -20365,12 +20510,12 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
         __Pyx_XGIVEREF(__pyx_t_4);
         __Pyx_ErrRestoreWithState(__pyx_t_9, __pyx_t_5, __pyx_t_4);
         __pyx_t_9 = 0; __pyx_t_5 = 0; __pyx_t_4 = 0; 
-        __PYX_ERR(0, 1108, __pyx_L9_except_error)
+        __PYX_ERR(0, 1111, __pyx_L9_except_error)
       }
       goto __pyx_L9_except_error;
       __pyx_L9_except_error:;
 
-      /* "acide/tiles.pyx":1099
+      /* "acide/tiles.pyx":1102
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
  *         try:             # <<<<<<<<<<<<<<
@@ -20386,7 +20531,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
     }
   }
 
-  /* "acide/tiles.pyx":1112
+  /* "acide/tiles.pyx":1115
  *             self._on_render_ready_cb(gtask)
  *         finally:
  *             pass             # <<<<<<<<<<<<<<
@@ -20435,7 +20580,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "acide/tiles.pyx":1098
+  /* "acide/tiles.pyx":1101
  *         self.scheduler.run(Run.LAST)
  * 
  *     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):             # <<<<<<<<<<<<<<
@@ -20464,7 +20609,7 @@ static PyObject *__pyx_gb_5acide_5tiles_9TilesPool_12generator4(__pyx_CoroutineO
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1114
+/* "acide/tiles.pyx":1117
  *             pass
  * 
  *     def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:             # <<<<<<<<<<<<<<
@@ -20497,14 +20642,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_13_on_render_ready_cb(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_on_render_ready_cb", 0);
 
-  /* "acide/tiles.pyx":1116
+  /* "acide/tiles.pyx":1119
  *     def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:
  *         # complete the gtask calling the render_async callback
  *         gtask.return_boolean(True)             # <<<<<<<<<<<<<<
  *         # self.dump_stack()
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_gtask, __pyx_n_s_return_boolean); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1116, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_gtask, __pyx_n_s_return_boolean); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -20518,12 +20663,12 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_13_on_render_ready_cb(CYTHON_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, Py_True) : __Pyx_PyObject_CallOneArg(__pyx_t_2, Py_True);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1116, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/tiles.pyx":1114
+  /* "acide/tiles.pyx":1117
  *             pass
  * 
  *     def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:             # <<<<<<<<<<<<<<
@@ -20546,7 +20691,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_13_on_render_ready_cb(CYTHON_
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1119
+/* "acide/tiles.pyx":1122
  *         # self.dump_stack()
  * 
  *     def render_finish(self, result: Gio.Task, data: any = None):             # <<<<<<<<<<<<<<
@@ -20594,7 +20739,7 @@ static PyObject *__pyx_pw_5acide_5tiles_9TilesPool_16render_finish(PyObject *__p
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "render_finish") < 0)) __PYX_ERR(0, 1119, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "render_finish") < 0)) __PYX_ERR(0, 1122, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -20610,7 +20755,7 @@ static PyObject *__pyx_pw_5acide_5tiles_9TilesPool_16render_finish(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("render_finish", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1119, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("render_finish", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1122, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("acide.tiles.TilesPool.render_finish", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -20635,14 +20780,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("render_finish", 0);
 
-  /* "acide/tiles.pyx":1120
+  /* "acide/tiles.pyx":1123
  * 
  *     def render_finish(self, result: Gio.Task, data: any = None):
  *         if result.propagate_boolean():             # <<<<<<<<<<<<<<
  *             # if self.invalid_render is not None:
  *             #     self.invalid_render.invalidate()
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_result, __pyx_n_s_propagate_boolean); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1120, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_result, __pyx_n_s_propagate_boolean); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -20656,14 +20801,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1120, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 1120, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 1123, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_4) {
 
-    /* "acide/tiles.pyx":1124
+    /* "acide/tiles.pyx":1127
  *             #     self.invalid_render.invalidate()
  *             #     self.invalid_render = None
  *             return self.render_tile.clip             # <<<<<<<<<<<<<<
@@ -20671,13 +20816,13 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
  *             return self.null_clip
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->render_tile), __pyx_n_s_clip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->render_tile), __pyx_n_s_clip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "acide/tiles.pyx":1120
+    /* "acide/tiles.pyx":1123
  * 
  *     def render_finish(self, result: Gio.Task, data: any = None):
  *         if result.propagate_boolean():             # <<<<<<<<<<<<<<
@@ -20686,7 +20831,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
  */
   }
 
-  /* "acide/tiles.pyx":1126
+  /* "acide/tiles.pyx":1129
  *             return self.render_tile.clip
  *         else:
  *             return self.null_clip             # <<<<<<<<<<<<<<
@@ -20700,7 +20845,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
     goto __pyx_L0;
   }
 
-  /* "acide/tiles.pyx":1119
+  /* "acide/tiles.pyx":1122
  *         # self.dump_stack()
  * 
  *     def render_finish(self, result: Gio.Task, data: any = None):             # <<<<<<<<<<<<<<
@@ -20721,7 +20866,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_15render_finish(struct __pyx_
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1128
+/* "acide/tiles.pyx":1131
  *             return self.null_clip
  * 
  *     def dump_stack(self):             # <<<<<<<<<<<<<<
@@ -20760,14 +20905,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("dump_stack", 0);
 
-  /* "acide/tiles.pyx":1132
+  /* "acide/tiles.pyx":1135
  *         #     print(tg)
  *         # print(self.render_tile)
  *         z, u = self.memory_print()             # <<<<<<<<<<<<<<
  *         print(f"memory footprint: {format_size(z)} | {format_size(u)}")
  * 
  */
-  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_memory_print(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1132, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_memory_print(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
     PyObject* sequence = __pyx_t_1;
@@ -20775,7 +20920,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 1132, __pyx_L1_error)
+      __PYX_ERR(0, 1135, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -20788,15 +20933,15 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1132, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1132, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1132, __pyx_L1_error)
+    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext;
@@ -20804,7 +20949,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_3 = __pyx_t_5(__pyx_t_4); if (unlikely(!__pyx_t_3)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_4), 2) < 0) __PYX_ERR(0, 1132, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_4), 2) < 0) __PYX_ERR(0, 1135, __pyx_L1_error)
     __pyx_t_5 = NULL;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     goto __pyx_L4_unpacking_done;
@@ -20812,7 +20957,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 1132, __pyx_L1_error)
+    __PYX_ERR(0, 1135, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_z = __pyx_t_2;
@@ -20820,14 +20965,14 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   __pyx_v_u = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "acide/tiles.pyx":1133
+  /* "acide/tiles.pyx":1136
  *         # print(self.render_tile)
  *         z, u = self.memory_print()
  *         print(f"memory footprint: {format_size(z)} | {format_size(u)}")             # <<<<<<<<<<<<<<
  * 
  *     cpdef memory_print(self):
  */
-  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_6 = 0;
   __pyx_t_7 = 127;
@@ -20835,7 +20980,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   __pyx_t_6 += 18;
   __Pyx_GIVEREF(__pyx_kp_u_memory_footprint);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_memory_footprint);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_format_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_format_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -20849,10 +20994,10 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   }
   __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_v_z) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_z);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_7;
@@ -20860,11 +21005,11 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __Pyx_INCREF(__pyx_kp_u__31);
+  __Pyx_INCREF(__pyx_kp_u__30);
   __pyx_t_6 += 3;
-  __Pyx_GIVEREF(__pyx_kp_u__31);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__31);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_format_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_kp_u__30);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__30);
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_format_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -20878,10 +21023,10 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   }
   __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_u) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_u);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_7;
@@ -20889,15 +21034,15 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "acide/tiles.pyx":1128
+  /* "acide/tiles.pyx":1131
  *             return self.null_clip
  * 
  *     def dump_stack(self):             # <<<<<<<<<<<<<<
@@ -20923,7 +21068,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_17dump_stack(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "acide/tiles.pyx":1135
+/* "acide/tiles.pyx":1138
  *         print(f"memory footprint: {format_size(z)} | {format_size(u)}")
  * 
  *     cpdef memory_print(self):             # <<<<<<<<<<<<<<
@@ -20951,7 +21096,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("memory_print", 0);
 
-  /* "acide/tiles.pyx":1136
+  /* "acide/tiles.pyx":1139
  * 
  *     cpdef memory_print(self):
  *         cdef unsigned long mem = 0             # <<<<<<<<<<<<<<
@@ -20960,7 +21105,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
   __pyx_v_mem = 0;
 
-  /* "acide/tiles.pyx":1137
+  /* "acide/tiles.pyx":1140
  *     cpdef memory_print(self):
  *         cdef unsigned long mem = 0
  *         cdef unsigned long u_mem = 0             # <<<<<<<<<<<<<<
@@ -20969,7 +21114,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
   __pyx_v_u_mem = 0;
 
-  /* "acide/tiles.pyx":1138
+  /* "acide/tiles.pyx":1141
  *         cdef unsigned long mem = 0
  *         cdef unsigned long u_mem = 0
  *         if self.render_tile is not None:             # <<<<<<<<<<<<<<
@@ -20980,7 +21125,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "acide/tiles.pyx":1139
+    /* "acide/tiles.pyx":1142
  *         cdef unsigned long u_mem = 0
  *         if self.render_tile is not None:
  *             mem += self.render_tile._u             # <<<<<<<<<<<<<<
@@ -20991,11 +21136,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
     __pyx_t_4 = __Pyx_add_Py_ssize_t_checking_overflow(__pyx_v_mem, __pyx_v_self->render_tile->__pyx_base.__pyx_base._u, &__pyx_t_3);
     if (unlikely(__pyx_t_3)) {
       PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 1139, __pyx_L1_error)
+      __PYX_ERR(0, 1142, __pyx_L1_error)
     }
     __pyx_v_mem = __pyx_t_4;
 
-    /* "acide/tiles.pyx":1140
+    /* "acide/tiles.pyx":1143
  *         if self.render_tile is not None:
  *             mem += self.render_tile._u
  *             u_mem = mem             # <<<<<<<<<<<<<<
@@ -21004,7 +21149,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
     __pyx_v_u_mem = __pyx_v_mem;
 
-    /* "acide/tiles.pyx":1138
+    /* "acide/tiles.pyx":1141
  *         cdef unsigned long mem = 0
  *         cdef unsigned long u_mem = 0
  *         if self.render_tile is not None:             # <<<<<<<<<<<<<<
@@ -21013,7 +21158,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
   }
 
-  /* "acide/tiles.pyx":1141
+  /* "acide/tiles.pyx":1144
  *             mem += self.render_tile._u
  *             u_mem = mem
  *         if self.invalid_render is not None:             # <<<<<<<<<<<<<<
@@ -21024,7 +21169,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "acide/tiles.pyx":1142
+    /* "acide/tiles.pyx":1145
  *             u_mem = mem
  *         if self.invalid_render is not None:
  *             mem += self.invalid_render._u             # <<<<<<<<<<<<<<
@@ -21035,11 +21180,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
     __pyx_t_4 = __Pyx_add_Py_ssize_t_checking_overflow(__pyx_v_mem, __pyx_v_self->invalid_render->__pyx_base.__pyx_base._u, &__pyx_t_3);
     if (unlikely(__pyx_t_3)) {
       PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 1142, __pyx_L1_error)
+      __PYX_ERR(0, 1145, __pyx_L1_error)
     }
     __pyx_v_mem = __pyx_t_4;
 
-    /* "acide/tiles.pyx":1143
+    /* "acide/tiles.pyx":1146
  *         if self.invalid_render is not None:
  *             mem += self.invalid_render._u
  *             u_mem = mem             # <<<<<<<<<<<<<<
@@ -21048,7 +21193,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
     __pyx_v_u_mem = __pyx_v_mem;
 
-    /* "acide/tiles.pyx":1141
+    /* "acide/tiles.pyx":1144
  *             mem += self.render_tile._u
  *             u_mem = mem
  *         if self.invalid_render is not None:             # <<<<<<<<<<<<<<
@@ -21057,7 +21202,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
   }
 
-  /* "acide/tiles.pyx":1144
+  /* "acide/tiles.pyx":1147
  *             mem += self.invalid_render._u
  *             u_mem = mem
  *         for tg in self.stack:             # <<<<<<<<<<<<<<
@@ -21066,32 +21211,32 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  */
   if (unlikely(__pyx_v_self->stack == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 1144, __pyx_L1_error)
+    __PYX_ERR(0, 1147, __pyx_L1_error)
   }
   __pyx_t_5 = __pyx_v_self->stack; __Pyx_INCREF(__pyx_t_5); __pyx_t_4 = 0;
   for (;;) {
     if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_5)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1144, __pyx_L1_error)
+    __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_4); __Pyx_INCREF(__pyx_t_6); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1147, __pyx_L1_error)
     #else
-    __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1144, __pyx_L1_error)
+    __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_tg, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "acide/tiles.pyx":1145
+    /* "acide/tiles.pyx":1148
  *             u_mem = mem
  *         for tg in self.stack:
  *             (<TilesGrid> tg).stats()             # <<<<<<<<<<<<<<
  *             mem += (<TilesGrid> tg)._z
  *             u_mem += (<TilesGrid> tg)._u
  */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_5acide_5tiles_TilesGrid *)((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)->__pyx_base.__pyx_vtab)->stats(((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1145, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_5acide_5tiles_TilesGrid *)((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)->__pyx_base.__pyx_vtab)->stats(((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "acide/tiles.pyx":1146
+    /* "acide/tiles.pyx":1149
  *         for tg in self.stack:
  *             (<TilesGrid> tg).stats()
  *             mem += (<TilesGrid> tg)._z             # <<<<<<<<<<<<<<
@@ -21102,11 +21247,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
     __pyx_t_7 = __Pyx_add_Py_ssize_t_checking_overflow(__pyx_v_mem, ((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)->_z, &__pyx_t_3);
     if (unlikely(__pyx_t_3)) {
       PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 1146, __pyx_L1_error)
+      __PYX_ERR(0, 1149, __pyx_L1_error)
     }
     __pyx_v_mem = __pyx_t_7;
 
-    /* "acide/tiles.pyx":1147
+    /* "acide/tiles.pyx":1150
  *             (<TilesGrid> tg).stats()
  *             mem += (<TilesGrid> tg)._z
  *             u_mem += (<TilesGrid> tg)._u             # <<<<<<<<<<<<<<
@@ -21117,11 +21262,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
     __pyx_t_7 = __Pyx_add_Py_ssize_t_checking_overflow(__pyx_v_u_mem, ((struct __pyx_obj_5acide_5tiles_TilesGrid *)__pyx_v_tg)->_u, &__pyx_t_3);
     if (unlikely(__pyx_t_3)) {
       PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(0, 1147, __pyx_L1_error)
+      __PYX_ERR(0, 1150, __pyx_L1_error)
     }
     __pyx_v_u_mem = __pyx_t_7;
 
-    /* "acide/tiles.pyx":1144
+    /* "acide/tiles.pyx":1147
  *             mem += self.invalid_render._u
  *             u_mem = mem
  *         for tg in self.stack:             # <<<<<<<<<<<<<<
@@ -21131,7 +21276,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "acide/tiles.pyx":1148
+  /* "acide/tiles.pyx":1151
  *             mem += (<TilesGrid> tg)._z
  *             u_mem += (<TilesGrid> tg)._u
  *         return (mem, u_mem)             # <<<<<<<<<<<<<<
@@ -21139,11 +21284,11 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyInt_From_unsigned_long(__pyx_v_mem); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_unsigned_long(__pyx_v_mem); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyInt_From_unsigned_long(__pyx_v_u_mem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_unsigned_long(__pyx_v_u_mem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_5);
@@ -21155,7 +21300,7 @@ static PyObject *__pyx_f_5acide_5tiles_9TilesPool_memory_print(struct __pyx_obj_
   __pyx_t_8 = 0;
   goto __pyx_L0;
 
-  /* "acide/tiles.pyx":1135
+  /* "acide/tiles.pyx":1138
  *         print(f"memory footprint: {format_size(z)} | {format_size(u)}")
  * 
  *     cpdef memory_print(self):             # <<<<<<<<<<<<<<
@@ -21200,7 +21345,7 @@ static PyObject *__pyx_pf_5acide_5tiles_9TilesPool_19memory_print(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("memory_print", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_memory_print(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1135, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5acide_5tiles_9TilesPool_memory_print(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -37128,7 +37273,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u__15, __pyx_k__15, sizeof(__pyx_k__15), 0, 1, 0, 0},
   {&__pyx_kp_u__24, __pyx_k__24, sizeof(__pyx_k__24), 0, 1, 0, 0},
   {&__pyx_kp_u__29, __pyx_k__29, sizeof(__pyx_k__29), 0, 1, 0, 0},
-  {&__pyx_kp_u__31, __pyx_k__31, sizeof(__pyx_k__31), 0, 1, 0, 0},
+  {&__pyx_kp_u__30, __pyx_k__30, sizeof(__pyx_k__30), 0, 1, 0, 0},
   {&__pyx_kp_u__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0, 0},
   {&__pyx_kp_u__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0, 0},
   {&__pyx_n_s_acide, __pyx_k_acide, sizeof(__pyx_k_acide), 0, 0, 1, 1},
@@ -37227,6 +37372,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_merge_side_buffers, __pyx_k_merge_side_buffers, sizeof(__pyx_k_merge_side_buffers), 0, 1, 0, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
   {&__pyx_n_s_move_to, __pyx_k_move_to, sizeof(__pyx_k_move_to), 0, 0, 1, 1},
+  {&__pyx_kp_u_move_to_2, __pyx_k_move_to_2, sizeof(__pyx_k_move_to_2), 0, 1, 0, 0},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_n_s_ndim, __pyx_k_ndim, sizeof(__pyx_k_ndim), 0, 0, 1, 1},
@@ -37329,14 +37475,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_any = __Pyx_GetBuiltinName(__pyx_n_s_any); if (!__pyx_builtin_any) __PYX_ERR(0, 1119, __pyx_L1_error)
+  __pyx_builtin_any = __Pyx_GetBuiltinName(__pyx_n_s_any); if (!__pyx_builtin_any) __PYX_ERR(0, 1122, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 293, __pyx_L1_error)
   __pyx_builtin_id = __Pyx_GetBuiltinName(__pyx_n_s_id); if (!__pyx_builtin_id) __PYX_ERR(0, 443, __pyx_L1_error)
   __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 444, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 638, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 1107, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 1050, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 151, __pyx_L1_error)
   __pyx_builtin_Ellipsis = __Pyx_GetBuiltinName(__pyx_n_s_Ellipsis); if (!__pyx_builtin_Ellipsis) __PYX_ERR(1, 404, __pyx_L1_error)
   __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(1, 832, __pyx_L1_error)
@@ -37554,16 +37700,16 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
 
-  /* "acide/tiles.pyx":1107
+  /* "acide/tiles.pyx":1110
  *             _T.stop()
  *         except asyncio.CancelledError:
  *             print("render cancelled")             # <<<<<<<<<<<<<<
  *             raise
  *         else:
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_u_render_cancelled); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 1107, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_u_render_cancelled); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 1110, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -37801,11 +37947,11 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "acide/tiles.pyx":46
  * BLOSC_MAX_BYTES_CHUNK = 2**31
  * 
- * Timer.set_logging(True)             # <<<<<<<<<<<<<<
+ * Timer.set_logging(False)             # <<<<<<<<<<<<<<
  * 
  * cdef object gdk_memory_format_mapping():
  */
-  __pyx_tuple__55 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_tuple__55 = PyTuple_Pack(1, Py_False); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__55);
   __Pyx_GIVEREF(__pyx_tuple__55);
 
@@ -38106,7 +38252,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5acide_5tiles___pyx_scope_struct_3_render_texture_async.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5acide_5tiles___pyx_scope_struct_3_render_texture_async = &__pyx_type_5acide_5tiles___pyx_scope_struct_3_render_texture_async;
-  if (PyType_Ready(&__pyx_type_5acide_5tiles___pyx_scope_struct_4__render_super_tile_co) < 0) __PYX_ERR(0, 1098, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5acide_5tiles___pyx_scope_struct_4__render_super_tile_co) < 0) __PYX_ERR(0, 1101, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5acide_5tiles___pyx_scope_struct_4__render_super_tile_co.tp_print = 0;
   #endif
@@ -38822,14 +38968,14 @@ if (!__Pyx_RefNanny) {
  * 
  * BLOSC_MAX_BYTES_CHUNK = 2**31             # <<<<<<<<<<<<<<
  * 
- * Timer.set_logging(True)
+ * Timer.set_logging(False)
  */
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_BLOSC_MAX_BYTES_CHUNK, __pyx_int_2147483648) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
 
   /* "acide/tiles.pyx":46
  * BLOSC_MAX_BYTES_CHUNK = 2**31
  * 
- * Timer.set_logging(True)             # <<<<<<<<<<<<<<
+ * Timer.set_logging(False)             # <<<<<<<<<<<<<<
  * 
  * cdef object gdk_memory_format_mapping():
  */
