@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 cimport cython
+from acide.types cimport cimax
 
 @cython.final
 cdef class PriorityQueue():
@@ -34,6 +35,8 @@ cdef class Scheduler():
     cdef double time
     cdef object last_mode
     cdef object runner
+    cdef object process_executor
+    cdef int max_workers
 
     cpdef int add_priority(Scheduler self)
     cpdef object add(

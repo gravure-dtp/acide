@@ -23,7 +23,9 @@ in mind and tested using the `Gbulb python package <https://github.com/beeware/g
 as an interface with glib.
 """
 
+import os
 import asyncio
+from concurrent.futures import ProcessPoolExecutor
 import functools
 from typing import Any, Awaitable, Callable, Coroutine, Optional
 from enum import Enum, IntEnum, unique, auto
@@ -136,6 +138,7 @@ cdef class Scheduler():
         self.rate = 0.001
         self.last_mode = Run.ONCE
         self.loop_run = False
+        self.max_workers = cimax(len(os.sched_getaffinity(0)) - 2, 1)
 
     @staticmethod
     def new() -> 'Scheduler':
@@ -215,7 +218,7 @@ cdef class Scheduler():
         self.priorities.insert(-1, PriorityQueue())
         return len(self.priorities) - 2
 
-    cpdef object add(
+    cpdef add(
         self,
         co: Coroutine,
         priority: int,
@@ -255,11 +258,23 @@ cdef class Scheduler():
             name = f"{name}_{self.task_id}"
         else:
             name = f"{co.__name__}_{self.task_id}"
-        task = asyncio.create_task(
-            Scheduler._scheduled(
-                co, self.priorities[_prio], callback, name
+
+        if asyncio.iscoroutine(co):
+            task = asyncio.create_task(
+                Scheduler._scheduled(
+                    co, self.priorities[_prio], callback, name
+                )
             )
-        )
+        elif callable(co):
+            task = asyncio.create_task(
+                self._executor(
+                    co, self.priorities[_prio], callback, name,
+                )
+            )
+        else:
+            print(f"nothing")
+            return None
+
         task.set_name(name)
         self.task_id += 1
         if _prio < lowest:
@@ -267,6 +282,28 @@ cdef class Scheduler():
                 self.priorities[i].clear()
         self.priorities[_prio].add(task)
         return task
+
+    async def _executor(
+        self,
+        func: Callable,
+        priority: PriorityQueue,
+        callback: Callable,
+        name: str
+    ) -> Coroutine:
+        try:
+            loop = asyncio.get_running_loop()
+            start = loop.time()
+            print(f"{name} scheduled for #{priority.id} at {start} ...")
+            await priority.wait()
+            future = self.process_executor.submit(func)
+            result = future.result()
+        except asyncio.CancelledError:
+            future.cancel()
+        else:
+            print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+            if callback:
+                callback()
+            return result
 
     @staticmethod
     async def _scheduled(
@@ -278,19 +315,17 @@ cdef class Scheduler():
         try:
             loop = asyncio.get_running_loop()
             start = loop.time()
-            # print(f"{name} scheduled for #{priority.id} at {start} ...")
+            print(f"{name} scheduled for #{priority.id} at {start} ...")
             await priority.wait()
             result = await awt
         except asyncio.CancelledError:
             # print(f"scheduled {name} cancelled")
             raise
         else:
-            # print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+            print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
             if callback:
                 callback()
             return result
-        finally:
-            pass
 
     cdef control(self, PriorityQueue priority):
         priority.check() # put pending tasks done in dones
@@ -321,51 +356,45 @@ cdef class Scheduler():
                     self.control(p)
                 self.clear()
         except asyncio.CancelledError:
-            # print("runner cancelled")
             raise
         finally:
+            self.process_executor.shutdown(wait=True, cancel_futures=True)
             self.priorities[0].clear()
             self.loop_run = False
             return
 
     async def run_once(self)  -> Coroutine:
-        print("run_once")
-        # try:
-        #     loop = asyncio.get_running_loop()
-        #     self.loop_run = True
-        #     self.priorities[0].set()
-        #     for p in self.priorities:
-        #         p.clear_dones()
-        #         self.time = loop.time()
-        #         asyncio.create_task(self._runner(p))
-        #     await asyncio.sleep(self.rate)
-        #     self.clear()
-        # except asyncio.CancelledError:
-        #     raise
-        # finally:
-        #     self.priorities[0].clear()
-        #     self.loop_run = False
+        try:
+            self.loop_run = True
+            self.priorities[0].set()
+            for p in self.priorities:
+                await asyncio.sleep(self.rate)
+                p.clear_dones()
+                self.control(p)
+            self.clear()
+        except asyncio.CancelledError:
+            raise
+        finally:
+            self.process_executor.shutdown(wait=True, cancel_futures=True)
+            self.priorities[0].clear()
+            self.loop_run = False
 
     async def run_until_complete(self)  -> Coroutine:
-        print("run_until_complete")
-        # try:
-        #     loop = asyncio.get_running_loop()
-        #     self.loop_run = True
-        #     for p in self.priorities:
-        #         p.clear_dones()
-        #     self.priorities[0].set()
-        #     while all(self.priorities) and self.loop_run == True:
-        #         self.time = loop.time()
-        #         await asyncio.gather(
-        #             *[self._runner(p) for p in self.priorities]
-        #         )
-        #         await asyncio.sleep(self.rate)
-        #         self.clear()
-        # except asyncio.CancelledError:
-        #     raise
-        # finally:
-        #     self.priorities[0].clear()
-        #     self.loop_run = False
+        try:
+            self.loop_run = True
+            self.priorities[0].set()
+            while all(self.priorities):
+                for p in self.priorities:
+                    await asyncio.sleep(self.rate)
+                    p.clear_dones()
+                    self.control(p)
+                self.clear()
+        except asyncio.CancelledError:
+            raise
+        finally:
+            self.process_executor.shutdown(wait=True, cancel_futures=True)
+            self.priorities[0].clear()
+            self.loop_run = False
 
     def run(self, mode: Optional[Run] = Run.ONCE) -> None:
         """Start the :class:`Scheduler`'s loop and run the scheduled
@@ -376,12 +405,15 @@ cdef class Scheduler():
                 mode = self.last_mode
             if mode is Run.ONCE:
                 self.last_mode = Run.ONCE
+                self.process_executor = ProcessPoolExecutor(self.max_workers)
                 self.runner = asyncio.ensure_future(self.run_once())
             elif mode == Run.UNTIL_COMPLETE:
                 self.last_mode = Run.UNTIL_COMPLETE
+                self.process_executor = ProcessPoolExecutor(self.max_workers)
                 self.runner = asyncio.ensure_future(self.run_until_complete())
             elif mode == Run.FOREVER:
                 self.last_mode = Run.FOREVER
+                self.process_executor = ProcessPoolExecutor(self.max_workers)
                 self.runner = asyncio.ensure_future(self.run_forever())
             else:
                 raise ValueError(f"Unavailable mode {mode}")
