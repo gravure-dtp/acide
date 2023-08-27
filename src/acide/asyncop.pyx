@@ -22,13 +22,13 @@ to work with the `glib event loop <https://docs.gtk.org/glib/main-loop.html>`_
 in mind and tested using the `Gbulb python package <https://github.com/beeware/gbulb>`_
 as an interface with glib.
 """
-
-import os
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
-import functools
-from typing import Any, Awaitable, Callable, Coroutine, Optional
 from enum import Enum, IntEnum, unique, auto
+import functools
+from concurrent import futures
+from concurrent.futures import ProcessPoolExecutor
+import os
+from typing import Any, Awaitable, Callable, Coroutine, Optional, Tuple
 
 from gi.repository import Gio
 
@@ -120,6 +120,118 @@ cdef class PriorityQueue():
         return f"PriorityQueue #{self.id} q({len(self)})"
 
 
+cdef class Task():
+    """A :class:`Task` represents a future result of an asynchronous operation.
+    """
+    cdef object source
+    cdef object cancellable
+    cdef object callback
+    cdef object priority
+    cdef object callback_data
+    cdef object future
+    cdef unicode name
+    cdef bint mark_cancelled
+    cdef bint scheduled
+    cdef dict __dict__
+
+    def __init__(
+        self,
+        source: Optional[Any] = None,
+        cancellable: Optional[Gio.Cancellable] = None,
+        callback: Optional[AsyncReadyCallback] = None,
+        callback_data: Optional[Any] = None,
+        priority: Optional[int] = Priority.LOW,
+        name: Optional[str] = None,
+    )
+        self.source = source
+        if isinstance(cancellable, Gio.Cancellable):
+            self.cancellable = cancellable
+            self.cancellable.connect("cancelled", self._on_cancelled)
+        self.callback = callback
+        self.callback_data = callback_data
+        self.priority = priority
+        self.name = name
+        self.scheduled = False
+        self.mark_cancelled = False
+
+    cpdef link(self, task):
+
+
+    cpdef run(self, target):
+        sch = Scheduler.new()
+        sch.stop()
+        sch.add(self, target, callback, args)
+        sch.run(Run.LAST)
+        self.scheduled = True
+
+    cdef set_future(self, object future, object loop=None):
+        if isinstance(future, concurrent.futures.Future):
+            self.future = asyncio.wrap_future(future, loop)
+        elif isinstance(future, asyncio.Future):
+            self.future = future
+        else:
+            raise TypeError("argument is not a Future instance")
+        if self.callback:
+            self.future.add_done_callback(self._on_done_cb)
+
+    def _on_done_cb(self, future):
+        self.callback(self.source, self, self.callback_data)
+
+    cpdef done(self):
+        """Return True if the Task is done."""
+        if self.future:
+            return self.future.done()
+        return False
+
+    cdef _on_cancelled(self, source, data):
+        if self.future:
+            self.future.cancel(f"task cancelled by {source}")
+        self.mark_cancelled = True
+
+    cpdef cancelled(self):
+        """Return True if the Task is cancelled."""
+        if self.future:
+            if self.future.cancelled():
+                self.mark_cancelled = True
+        return self.mark_cancelled
+
+    cpdef cancel(self. mesg=None):
+        """Request the Task to be cancelled."""
+        if self.future:
+            self.future.cancel(mesg)
+        self.mark_cancelled = True
+
+    cpdef result(self):
+        """Return the result of the Task."""
+        if self.future:
+            return self.future.result()
+        else:
+            raise asyncio.InvalidStateError(
+                f"can´t obtain result from a Task that have not been scheduled."
+            )
+
+    cpdef exception(self):
+        """Return the exception of the Task."""
+        if self.future:
+            return self.future.exception()
+        return None
+
+    cpdef get_priority(self):
+        """Return the priority of the Task."""
+        return self.priority
+
+    cpdef get_name(self):
+        """Return the name of the Task."""
+        return self.name
+
+    cpdef get_cancellable(self):
+        """Return the Gio.cancellable of the Task."""
+        return self.cancellable
+
+
+
+
+
 cdef Scheduler _sched_singleton = None
 cdef Scheduler get_singleton():
     return _sched_singleton
@@ -139,6 +251,12 @@ cdef class Scheduler():
         self.last_mode = Run.ONCE
         self.loop_run = False
         self.max_workers = cimax(len(os.sched_getaffinity(0)) - 2, 1)
+
+    def __init__(self):
+        raise RuntimeError(
+            "Direct instantiation is not supported, instead call "
+            "Scheduler.new() static method"
+        )
 
     @staticmethod
     def new() -> 'Scheduler':
@@ -220,10 +338,10 @@ cdef class Scheduler():
 
     cpdef add(
         self,
-        co: Coroutine,
-        priority: int,
+        task: Task,
+        target: [Coroutine, Callable],
         callback: Optional[Callable] = None,
-        name: Optional[str] = None,
+        args: Optional[Tuple] = tuple(),
     ):
         """Add coroutine :obj:`co` as a scheduled :class:`asyncio.Task`
         with :obj:`priority`.
@@ -232,77 +350,93 @@ cdef class Scheduler():
             co: The coroutine or awaitable to schedule.
             priority: A member of enum :class:`Priority` or an int as
                       the priority of completion for the task.
-            callback: Any function to call after the task complete.
             name: A string to explicitly name the :class:`asyncio.Task`
                   if :obj:`None` name will be build around coroutine.__name__
+            callback: Any function to call after the task complete.
+            args: A tuples of arguments
+            cancellable: A Gio.Cancellable
 
         Returns:
             an :class:`asyncio.Task` as the scheduled coroutine.
         """
         cdef int i, _prio, lowest
+
+        if task.cancelled():
+            return
+
         lowest = len(self.priorities) - 1
-        if priority is Priority.LOW:
+        if task.priority is Priority.LOW:
             _prio = lowest
-        elif priority is Priority.NEXT:
+        elif task.priority is Priority.NEXT:
             _prio = lowest
             self.priorities.insert(-1, PriorityQueue())
             lowest += 1
-        elif priority is Priority.HIGH:
+        elif task.priority is Priority.HIGH:
             _prio = 0
-        elif priority > lowest or priority < 0:
-            raise ValueError(f"priority #{priority} unset")
+        elif task.priority > lowest or task.priority < 0:
+            task.cancel()
+            raise ValueError(f"priority #{task.priority} unset")
         else:
-            _prio = priority
+            _prio = task.priority
         name = name
-        if name is not None:
-            name = f"{name}_{self.task_id}"
-        else:
-            name = f"{co.__name__}_{self.task_id}"
 
-        if asyncio.iscoroutine(co):
-            task = asyncio.create_task(
+        if task.name is not None:
+            task.name = f"{task.name}_{self.task_id}"
+        else:
+            task.name = f"{target.__name__}_{self.task_id}"
+
+        if asyncio.iscoroutine(target):
+            _task = asyncio.create_task(
                 Scheduler._scheduled(
-                    co, self.priorities[_prio], callback, name
+                    target, self.priorities[_prio], callback, task
                 )
             )
-        elif callable(co):
-            task = asyncio.create_task(
+        elif callable(target):
+            _task = asyncio.create_task(
                 self._executor(
-                    co, self.priorities[_prio], callback, name,
+                    target, args, self.priorities[_prio], callback, task,
                 )
             )
         else:
-            print(f"nothing")
-            return None
+            task.cancel()
+            return
 
-        task.set_name(name)
+        task.set_future(_task)
+        _task.set_name(name)
         self.task_id += 1
         if _prio < lowest:
             for i in range(_prio + 1, lowest + 1):
                 self.priorities[i].clear()
-        self.priorities[_prio].add(task)
-        return task
+        self.priorities[_prio].add(_task)
 
     async def _executor(
         self,
         func: Callable,
+        args: Tuple,
         priority: PriorityQueue,
         callback: Callable,
-        name: str
+        task: Task
     ) -> Coroutine:
         try:
             loop = asyncio.get_running_loop()
             start = loop.time()
-            print(f"{name} scheduled for #{priority.id} at {start} ...")
+            print(f"process {func} scheduled for #{priority.id} at {start} ...")
             await priority.wait()
-            future = self.process_executor.submit(func)
-            result = future.result()
-        except asyncio.CancelledError:
-            future.cancel()
+            future = asyncio.wrap_future(
+                self.process_executor.submit(func, *args), loop
+            )
+            result = await future
+        except (asyncio.CancelledError, futures.CancelledError):
+            raise
+        except Exception as err:
+            print(f"error in process: {err}")
+            raise asyncio.CancelledError(str(err))
         else:
-            print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
+            print(f"{task.name} done for #{priority.id} in {loop.time() - start} sec.")
             if callback:
-                callback()
+                # this ensure callback will be called
+                # after result was returned
+                loop.call_soon(callback)
             return result
 
     @staticmethod
@@ -310,12 +444,12 @@ cdef class Scheduler():
         awt: Awaitable,
         priority: PriorityQueue,
         callback: Callable,
-        name: str
+        task: Task
     ) -> Coroutine:
         try:
             loop = asyncio.get_running_loop()
             start = loop.time()
-            print(f"{name} scheduled for #{priority.id} at {start} ...")
+            print(f"{task.name} scheduled for #{priority.id} at {start} ...")
             await priority.wait()
             result = await awt
         except asyncio.CancelledError:
@@ -324,7 +458,9 @@ cdef class Scheduler():
         else:
             print(f"{name} done for #{priority.id} in {loop.time() - start} sec.")
             if callback:
-                callback()
+                # this ensure callback will be called
+                # after result was returned
+                loop.call_soon(callback)
             return result
 
     cdef control(self, PriorityQueue priority):
@@ -358,7 +494,7 @@ cdef class Scheduler():
         except asyncio.CancelledError:
             raise
         finally:
-            self.process_executor.shutdown(wait=True, cancel_futures=True)
+            # self.process_executor.shutdown(wait=True, cancel_futures=True)
             self.priorities[0].clear()
             self.loop_run = False
             return
@@ -447,3 +583,4 @@ cdef class Scheduler():
 
 
     
+

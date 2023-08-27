@@ -15,64 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import cython
+cimport cython
 
 from cython.view cimport array as Carray
 from acide.types cimport TypedGrid, test_sequence, cmin, cmax, ciceil, cimin
-from acide.types cimport cimax, Pixbuf
+from acide.types cimport cimax, Pixbuf, uc8
 from acide.asyncop cimport Scheduler
+from acide.tile cimport Tile, _TileReduce
+from acide.mprendering cimport Clip
 from acide.measure cimport _CMeasurable, Extents_s
-from cpython cimport Py_INCREF, Py_XDECREF
+
 
 cdef extern from "Python.h":
-    ctypedef struct PyObject
-    ctypedef Py_ssize_t Py_intptr_t
-    ctypedef struct __pyx_buffer "Py_buffer":
-        PyObject* obj
-        void* buf
-        Py_ssize_t len
-        Py_ssize_t itemsize
-        int ndim
-        Py_ssize_t* shape
-
-    int PyObject_GetBuffer(object obj, Py_buffer *view, int flags) except -1
-    void PyBuffer_Release(Py_buffer *view)
-    bint PyObject_CheckBuffer(object obj)
-    bint PyBuffer_IsContiguous(Py_buffer *view, char fort)
-    Py_buffer *PyMemoryView_GET_BUFFER(object mview)
-
-    cdef enum:
-        PyBUF_SIMPLE
-        PyBUF_C_CONTIGUOUS,
-        PyBUF_F_CONTIGUOUS,
-        PyBUF_ANY_CONTIGUOUS
-        PyBUF_CONTIG
-        PyBUF_CONTIG_RO
-
     cdef bytes PyBytes_FromObject(object o)
     cdef bytearray PyByteArray_FromObject(object o)
-
-
-cdef object gdk_memory_format_mapping()
-
-
-cdef class Tile(_CMeasurable):
-    # MEMBERS
-    cdef Py_ssize_t _u
-    cdef Py_ssize_t _z
-    cdef float _r
-    cdef tuple _size
-    cdef object buffer
-    cdef Py_ssize_t u_shape
-    cdef int u_itemsize
-    cdef bytes u_format
-    cdef int format_size
-
-    # C METHODS
-    cpdef object compress(
-        Tile self, Pixbuf pixbuf, object format
-    )
-    cpdef object invalidate(Tile self)
 
 
 cdef class TilesGrid(TypedGrid):
@@ -94,14 +50,6 @@ cdef class TilesGrid(TypedGrid):
     cpdef get_tile_indices(TilesGrid self, double x, double y)
 
 
-cdef class Clip():
-    cdef double _x, _y
-    cdef int _w ,_h
-    cdef object _texture
-
-ctypedef unsigned char uc8
-
-
 cdef class SuperTile(TilesGrid):
     # MEMBERS
 
@@ -120,8 +68,11 @@ cdef class RenderTile(SuperTile):
     # C METHODS
     cpdef invalidate(RenderTile self)
     cpdef bint move_to(RenderTile self, int x, int y)
-    cdef int allocate_buffer(RenderTile self)
-    cdef int fill_buffer(RenderTile self)
+    cdef Py_ssize_t pre_allocate(RenderTile self)
+    cdef int allocate_buffer(RenderTile self, Py_ssize_t sh)
+    cdef update_clip_size(RenderTile self, Clip clip)
+    cdef list validate_tiles(RenderTile self)
+    cdef int fill_buffer(RenderTile self, list vbands_shape)
 
     @staticmethod
     cdef void copy_vband(
@@ -134,6 +85,8 @@ cdef class RenderTile(SuperTile):
         const uc8[:] west, const uc8[:] east, uc8[:] buffer,
         Py_ssize_t rows, Py_ssize_t west_width, Py_ssize_t east_width,
     ) nogil
+
+    cpdef object get_rendering_mpfunc(RenderTile self)
     cpdef render_texture(RenderTile self)
 
 

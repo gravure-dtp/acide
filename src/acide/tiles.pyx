@@ -18,6 +18,7 @@
 """
 
 """
+import cython
 import asyncio
 import functools
 from typing import (
@@ -25,206 +26,25 @@ from typing import (
     Coroutine, Awaitable
 )
 
+import blosc
+
 import gi
 gi.require_version('Graphene', '1.0')
 gi.require_version("Gdk", "4.0")
 from gi.repository import Gdk, Gio, GLib, Graphene
 
-import blosc
-cimport cython
 
 from acide import format_size
 from acide.types import TypedGrid, BufferProtocol, Rectangle, PixbufCallback
 from acide.types import Pixbuf, Timer
-from acide.asyncop import AsyncReadyCallback, Scheduler, Priority, Run
+from acide.tile import Tile, _TileReduce
+from acide.mprendering import Clip, render_clip
+from acide.asyncop import AsyncReadyCallback, Scheduler, Priority, Run, Task
 from acide.measure import Measurable, Unit
 # from acide cimport gbytes
 
 
-BLOSC_MAX_BYTES_CHUNK = 2**31
-
 Timer.set_logging(False)
-
-cdef object gdk_memory_format_mapping():
-    mapping = dict()
-    cdef int size
-    for _enum in Gdk.MemoryFormat.__enum_values__.values():
-        size = _enum.value_nick.count("8")
-        size += _enum.value_nick.count("16") * 2
-        size += _enum.value_nick.count("32") * 4
-        mapping[_enum] = size
-    return mapping
-gdk_memory_format_sizes = gdk_memory_format_mapping()
-
-
-cdef class Tile(_CMeasurable):
-    """A :class:`Tile` is a part of a larger graphic object.
-    :class:`Tile` implements the :class:`Measurable` interface.
-
-    :class:`Tile` are pats of :class:`TilesGrid` which represent a view of
-    a graphic object too large to be kept in memory in a monolithic uncompressed
-    form. Original graphic surface should be cut down in equally sized Tiles
-    grouped in a :class:`TilesGrid`. Corresponding pixels buffer area
-    for each :class:`Tile` should be passed to the :meth:`compress` method.
-    The idea is that graphic object could provide those buffers in an async
-    way to manage priority and memory preserving the responsiveness of application.
-
-    :class:`Tile` will only kept buffer in a compressed form.
-
-    A :class:`Tile` is rectangular and are defined by the :obj:`rect` argument,
-    which could be in whatever unit of measure choosen by the implementation,
-    and defined the position and size relative to the original graphic surface.
-
-    Compressions are done by the `Blosc Library <http://python-blosc.blosc.org/tutorial.html>`_ .
-
-    Args:
-        rect: A four length Sequence of numbers or a :class:`Graphen.Rect`
-              describing the origin and size of the Tile. If set to None,
-              rect will be initialized at (0, 0, 0, 0), default to None .
-    """
-    blosc.set_releasegil(True)
-    blosc.set_nthreads(blosc.detect_number_of_cores() - 2)
-
-    @property
-    def u(self) -> int:
-        """An :class:`int` as the size in bytes of the origin uncompressed
-        buffer (read only)."""
-        return self._u
-
-    @property
-    def z(self) -> int:
-        """An :class:`int` as the size in bytes of the Tile's compressed
-        buffer (read only)."""
-        return self._z
-
-    @property
-    def r(self) -> float:
-        """A :class:`float` as the ratio of compression of
-        the Tile's buffer (read only)."""
-        return self._r
-
-    def __cinit__(self, *args, **kwargs):
-        self._u = 0
-        self._z = 0
-        self._r = 0
-        self.buffer = None
-        self.u_shape = 0
-        self.u_itemsize = 0
-        self._size = (0, 0)
-
-    def __dealloc__(self):
-        self.buffer = None
-
-    cpdef invalidate(self):
-        """invalidate the compressed internal buffer (deallocate).
-        After this call *self.buffer* will be set to *None*.
-        """
-        self.buffer = None
-        self._u = self._z = self._r = 0
-
-    cpdef compress(
-        self,
-        Pixbuf pixbuf,
-        format: Gdk.MemoryFormat,
-    ):
-        """Compress the given :obj:`pixbuf` in the :class:`Tile`'s own buffer.
-        Blosc has a maximum blocksize of 2**31 bytes = 2Gb, larger arrays must
-        be chunked by slicing.
-
-        Args:
-            pixbuf: A :class:`acide.types.Pixbuf` holding an one dmensional
-                    c-contigous buffer to compress.
-            format: a member of enumeration :class:`Gdk.MemoryFormat`
-                    describing formats that pixmap data have in memory.
-
-        Raises:
-            TypeError: if :obj:`buffer` doesn't implement the *buffer protocol*,
-                       are not c-contigous or have more than one dimension.
-            ValueError: if there is a missmatch between :obj:`buffer`'s lenght
-                        and given pixmap size for memory format or if
-                        buffer's lenght is larger than blosc's maximum blocksize.
-        """
-        cdef Py_buffer view
-        cdef Py_buffer* p_view = &view
-        cdef char* ptr
-        cdef int ret
-
-        if pixbuf is None:
-            raise ValueError("argument pixbuf couldn´t be None")
-
-        if isinstance(pixbuf.buffer, memoryview):
-            p_view = PyMemoryView_GET_BUFFER(pixbuf.buffer)
-        elif PyObject_CheckBuffer(pixbuf.buffer):
-            ret = PyObject_GetBuffer(pixbuf.buffer, p_view, PyBUF_CONTIG_RO)
-        else:
-            raise TypeError(
-                "buffer should be either a memoryview"
-                "or an object implementing the buffer protocol"
-                "and data should be contigous in memory"
-            )
-
-        if not PyBuffer_IsContiguous(p_view, b'C'):
-            raise TypeError("buffer should be c-contigous in memory")
-
-        if p_view.ndim <> 1:
-            raise TypeError("buffer should only have one dimension")
-
-        # Sanity check between size and buffer size
-        self.format_size = gdk_memory_format_sizes.get(format, 0)
-        if pixbuf.width * pixbuf.height * self.format_size  <> \
-            p_view.len:
-            raise ValueError(
-                "Missmatch between buffer's lenght and pixmap"
-                f" size for {format}"
-            )
-
-        # blosc limit
-        if p_view.len > BLOSC_MAX_BYTES_CHUNK:
-            raise ValueError(
-                f"Buffer size to large to be compressed, maximum size is "
-                f"{format_size(BLOSC_MAX_BYTES_CHUNK)}, given buffer have "
-                f"{format_size(p_view.len)}."
-            )
-
-        self._size = (pixbuf.width, pixbuf.height)
-        self._u = p_view.len
-        self.u_shape = p_view.shape[0]
-        self.u_itemsize = p_view.itemsize
-
-        # we don't care of the buffer format,
-        # buffer will be compressed as bytes in buffer
-        # and we have itemsize and a Gdk.MemoryFormat to carry
-        # buffer's items type info.
-        # self.u_format = <bytes> p_view.format
-        self.u_format = b'B'  # unsigned char
-        ptr = <char*> p_view.buf
-
-        self.buffer = blosc.compress_ptr(
-            <Py_ssize_t> &ptr[0],
-            p_view.len,
-            typesize=p_view.itemsize,
-            clevel=9,
-            shuffle=blosc.SHUFFLE,
-            cname='blosclz',
-        )
-        self._z = len(self.buffer)
-        self._r = self._u / float(self._z)
-        if isinstance(pixbuf.buffer, memoryview):
-            pixbuf.buffer.release()
-        else:
-            PyBuffer_Release(p_view)
-        del(pixbuf)
-
-    cpdef _dump_props(self):
-        return (
-            f"{_CMeasurable._dump_props(self)}, "
-            #f"u:{format_size(self._u)}, z:{format_size(self._z)}, "
-            #f"r:{self._r:.1f}, "
-            f"_size:{self._size}"
-        )
-
-    def __str__(self):
-        return f"Tile({self._dump_props()})"
 
 
 cdef class TilesGrid(TypedGrid):
@@ -492,53 +312,6 @@ cdef class SuperTile(TilesGrid):
         return False
 
 
-cdef class Clip():
-    """A simple structure to hold a rendered region
-    returned by a :class:`RenderTile`.
-    """
-
-    def __cinit__(self, x=0, y=0, w=0, h=0):
-        self._x = x
-        self._y = y
-        self._w = w
-        self._h = h
-        self._texture = None
-
-    def __init__(self, x: float =0, y: float =0, w: int =0, h: int =0):
-        pass
-
-    @property
-    def x(self):
-        """origin of the rendered region"""
-        return self._x
-
-    @property
-    def y(self):
-        """origin of the rendered region"""
-        return self._y
-
-    @property
-    def w(self):
-        """width of the rendered region"""
-        return self._w
-
-    @property
-    def h(self):
-        """height of the rendered region"""
-        return self._h
-
-    @property
-    def texture(self):
-        """A :class:`Gdk.Texture` holding the pixmap"""
-        return self._texture
-
-    def __str__(self):
-        return (
-            f"Clip(x={self._x}, y={self._y}, w={self._w}, h={self._h}, "
-            f"texture={self._texture})"
-        )
-
-
 cdef class RenderTile(SuperTile):
     """A two by two :class:`SuperTile`.
 
@@ -595,12 +368,11 @@ cdef class RenderTile(SuperTile):
         self.switch = not self.switch
         self.is_valid = False
 
-    cdef int allocate_buffer(self):
-        """Allocate self.buffer to host offscreen image
-        of the resulting union of compressed subtiles."""
+    cdef Py_ssize_t pre_allocate(self):
+        """Check tiles valdity and return bytes lenght for future
+        rendering buffer allocation."""
         cdef Py_ssize_t sh = 0
         cdef int i
-        cdef Clip clip
 
         self._z = self._u = self._r = 0
         for tile in self:
@@ -616,6 +388,13 @@ cdef class RenderTile(SuperTile):
                 self._z = self._u = self._r = 0
                 return -2
         self._r = self._u / float(self._z)
+        return sh
+
+    cdef int allocate_buffer(self, Py_ssize_t sh):
+        """Allocate self.buffer to host offscreen image
+        of the resulting union of compressed subtiles."""
+        cdef int i
+        cdef Clip clip
 
         try:
             self.buffer = Carray.__new__(
@@ -632,27 +411,20 @@ cdef class RenderTile(SuperTile):
                 f"shape({sh},), "
             )
             return -3
+        return 1
 
-        clip = self._clip if self.switch else self._r_clip
+    cdef update_clip_size(self, Clip clip):
         clip._w = clip._h = 0
         for i in range(self.view.shape[0]):
             clip._w += (<Tile> self[i, 0])._size[0]
         for i in range(self.view.shape[1]):
             clip._h += (<Tile> self[0, i])._size[1]
-        return 1
 
-    cdef int fill_buffer(self):
-        """Actually decompress the subtiles buffers in the RenderTile.buffer."""
-        cdef list vbands = []
-        cdef list vbands_shape = []
-        cdef Py_ssize_t w_buf, rows
+    cdef list validate_tiles(self):
         cdef Py_ssize_t offset, ww, x, y
-        cdef Py_ssize_t buf_width = 0
-        cdef char* ptr
+        cdef list vbands_shape = []
         cdef bint isvalid
 
-        _T = Timer("prepare decompression")
-        # is it safe for pixmap's buffer to be merged ?
         isvalid = True
         y = 0
         for x in range (self.view.shape[0]):
@@ -670,8 +442,19 @@ cdef class RenderTile(SuperTile):
                     (<Tile> self.getitem_at(x, y))._size[1] == \
                     (<Tile> self.getitem_at(x + 1, y))._size[1]
                 )
+        return vbands_shape if isvalid else None
 
-        if self.buffer and isvalid:
+    cdef int fill_buffer(self, list vbands_shape):
+        """Actually decompress the subtiles buffers in the RenderTile.buffer."""
+        cdef list vbands = []
+        cdef Py_ssize_t w_buf, rows
+        cdef Py_ssize_t offset, ww, x, y
+        cdef Py_ssize_t buf_width = 0
+        cdef char* ptr
+
+        _T = Timer("prepare decompression")
+
+        if self.buffer:
             try:
                 for x in range(self.view.shape[0]):
                     vbands.append(
@@ -755,14 +538,64 @@ cdef class RenderTile(SuperTile):
             x_out += west_width
             buffer[x_out:x_out + east_width] = east[x_in:x_in + east_width]
 
+    cpdef object get_rendering_mpfunc(self):
+        cdef Clip clip
+        cdef list args
+        cdef list tiles
+
+        clip = self._clip if self.switch else self._r_clip
+        if not self.is_valid:
+            shape = self.pre_allocate()
+            if shape < 0:
+                raise MemoryError(f"{self.msg}")
+
+            shapes = self.validate_tiles()
+            if shapes is None:
+                raise MemoryError(f"{self.msg}")
+
+            tiles = [_TileReduce(t) for t in self.to_list()]
+            self.update_clip_size(clip)
+            args = [
+                clip,
+                self.view.shape[0],
+                self.view.shape[1],
+                tiles,
+                shape,
+                (<Tile> self[0, 0]).u_itemsize,
+                (<Tile> self[0, 0]).u_format,
+                shapes,
+                int(self.memory_format),
+            ]
+            self.is_valid = True
+            print("MP func OK")
+            return (render_clip, args)
+        else:
+            print("MP func FAILED")
+            clip = self._r_clip if self.switch else self._clip
+            clip._texture = None
+            return None
+
     cpdef render_texture(self):
         cdef Clip clip
-        if not self.is_valid:
-            if self.allocate_buffer() < 0:
-                raise MemoryError(f"{self.msg}")
-            clip = self._clip if self.switch else self._r_clip
+        cdef Py_ssize_t shape
+        cdef list shapes
 
-            if self.fill_buffer() > 0:
+        if not self.is_valid:
+            shape = self.pre_allocate()
+            if shape < 0:
+                raise MemoryError(f"{self.msg}")
+
+            shapes = self.validate_tiles()
+            if shapes is None:
+                raise MemoryError(f"{self.msg}")
+
+            if self.allocate_buffer(shape) < 0:
+                raise MemoryError(f"{self.msg}")
+
+            clip = self._clip if self.switch else self._r_clip
+            self.update_clip_size(clip)
+
+            if self.fill_buffer(shapes) > 0:
                 _T = Timer("glib.bytes")
                 #FIXME: here data is copied 2 times !!!
                 glib_bytes = GLib.Bytes.new_take(
@@ -780,7 +613,7 @@ cdef class RenderTile(SuperTile):
                 )
                 self.is_valid = True
             else:
-                self.invalidate()
+                pass #self.invalidate()
         else:
             clip = self._r_clip if self.switch else self._clip
             clip._texture = None
@@ -951,8 +784,7 @@ cdef class TilesPool():
         for _co in gen:
             self.scheduler.add(
                 _co,
-                priority=Priority.NEXT,
-                callback=None,
+                Priority.NEXT,
                 name=f"tile_grid[{self.current}][{i}]_compress",
             )
             i += 1
@@ -1013,7 +845,7 @@ cdef class TilesPool():
         if self.render_tile is not None:
             (<TilesGrid> self.stack[self.current]).compress(self.pixbuf_cb)
             self.render_tile.render_texture()
-            return self.render_tile._clip
+            return self.render_tile.clip
         else:
             return self.null_clip
 
@@ -1046,7 +878,6 @@ cdef class TilesPool():
         self.render_task = self.scheduler.add(
             self._render_super_tile_co(gtask),
             Priority.HIGH,
-            callback=None,
             name="render_tile",
         )
         self.scheduler.run(Run.LAST)
@@ -1055,32 +886,50 @@ cdef class TilesPool():
         self,
         cancellable: Gio.Cancellable,
         callback: AsyncReadyCallback,
-        user_data: Any,
+        callback_data: Any,
     ) -> None:
         if self.render_task is not None and \
            not self.render_task.done():
             self.render_task.cancel()
 
-        if isinstance(user_data, Gio.Task):
-            gtask = user_data
-        else:
-            gtask = Gio.Task.new(self, cancellable, callback, user_data)
+        task = Task(self, cancellable, None, None)
+        task.set_name("compress_tiles_mp")
+        task.set_priority(Priority.HIGH)
+
         self.scheduler.stop()
-        self.render_task = self.scheduler.add(
-            functools.partial(self._render_super_tile, gtask),
-            Priority.HIGH,
-            callback=None,
-            name="render_tile_mp",
+        self.scheduler.add(
+            task,
+            target = self.render_tile.compress_async(
+                self.pixbuf_cb, self.graphic.scale
+            ),
+            callback=functools.partial(
+                self._schedule_render_mp, cancellable, callback, callback_data
+            ),
         )
         self.scheduler.run(Run.LAST)
 
-    def _render_super_tile(self,  gtask: Gio.AsyncResult):
-        print("_render_super_tile")
-        _T = Timer("_render_super_tile")
-        self.render_tile.compress(self.pixbuf_cb, self.graphic.scale)
-        self.render_tile.render_texture()
-        _T.stop()
-        self._on_render_ready_cb(gtask)
+    def _schedule_render_mp(
+        self,
+        cancellable: Gio.Cancellable,
+        callback: AsyncReadyCallback,
+        callback_data: Any,
+    ):
+        mpfunc, args = self.render_tile.get_rendering_mpfunc()
+        if mpfunc is None:
+            self._on_render_ready_cb(gtask)
+        else:
+            task = Task(self, cancellable, callback, callback_data)
+            task.set_name("render_clip_mp")
+            task.set_priority(Priority.HIGH)
+
+            self.scheduler.stop()
+            self.render_task = self.scheduler.add(
+                task,
+                mpfunc,
+                callback=None,
+                args=args,
+            )
+            self.scheduler.run(Run.LAST)
 
     async def _render_super_tile_co(self,  gtask: Gio.AsyncResult):
         try:
@@ -1098,17 +947,13 @@ cdef class TilesPool():
         finally:
             pass
 
-    def _on_render_ready_cb(self, gtask: Gio.AsyncResult) -> None:
-        # complete the gtask calling the render_async callback
-        gtask.return_boolean(True)
-        # self.dump_stack()
-
-    def render_finish(self, result: Gio.Task, data: any = None):
+    def render_finish(self, task: Task, data: any = None):
         if result.propagate_boolean():
             # if self.invalid_render is not None:
             #     self.invalid_render.invalidate()
             #     self.invalid_render = None
-            return self.render_tile.clip
+            print(self.render_tile.clip)
+            return task.result()
         else:
             return self.null_clip
 

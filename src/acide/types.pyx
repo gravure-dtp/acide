@@ -355,6 +355,28 @@ cdef class TypedGrid():
     def __iter__(self):
         return __TypedGridIterator(self)
 
+    cpdef list to_list(self, bytes order=b'c'):
+        """Return a flatten list of items in this :class:`TypedGrid`.
+
+        Args:
+            order: a bytes, if b'c' items will be returned rows after
+                   rows otherwise by columns order (default is b'c').
+        Returns:
+            a list of items contains in this :class:`TypedGrid`.
+        """
+        cdef list items = []
+        cdef Py_ssize_t _len, x, y
+
+        if order == b'c':
+            for y in range(self.view.shape[1]):
+                for x in range(self.view.shape[0]):
+                    items.append(self._ref.items[self.view[x, y]])
+        else:
+            for x in range(self.view.shape[0]):
+                for y in range(self.view.shape[1]):
+                    items.append(self._ref.items[self.view[x, y]])
+        return items
+
     cpdef tuple get_center(self):
         """Return indices for this grid center."
 

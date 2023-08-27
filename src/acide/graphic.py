@@ -28,7 +28,8 @@ from gi.repository import Gdk, GLib, Gio, GObject, Graphene
 from acide.measure import Measurable, GObjectMeasurableMeta, Unit
 from acide.types import Number, Rectangle, Pixbuf
 from acide.asyncop import AsyncReadyCallback
-from acide.tiles import TilesPool, SuperTile, Clip
+from acide.tiles import TilesPool, SuperTile
+from acide.mprendering import Clip
 from acide import format_size
 
 
@@ -247,8 +248,9 @@ class Graphic(GObject.GObject, Measurable, metaclass=_GraphicMeta):
         callback: AsyncReadyCallback,
         user_data: Any = None,
     ) -> None:
-        gtask = Gio.Task.new(self, cancellable, callback, user_data)
-        self.tiles_pool.render_async(None, callback, gtask)
+        # gtask = Gio.Task.new(self, cancellable, callback, user_data)
+        # self.tiles_pool.render_async(None, callback, gtask)
+        self.tiles_pool.render_async_mp(cancellable, callback, user_data)
 
     def get_render_finish(self, result: Gio.Task, data: any) -> Clip:
         return self.tiles_pool.render_finish(result)

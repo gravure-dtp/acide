@@ -1022,6 +1022,15 @@ typedef struct {
 #define __Pyx_MemoryView_Len(m)  (m.shape[0])
 
 
+/* "acide/types.pxd":22
+ * 
+ * 
+ * ctypedef unsigned char uc8             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+typedef unsigned char __pyx_t_5acide_5types_uc8;
+
 /*--- Type declarations ---*/
 struct __pyx_obj_5acide_5types_Pixbuf;
 struct __pyx_obj_5acide_5types_TypedGrid;
@@ -1030,6 +1039,18 @@ struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
+struct __pyx_opt_args_5acide_5types_9TypedGrid_to_list;
+
+/* "acide/types.pxd":82
+ *     cdef slice_ref(TypedGrid self, object slx, object sly)
+ * 
+ *     cpdef list to_list(TypedGrid self, bytes order=*)             # <<<<<<<<<<<<<<
+ *     cpdef tuple get_center(TypedGrid self)
+ */
+struct __pyx_opt_args_5acide_5types_9TypedGrid_to_list {
+  int __pyx_n;
+  PyObject *order;
+};
 struct __pyx_opt_args_5acide_7measure_transform;
 struct __pyx_t_5acide_7measure_Extents_s;
 typedef struct __pyx_t_5acide_7measure_Extents_s __pyx_t_5acide_7measure_Extents_s;
@@ -1065,7 +1086,7 @@ struct __pyx_defaults {
   PyObject *__pyx_arg_unit;
 };
 
-/* "acide/types.pxd":56
+/* "acide/types.pxd":59
  * 
  * 
  * cdef class Pixbuf():             # <<<<<<<<<<<<<<
@@ -1081,7 +1102,7 @@ struct __pyx_obj_5acide_5types_Pixbuf {
 };
 
 
-/* "acide/types.pxd":63
+/* "acide/types.pxd":66
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1233,7 +1254,7 @@ struct __pyx_vtabstruct_memoryview {
 static struct __pyx_vtabstruct_memoryview *__pyx_vtabptr_memoryview;
 
 
-/* "acide/types.pxd":63
+/* "acide/types.pxd":66
  * 
  * 
  * cdef class TypedGrid:             # <<<<<<<<<<<<<<
@@ -1248,6 +1269,7 @@ struct __pyx_vtabstruct_5acide_5types_TypedGrid {
   struct __pyx_obj_5acide_5types_TypedGrid *(*get_slice)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_inplace)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
   PyObject *(*slice_ref)(struct __pyx_obj_5acide_5types_TypedGrid *, PyObject *, PyObject *);
+  PyObject *(*to_list)(struct __pyx_obj_5acide_5types_TypedGrid *, int __pyx_skip_dispatch, struct __pyx_opt_args_5acide_5types_9TypedGrid_to_list *__pyx_optional_args);
   PyObject *(*get_center)(struct __pyx_obj_5acide_5types_TypedGrid *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5acide_5types_TypedGrid *__pyx_vtabptr_5acide_5types_TypedGrid;
@@ -13871,7 +13893,7 @@ static PyObject *__pyx_pf_5acide_7measure_10Measurable_72__str__(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "acide/types.pxd":22
+/* "acide/types.pxd":25
  * 
  * 
  * cdef inline double cmax(double a, double b):             # <<<<<<<<<<<<<<
@@ -13885,7 +13907,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cmax", 0);
 
-  /* "acide/types.pxd":23
+  /* "acide/types.pxd":26
  * 
  * cdef inline double cmax(double a, double b):
  *     if b > a: return b             # <<<<<<<<<<<<<<
@@ -13898,7 +13920,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":24
+  /* "acide/types.pxd":27
  * cdef inline double cmax(double a, double b):
  *     if b > a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -13910,7 +13932,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":22
+  /* "acide/types.pxd":25
  * 
  * 
  * cdef inline double cmax(double a, double b):             # <<<<<<<<<<<<<<
@@ -13924,7 +13946,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmax(double __pyx_v_a, double 
   return __pyx_r;
 }
 
-/* "acide/types.pxd":27
+/* "acide/types.pxd":30
  * 
  * 
  * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
@@ -13938,7 +13960,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cimax", 0);
 
-  /* "acide/types.pxd":28
+  /* "acide/types.pxd":31
  * 
  * cdef inline int cimax(int a, int b):
  *     if b > a: return b             # <<<<<<<<<<<<<<
@@ -13951,7 +13973,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":29
+  /* "acide/types.pxd":32
  * cdef inline int cimax(int a, int b):
  *     if b > a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -13963,7 +13985,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":27
+  /* "acide/types.pxd":30
  * 
  * 
  * cdef inline int cimax(int a, int b):             # <<<<<<<<<<<<<<
@@ -13977,7 +13999,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimax(int __pyx_v_a, int __pyx_v_
   return __pyx_r;
 }
 
-/* "acide/types.pxd":32
+/* "acide/types.pxd":35
  * 
  * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
@@ -13991,7 +14013,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cmin", 0);
 
-  /* "acide/types.pxd":33
+  /* "acide/types.pxd":36
  * 
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b             # <<<<<<<<<<<<<<
@@ -14004,7 +14026,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":34
+  /* "acide/types.pxd":37
  * cdef inline double cmin(double a, double b):
  *     if b < a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -14016,7 +14038,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":32
+  /* "acide/types.pxd":35
  * 
  * 
  * cdef inline double cmin(double a, double b):             # <<<<<<<<<<<<<<
@@ -14030,7 +14052,7 @@ static CYTHON_INLINE double __pyx_f_5acide_5types_cmin(double __pyx_v_a, double 
   return __pyx_r;
 }
 
-/* "acide/types.pxd":37
+/* "acide/types.pxd":40
  * 
  * 
  * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
@@ -14044,7 +14066,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("cimin", 0);
 
-  /* "acide/types.pxd":38
+  /* "acide/types.pxd":41
  * 
  * cdef inline int cimin(int a, int b):
  *     if b < a: return b             # <<<<<<<<<<<<<<
@@ -14057,7 +14079,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":39
+  /* "acide/types.pxd":42
  * cdef inline int cimin(int a, int b):
  *     if b < a: return b
  *     else: return a             # <<<<<<<<<<<<<<
@@ -14069,7 +14091,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":37
+  /* "acide/types.pxd":40
  * 
  * 
  * cdef inline int cimin(int a, int b):             # <<<<<<<<<<<<<<
@@ -14083,7 +14105,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_cimin(int __pyx_v_a, int __pyx_v_
   return __pyx_r;
 }
 
-/* "acide/types.pxd":42
+/* "acide/types.pxd":45
  * 
  * 
  * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
@@ -14097,7 +14119,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("ciround", 0);
 
-  /* "acide/types.pxd":43
+  /* "acide/types.pxd":46
  * 
  * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)             # <<<<<<<<<<<<<<
@@ -14110,7 +14132,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":44
+  /* "acide/types.pxd":47
  * cdef inline int ciround(double number):
  *     if number >= 0: return <int> (number + 0.5)
  *     else: return <int>(number - 0.5)             # <<<<<<<<<<<<<<
@@ -14122,7 +14144,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":42
+  /* "acide/types.pxd":45
  * 
  * 
  * cdef inline int ciround(double number):             # <<<<<<<<<<<<<<
@@ -14136,7 +14158,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciround(double __pyx_v_number) {
   return __pyx_r;
 }
 
-/* "acide/types.pxd":47
+/* "acide/types.pxd":50
  * 
  * 
  * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
@@ -14156,7 +14178,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ciceil", 0);
 
-  /* "acide/types.pxd":48
+  /* "acide/types.pxd":51
  * 
  * cdef inline int ciceil(double number):
  *     cdef int i_num = <int> number             # <<<<<<<<<<<<<<
@@ -14165,7 +14187,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
  */
   __pyx_v_i_num = ((int)__pyx_v_number);
 
-  /* "acide/types.pxd":49
+  /* "acide/types.pxd":52
  * cdef inline int ciceil(double number):
  *     cdef int i_num = <int> number
  *     if (<double> i_num) == number: return i_num             # <<<<<<<<<<<<<<
@@ -14178,7 +14200,7 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":50
+  /* "acide/types.pxd":53
  *     cdef int i_num = <int> number
  *     if (<double> i_num) == number: return i_num
  *     else: return i_num + 1             # <<<<<<<<<<<<<<
@@ -14190,13 +14212,13 @@ static CYTHON_INLINE int __pyx_f_5acide_5types_ciceil(double __pyx_v_number) {
     __pyx_t_3 = __Pyx_add_const_long_checking_overflow(__pyx_v_i_num, 1, &__pyx_t_2);
     if (unlikely(__pyx_t_2)) {
       PyErr_SetString(PyExc_OverflowError, "value too large");
-      __PYX_ERR(3, 50, __pyx_L1_error)
+      __PYX_ERR(3, 53, __pyx_L1_error)
     }
     __pyx_r = __pyx_t_3;
     goto __pyx_L0;
   }
 
-  /* "acide/types.pxd":47
+  /* "acide/types.pxd":50
  * 
  * 
  * cdef inline int ciceil(double number):             # <<<<<<<<<<<<<<
@@ -29608,13 +29630,13 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 56, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("acide.types"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5acide_5types_Pixbuf = __Pyx_ImportType(__pyx_t_1, "acide.types", "Pixbuf", sizeof(struct __pyx_obj_5acide_5types_Pixbuf), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5acide_5types_Pixbuf) __PYX_ERR(3, 56, __pyx_L1_error)
+   if (!__pyx_ptype_5acide_5types_Pixbuf) __PYX_ERR(3, 59, __pyx_L1_error)
   __pyx_ptype_5acide_5types_TypedGrid = __Pyx_ImportType(__pyx_t_1, "acide.types", "TypedGrid", sizeof(struct __pyx_obj_5acide_5types_TypedGrid), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 63, __pyx_L1_error)
-  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 63, __pyx_L1_error)
+   if (!__pyx_ptype_5acide_5types_TypedGrid) __PYX_ERR(3, 66, __pyx_L1_error)
+  __pyx_vtabptr_5acide_5types_TypedGrid = (struct __pyx_vtabstruct_5acide_5types_TypedGrid*)__Pyx_GetVtable(__pyx_ptype_5acide_5types_TypedGrid->tp_dict); if (unlikely(!__pyx_vtabptr_5acide_5types_TypedGrid)) __PYX_ERR(3, 66, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

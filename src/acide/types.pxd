@@ -19,6 +19,9 @@ from cython.view cimport array as Carray
 from cython.view cimport memoryview as Mview
 
 
+ctypedef unsigned char uc8
+
+
 cdef inline double cmax(double a, double b):
     if b > a: return b
     else: return a
@@ -75,4 +78,6 @@ cdef class TypedGrid:
     cdef TypedGrid get_slice(TypedGrid self, object slice_x, object slice_y)
     cdef slice_inplace(TypedGrid self, object slx, object sly)
     cdef slice_ref(TypedGrid self, object slx, object sly)
+
+    cpdef list to_list(TypedGrid self, bytes order=*)
     cpdef tuple get_center(TypedGrid self)

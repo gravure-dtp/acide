@@ -70,6 +70,8 @@ returned = run_command(
   'acide/types.pyx',
   'acide/asyncop.pyx',
   'acide/measure.pyx',
+  'acide/tile.pyx',
+  'acide/mprendering.pyx',
   'acide/tiles.pyx'
 )
 message(returned.stdout())
@@ -79,9 +81,11 @@ install_subdir(
 	'acide',
 	exclude_directories: ['__pycache__', 'ui/__pycache__'],
 	exclude_files: ['measure.pyx', 'measure.c',
+									'tile.pyx', 'tile.pyx',
 									'tiles.pyx', 'tiles.c',
 									'types.pyx', 'types.c',
 									'asyncop.pyx', 'asyncop.c',
+									'mprendering.pyx', 'mprendering.c',
 								 ],
 	install_dir: moduledir,
 	strip_directory: true

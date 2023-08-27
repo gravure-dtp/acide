@@ -41,7 +41,8 @@ cdef class Scheduler():
     cpdef int add_priority(Scheduler self)
     cpdef object add(
         Scheduler self,
-        object co, object priority, object callback=*, object name=*
+        object co, object priority, object name=*, object callback=*,
+        object cancellable=*, object args=*
     )
     cdef clear(Scheduler self)
     cdef control(Scheduler self, PriorityQueue priority)
